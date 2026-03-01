@@ -591,6 +591,7 @@
                 <li><a href="#en" onclick="scrollToSection('amneziawg-en')">6. AmneziaWG <span class="toc-badge badge-secondary">Anti-DPI</span></a></li>
                 <li><a href="#en" onclick="scrollToSection('trusttunnel-en')">7. TrustTunnel <span class="toc-badge badge-secondary">Stealth VPN</span></a></li>
                 <li><a href="#en" onclick="scrollToSection('dns-tunnel-en')">8. DNS Tunnel <span class="toc-badge badge-fallback">Last Resort</span></a></li>
+                <li><a href="#en" onclick="scrollToSection('slipstream-en')">8b. Slipstream <span class="toc-badge badge-fallback">Faster DNS Tunnel</span></a></li>
                 <li><a href="#en" onclick="scrollToSection('tor-en')">9. Tor <span class="toc-badge badge-standalone">Standalone</span></a></li>
                 <li><a href="#en" onclick="scrollToSection('psiphon-en')">10. Psiphon <span class="toc-badge badge-standalone">Standalone</span></a></li>
                 <li><a href="#en" onclick="scrollToSection('apps-en')">Recommended Apps</a></li>
@@ -1007,6 +1008,46 @@
                 <div class="config-box">
                     <h4>Server Public Key</h4>
                     <div class="config-value" onclick="copyConfig(this)">{{DNSTT_PUBKEY}}</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slipstream -->
+        <div class="protocol-section" id="slipstream-en" style="{{CONFIG_SLIPSTREAM}}">
+            <div class="protocol-header">
+                <div class="protocol-title">
+                    <h2>8b. Slipstream</h2>
+                    <span class="protocol-badge badge-fallback">DNS Tunnel (Faster)</span>
+                </div>
+                <span class="protocol-port">Port 53/udp</span>
+            </div>
+            <div class="protocol-content">
+                <p class="protocol-desc">QUIC-over-DNS tunnel — 1.5-5x faster than dnstt. Use when other methods are blocked. Requires the Slipstream client and certificate file from this bundle.</p>
+
+                <div class="extra-section">
+                    <h4>Desktop Setup (Windows/macOS/Linux)</h4>
+                    <ol>
+                        <li>Download <a href="https://github.com/net2share/slipstream-rust-build/releases" target="_blank">slipstream-client</a> for your OS</li>
+                        <li>Copy the <code>slipstream-cert.pem</code> file from this bundle to the same directory</li>
+                        <li>Open Terminal/Command Prompt</li>
+                        <li>Run this command to create a local SOCKS5 proxy on port 1080:</li>
+                    </ol>
+                    <div class="config-box" style="margin-top: 10px;">
+                        <div class="config-value" onclick="copyConfig(this)">slipstream-client --domain {{SLIPSTREAM_DOMAIN}} --cert slipstream-cert.pem --dns-server 1.1.1.1:53 --socks-listen 127.0.0.1:1080</div>
+                    </div>
+                    <p style="margin-top: 10px;">Then configure your browser to use SOCKS5 proxy: <code>127.0.0.1:1080</code></p>
+                </div>
+
+                <div class="extra-section">
+                    <h4>Speed Modes</h4>
+                    <p><strong>Resolver mode</strong> (default, stealthier): ~60 KB/s — good for chat, email, light browsing</p>
+                    <p><strong>Authoritative mode</strong> (faster): ~3-4 MB/s — add <code>--authoritative SERVER_IP:53</code> instead of <code>--dns-server</code></p>
+                    <p style="color: var(--text-muted); font-size: 12px;">Authoritative mode is faster but reveals the server IP to network observers.</p>
+                </div>
+
+                <div class="config-box">
+                    <h4>Slipstream Domain</h4>
+                    <div class="config-value" onclick="copyConfig(this)">{{SLIPSTREAM_DOMAIN}}</div>
                 </div>
             </div>
         </div>
@@ -1685,6 +1726,45 @@
                 <div class="config-box">
                     <h4>کلید عمومی سرور</h4>
                     <div class="config-value" onclick="copyConfig(this)">{{DNSTT_PUBKEY}}</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slipstream (FA) -->
+        <div class="protocol-section" id="slipstream-fa" style="{{CONFIG_SLIPSTREAM}}">
+            <div class="protocol-header">
+                <div class="protocol-title">
+                    <h2>۸ب. Slipstream</h2>
+                    <span class="protocol-badge badge-fallback">تونل DNS (سریع‌تر)</span>
+                </div>
+                <span class="protocol-port">پورت 53/udp</span>
+            </div>
+            <div class="protocol-content">
+                <p class="protocol-desc">تونل QUIC-over-DNS — ۱.۵ تا ۵ برابر سریع‌تر از dnstt. وقتی روش‌های دیگر مسدود هستند استفاده کنید. نیاز به کلاینت Slipstream و فایل گواهی از این بسته دارد.</p>
+
+                <div class="extra-section">
+                    <h4>راه‌اندازی دسکتاپ (Windows/macOS/Linux)</h4>
+                    <ol>
+                        <li><a href="https://github.com/net2share/slipstream-rust-build/releases" target="_blank">slipstream-client</a> را برای سیستم عامل خود دانلود کنید</li>
+                        <li>فایل <code>slipstream-cert.pem</code> را از این بسته در همان پوشه قرار دهید</li>
+                        <li>Terminal یا Command Prompt را باز کنید</li>
+                        <li>این دستور را اجرا کنید:</li>
+                    </ol>
+                    <div class="config-box" style="margin-top: 10px;">
+                        <div class="config-value" onclick="copyConfig(this)">slipstream-client --domain {{SLIPSTREAM_DOMAIN}} --cert slipstream-cert.pem --dns-server 1.1.1.1:53 --socks-listen 127.0.0.1:1080</div>
+                    </div>
+                    <p style="margin-top: 10px;">سپس مرورگر را برای استفاده از پروکسی SOCKS5 تنظیم کنید: <code>127.0.0.1:1080</code></p>
+                </div>
+
+                <div class="extra-section">
+                    <h4>حالت‌های سرعت</h4>
+                    <p><strong>حالت Resolver</strong> (پیش‌فرض، مخفی‌تر): ~۶۰ کیلوبایت/ثانیه — مناسب برای چت، ایمیل</p>
+                    <p><strong>حالت Authoritative</strong> (سریع‌تر): ~۳-۴ مگابایت/ثانیه — به جای <code>--dns-server</code> از <code>--authoritative SERVER_IP:53</code> استفاده کنید</p>
+                </div>
+
+                <div class="config-box">
+                    <h4>دامنه Slipstream</h4>
+                    <div class="config-value" onclick="copyConfig(this)">{{SLIPSTREAM_DOMAIN}}</div>
                 </div>
             </div>
         </div>
