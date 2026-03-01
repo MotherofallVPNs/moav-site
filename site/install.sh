@@ -95,6 +95,26 @@ confirm() {
     fi
 }
 
+# Wait for apt/dpkg lock to be released (fresh VPS often has unattended-upgrades running)
+wait_for_apt_lock() {
+    local max_wait=120
+    local waited=0
+    while fuser /var/lib/dpkg/lock-frontend &>/dev/null 2>&1 || fuser /var/lib/apt/lists/lock &>/dev/null 2>&1; do
+        if [[ $waited -eq 0 ]]; then
+            info "Waiting for apt lock to be released (another package manager is running)..."
+        fi
+        sleep 5
+        waited=$((waited + 5))
+        if [[ $waited -ge $max_wait ]]; then
+            warn "Waited ${max_wait}s for apt lock. Proceeding anyway..."
+            break
+        fi
+    done
+    if [[ $waited -gt 0 && $waited -lt $max_wait ]]; then
+        success "apt lock released after ${waited}s"
+    fi
+}
+
 # Detect OS
 detect_os() {
     if [[ "$OSTYPE" == "darwin"* ]]; then
@@ -216,6 +236,9 @@ if [[ ${#needs_install[@]} -gt 0 ]]; then
 
     if confirm "Install missing packages?" "y"; then
         echo ""
+
+        # On fresh Debian/Ubuntu VPS, unattended-upgrades often holds the apt lock at boot
+        [[ "$OS_TYPE" == "debian" ]] && wait_for_apt_lock
 
         for pkg in "${needs_install[@]}"; do
             case "$pkg" in
