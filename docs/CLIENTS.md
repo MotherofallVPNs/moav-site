@@ -42,7 +42,8 @@ This guide explains how to connect to MoaV from various devices.
 | [WireGuard](https://www.wireguard.com/) (Direct) | 51820/udp | Full VPN mode, simple setup |
 | [AmneziaWG](https://github.com/amnezia-vpn/amneziawg-linux-kernel-module) | 51821/udp | Obfuscated WireGuard, defeats DPI |
 | [WireGuard](https://www.wireguard.com/) + [wstunnel](https://github.com/erebe/wstunnel) | 8080/tcp | VPN wrapped in WebSocket |
-| [DNS Tunnel](https://www.bamsoftware.com/software/dnstt/) | 53/udp | Last resort, slow but hard to block |
+| [DNS Tunnel (dnstt)](https://www.bamsoftware.com/software/dnstt/) | 53/udp | Last resort, slow but hard to block |
+| [Slipstream](https://github.com/Mygod/slipstream-rust) | 53/udp | QUIC-over-DNS, 1.5-5x faster than dnstt |
 | [Psiphon](https://psiphon.ca/) | Various | Standalone app, uses Psiphon network |
 | [Tor](https://www.torproject.org/) (Snowflake) | Various | Uses Tor network |
 
@@ -147,8 +148,9 @@ Try these in order. If one doesn't work, try the next:
 6. **WireGuard (Direct)** - Full VPN mode, simple setup (port 51820/udp)
 7. **WireGuard (wstunnel)** - VPN wrapped in WebSocket, for restrictive networks (port 8080/tcp)
 8. **Tor (Snowflake)** - Uses Tor network (no server needed)
-9. **DNS Tunnel** - Last resort, very slow but hard to block (port 53/udp)
-10. **Psiphon** - Standalone app only, uses Psiphon network (not via MoaV client)
+9. **DNS Tunnel (dnstt)** - Last resort, very slow but hard to block (port 53/udp)
+10. **Slipstream** - QUIC-over-DNS, 1.5-5x faster than dnstt (port 53/udp)
+11. **Psiphon** - Standalone app only, uses Psiphon network (not via MoaV client)
 
 ---
 
@@ -172,7 +174,7 @@ moav test user1
 moav test user1 --json
 ```
 
-The test checks: Reality, Trojan, Hysteria2, WireGuard (config validation), and dnstt.
+The test checks: Reality, Trojan, Hysteria2, WireGuard (config validation), dnstt, and Slipstream.
 
 **Sample output:**
 ```
@@ -602,7 +604,9 @@ The CLI client creates a TUN interface for full VPN functionality.
 
 ## DNS Tunnel Setup (Last Resort)
 
-Use this only when all other methods are blocked. It's slow but often works.
+Use this only when all other methods are blocked. DNS tunneling is slow but often works when everything else is blocked.
+
+### dnstt
 
 See `dnstt-instructions.txt` in your bundle for detailed steps.
 
@@ -610,6 +614,21 @@ See `dnstt-instructions.txt` in your bundle for detailed steps.
 1. Download dnstt-client from https://www.bamsoftware.com/software/dnstt/
 2. Run: `dnstt-client -doh https://1.1.1.1/dns-query -pubkey YOUR_KEY t.yourdomain.com 127.0.0.1:1080`
 3. Configure apps to use SOCKS5 proxy `127.0.0.1:1080`
+
+### Slipstream (Faster DNS Tunnel)
+
+Slipstream is a QUIC-over-DNS tunnel that is 1.5-5x faster than dnstt. See `slipstream-instructions.txt` in your bundle.
+
+**Summary:**
+1. Download slipstream-client from https://github.com/net2share/slipstream-rust-build/releases
+2. Copy the certificate file `slipstream-cert.pem` from your bundle
+3. Run: `slipstream-client --domain s.yourdomain.com --cert slipstream-cert.pem --dns-server 1.1.1.1:53 --socks-listen 127.0.0.1:1080`
+4. Configure apps to use SOCKS5 proxy `127.0.0.1:1080`
+
+**Modes:**
+- **Resolver mode** (default, stealthier): Uses public DNS resolvers (~60 KB/s)
+- **Authoritative mode** (faster, less stealthy): Connects directly to server (~3-4 MB/s)
+  - Add `--authoritative SERVER_IP:53` instead of `--dns-server`
 
 ---
 

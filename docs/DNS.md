@@ -28,8 +28,9 @@ MoaV uses these DNS records:
 | Record Type | Name | Value | Purpose |
 |-------------|------|-------|---------|
 | A | `@` or `domain.com` | Server IP | Main domain for Trojan/Hysteria2 |
-| A | `dns` | Server IP | For dnstt NS delegation |
-| NS | `t` | `dns.domain.com` | DNS tunnel subdomain |
+| A | `dns` | Server IP | For DNS tunnel NS delegation |
+| NS | `t` | `dns.domain.com` | dnstt tunnel subdomain |
+| NS | `s` | `dns.domain.com` | Slipstream tunnel subdomain |
 
 ## Minimum Setup (Without DNS Tunnel)
 
@@ -64,7 +65,7 @@ TTL: 300
 
 This creates `dns.yourdomain.com` pointing to your server.
 
-### Step 3: NS Delegation for Tunnel
+### Step 3: NS Delegation for DNS Tunnels
 
 ```
 Type: NS
@@ -73,7 +74,18 @@ Value: dns.yourdomain.com
 TTL: 300
 ```
 
-This tells DNS resolvers that queries for `*.t.yourdomain.com` should be sent to `dns.yourdomain.com` (your server).
+This tells DNS resolvers that queries for `*.t.yourdomain.com` should be sent to `dns.yourdomain.com` (your server). Used by dnstt.
+
+### Step 4: NS Delegation for Slipstream (Optional)
+
+```
+Type: NS
+Name: s
+Value: dns.yourdomain.com
+TTL: 300
+```
+
+Same concept as dnstt, but for the Slipstream QUIC-over-DNS tunnel. Slipstream is 1.5-5x faster than dnstt. Only needed if `ENABLE_SLIPSTREAM=true`.
 
 ### Optional: IPv6 Support
 
@@ -104,6 +116,7 @@ TTL: 300
 | A | @ | YOUR_IP | DNS only |
 | A | dns | YOUR_IP | DNS only |
 | NS | t | dns.yourdomain.com | - |
+| NS | s | dns.yourdomain.com | - |
 | A | cdn | YOUR_IP | **Proxied** (orange cloud) |
 | A | grafana | YOUR_IP | **Proxied** (orange cloud) |
 
@@ -156,8 +169,9 @@ See [CDN Setup Guide](SETUP.md#cdn-fronted-vlesswebsocket-cloudflare) for comple
 | A Record | @ | YOUR_IP | Automatic |
 | A Record | dns | YOUR_IP | Automatic |
 | NS Record | t | dns.yourdomain.com. | Automatic |
+| NS Record | s | dns.yourdomain.com. | Automatic |
 
-Note: NS value may need trailing dot.
+Note: NS value may need trailing dot. The `s` record is only needed if using Slipstream.
 
 ### Google Domains / Squarespace
 
@@ -169,6 +183,7 @@ Note: NS value may need trailing dot.
 | (blank) | A | 300 | YOUR_IP |
 | dns | A | 300 | YOUR_IP |
 | t | NS | 300 | dns.yourdomain.com |
+| s | NS | 300 | dns.yourdomain.com |
 
 ### Hetzner DNS
 
@@ -180,6 +195,7 @@ Note: NS value may need trailing dot.
 @ IN A YOUR_IP
 dns IN A YOUR_IP
 t IN NS dns.yourdomain.com.
+s IN NS dns.yourdomain.com.
 ```
 
 ## Dynamic DNS for Home Servers

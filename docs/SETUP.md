@@ -37,7 +37,7 @@ Complete guide to deploy MoaV on a VPS or home server.
 - Public IPv6 address (optional, see [IPv6 Support](#ipv6-support))
 
 **Domain (Optional but Recommended):**
-- Required for: Reality, Trojan, Hysteria2, TrustTunnel, CDN mode, DNS tunnel
+- Required for: Reality, Trojan, Hysteria2, TrustTunnel, CDN mode, DNS tunnels (dnstt, Slipstream)
 - Not required for: WireGuard, AmneziaWG, Admin dashboard, Conduit, Snowflake
 - See [Domain-less Mode](#domain-less-mode) if you don't have a domain
 
@@ -55,7 +55,7 @@ Complete guide to deploy MoaV on a VPS or home server.
 | 8080/tcp | TCP | wstunnel | No |
 | 9443/tcp | TCP | Admin dashboard | No |
 | 9444/tcp | TCP | Grafana (monitoring) | No |
-| 53/udp | UDP | DNS tunnel | Yes |
+| 53/udp | UDP | DNS tunnels (dnstt + Slipstream) | Yes |
 | 80/tcp | TCP | Let's Encrypt | Yes (during setup) |
 
 ---
