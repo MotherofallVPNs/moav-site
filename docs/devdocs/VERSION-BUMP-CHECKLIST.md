@@ -184,12 +184,12 @@ That's 4 files. Everything else (`moav.sh`, docker images, etc.) picks up the ve
 
 ## 8. Print PR & Release Text
 
-After completing all steps above, print the following two blocks of text (filled in with the actual version, date, and changelog content) so they can be copied directly.
+After completing all steps above, print the following two blocks of text (filled in with the actual version, date, and changelog content) so they can be copied directly, they should be in markdown format.
 
 ### 8a. PR Description
 
-Print the PR description using the template from step 6a, populated with the actual changelog entries from step 3.
+Print the PR description in markdown using the template from step 6a, populated with the actual changelog entries from step 3.
 
 ### 8b. GitHub Release Body
 
-Print the release body using the template from step 6b, populated with the actual changelog entries and compare URL.
+Print the release body in markdown using the template from step 6b, populated with the actual changelog entries and compare URL.
