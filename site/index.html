@@ -27,7 +27,7 @@
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:url" content="https://moav.sh">
     <meta name="twitter:title" content="MoaV - Mother of all VPNs | Internet Freedom Stack">
-    <meta name="twitter:description" content="Open-source censorship circumvention for hostile networks. Docker-based multi-protocol stack with automatic fallback. Internet access is a human right.">
+    <meta name="twitter:description" content="Open-source censorship circumvention for hostile networks. Docker-based multi-protocol stack: Reality, Hysteria2, TrustTunnel, AmneziaWG, WireGuard, DNS tunneling, Telegram MTProxy, and more. Internet access is a human right.">
     <meta name="twitter:image" content="https://moav.sh/assets/og-image.png">
 
     <!-- Additional SEO -->
@@ -224,8 +224,8 @@
                         </svg>
                     </div>
                     <h3>Stealth Proxies</h3>
-                    <p>Reality (VLESS), Hysteria2, Trojan. Look like normal HTTPS traffic. V2Ray-compatible, powered by sing-box.</p>
-                    <span class="protocol-port">443/tcp · 443/udp · 8443/tcp</span>
+                    <p>Reality (VLESS), Hysteria2, Trojan. Look like normal HTTPS. CDN mode routes through Cloudflare when IP is blocked.</p>
+                    <span class="protocol-port">443/tcp · 443/udp · 8443/tcp · CDN</span>
                 </div>
 
                 <div class="protocol-card">
@@ -313,17 +313,6 @@
                     <h3>TrustTunnel</h3>
                     <p>HTTP/2 and QUIC tunneling. Looks exactly like normal HTTPS traffic to deep packet inspection.</p>
                     <span class="protocol-port">4443/tcp+udp</span>
-                </div>
-
-                <div class="protocol-card">
-                    <div class="protocol-icon">
-                        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-                            <path d="M22 12h-4l-3 9L9 3l-3 9H2"/>
-                        </svg>
-                    </div>
-                    <h3>CDN Mode (VLESS+WS)</h3>
-                    <p>Route through Cloudflare when server IP is blocked. WebSocket over CDN bypasses IP-based filtering.</p>
-                    <span class="protocol-port">443 via Cloudflare</span>
                 </div>
 
                 <div class="protocol-card protocol-card-cta">
@@ -719,22 +708,22 @@
 ║     ┌────────┼─────────────────┼───────┼──────┐                     │                  │         ║
 ║     │        │         │       │       │      │                     │                  │         ║
 ║     ▼        ▼         ▼       ▼       ▼      ▼                     ▼                  ▼         ║
-║ ┌─────────┐┌─────────┐┌───────┐┌─────────┐┌────────┐          ┌───────────┐      ┌───────────┐  ║
-║ │ Reality ││WireGuard││ Trust ││  DNS    ││Telegram│          │           │      │           │  ║
-║ │ 443/tcp ││51820/udp││Tunnel ││ 53/udp  ││MTProxy │          │  Conduit  │      │ Snowflake │  ║
-║ │ Trojan  ││AmneziaWG││4443/  │├─────────┤│993/tcp │          │  (donate  │      │  (donate  │  ║
-║ │8443/tcp ││51821/udp││tcp+udp││  dnstt  │└───┬────┘          │ bandwidth)│      │ bandwidth)│  ║
-║ │Hysteria2││wstunnel ││       ││Slipstrm │    │               └─────┬─────┘      └─────┬─────┘  ║
-║ │ 443/udp ││8080/tcp ││       │└────┬────┘    │                     │                  │        ║
-║ │ CDN WS  │└────┬────┘└───┬───┘     │         │                     │                  │        ║
-║ │2082/tcp │     │         │         │         │  ┌────────────────────┐                │    M   ║
-║ ├─────────┤     │         │         │         │  │ Grafana   :9444    │                │    O   ║
-║ │ sing-box│     │         │         │         │  │ Prometheus         │                │    A   ║
-║ └────┬────┘     │         │         │         │  └────────────────────┘                │    V   ║
-║      │          │         │         │         │                                        │        ║
-╚══════╪══════════╪═════════╪═════════╪═════════╪════════════════════════════════════════╪════════╝
-       │          │         │         │         │                                        │
-       ▼          ▼         ▼         ▼         ▼                                        ▼
+║ ┌─────────┐┌─────────┐┌───────┐┌─────────┐┌────────┐          ┌───────────┐      ┌───────────┐   ║
+║ │ Reality ││WireGuard││ Trust ││  DNS    ││Telegram│          │           │      │           │   ║
+║ │ 443/tcp ││51820/udp││Tunnel ││ 53/udp  ││MTProxy │          │  Conduit  │      │ Snowflake │   ║
+║ │ Trojan  ││AmneziaWG││4443/  │├─────────┤│993/tcp │          │  (donate  │      │  (donate  │   ║
+║ │8443/tcp ││51821/udp││tcp+udp││  dnstt  │└───┬────┘          │ bandwidth)│      │ bandwidth)│   ║
+║ │Hysteria2││wstunnel ││       ││Slipstrm │    │               └─────┬─────┘      └─────┬─────┘   ║
+║ │ 443/udp ││8080/tcp ││       │└────┬────┘    │                     │                  │         ║
+║ │ CDN WS  │└────┬────┘└───┬───┘     │         │                     │                  │         ║
+║ │2082/tcp │     │         │         │         │  ┌────────────────┐ │                  │     M   ║
+║ ├─────────┤     │         │         │         │  │ Grafana  :9444 │ │                  │     O   ║
+║ │ sing-box│     │         │         │         │  │ Prometheus     │ │                  │     A   ║
+║ └────┬────┘     │         │         │         │  └────────────────┘ │                  │     V   ║
+║      │          │         │         │         │                     │                  │         ║
+╚══════╪══════════╪═════════╪═════════╪═════════╪═════════════════════╪══════════════════╪═════════╝
+       │          │         │         │         │                     │                  │
+       ▼          ▼         ▼         ▼         ▼                     ▼                  ▼
 ┌─────────────────────────────────────────────────────────────────────────────────────────────────┐
 │                                        Open Internet                                            │
 └─────────────────────────────────────────────────────────────────────────────────────────────────┘
