@@ -432,6 +432,7 @@ Client --HTTPS:443--> Cloudflare CDN --HTTP:2082--> Your Server
 - sing-box `vless-ws-in` inbound listens on port 2082 (plain HTTP)
 - Uses same user UUIDs as Reality (no extra credentials)
 - Client links only generated when `CDN_DOMAIN` is set
+- **Anti-DPI stealth**: By default, the TLS SNI uses your root domain (not the CDN subdomain), so DPI sees `domain.com` instead of `cdn.domain.com`. The CDN subdomain is only in the HTTP Host header (inside TLS, invisible to DPI)
 
 **Setup:**
 
@@ -458,10 +459,14 @@ Client --HTTPS:443--> Cloudflare CDN --HTTP:2082--> Your Server
 4. **Configure MoaV:**
    ```bash
    # In .env
-   CDN_DOMAIN=cdn.yourdomain.com
+   CDN_SUBDOMAIN=cdn
    PORT_CDN=2082
    # CDN_WS_PATH is auto-generated with a realistic-looking path during bootstrap
-   # Only set manually if you need a specific path
+
+   # Optional: extra stealth settings
+   # CDN_SNI defaults to your root domain (less suspicious than cdn.yourdomain.com)
+   # CDN_ADDRESS defaults to cdn.yourdomain.com — set to www.yourdomain.com
+   #   if you added a 'www' proxied record (hides "cdn" from DNS queries too)
    ```
 
 5. **Apply Changes:**
