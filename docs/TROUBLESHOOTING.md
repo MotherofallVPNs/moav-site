@@ -563,7 +563,7 @@ This usually means Cloudflare can't reach your origin on the correct port.
    ```bash
    # From another machine, test direct access to your server
    curl -s -o /dev/null -w "%{http_code}" http://YOUR_SERVER_IP:2082/test
-   # Should return 400 (sing-box responding)
+   # Should return 400 or 404 (sing-box responding)
    ```
 
 3. **Check firewall:**
@@ -576,8 +576,21 @@ This usually means Cloudflare can't reach your origin on the correct port.
    docker compose logs sing-box | grep -i "vless-ws"
    ```
 
+**Cloudflare 525 "SSL Handshake Failed":**
+
+This means Cloudflare is trying HTTPS to your origin, but MoaV's CDN inbound on port 2082 is plain HTTP.
+
+1. **Set SSL/TLS mode to Flexible** in Cloudflare dashboard:
+   - Go to **SSL/TLS** → **Overview** → Set to **Flexible**
+   - **Full** and **Full (Strict)** will NOT work — they make Cloudflare connect via HTTPS, but port 2082 doesn't speak TLS
+2. **If you need Full SSL for other subdomains**, create a Configuration Rule:
+   - Go to **Rules** → **Configuration Rules** → **Create rule**
+   - Match: **Hostname** equals `cdn.yourdomain.com`
+   - Setting: **SSL** → **Flexible**
+   - This overrides the zone-wide SSL mode for just the CDN subdomain
+
 **Cloudflare 520 "Unknown error":**
-1. Set SSL/TLS mode to **Flexible** in Cloudflare dashboard
+1. Set SSL/TLS mode to **Flexible** in Cloudflare dashboard (see 525 section above)
 2. Verify sing-box container is running
 3. Check sing-box config has `vless-ws-in` inbound on port 2082
 

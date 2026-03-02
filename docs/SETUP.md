@@ -449,8 +449,11 @@ Client --HTTPS:443--> Cloudflare CDN --HTTP:2082--> Your Server
 
    > This is required because Cloudflare Flexible SSL connects to port 80 by default, but MoaV listens on 2082.
 
-3. **Set Cloudflare SSL Mode:**
-   - SSL/TLS → Overview → Set to **Flexible**
+3. **Set Cloudflare SSL/TLS Mode to Flexible (Required):**
+   - Go to **SSL/TLS** → **Overview** → Set encryption mode to **Flexible**
+   - MoaV's CDN inbound on port 2082 is **plain HTTP** (Cloudflare terminates TLS for you)
+   - **Full** or **Full (Strict)** will cause **525 SSL Handshake Failed** errors because Cloudflare tries HTTPS to your origin but port 2082 doesn't speak TLS
+   - If you need Full SSL for other subdomains, create a **Configuration Rule**: Rules → Configuration Rules → match hostname `cdn.yourdomain.com` → SSL → Flexible
 
 4. **Configure MoaV:**
    ```bash
@@ -476,10 +479,10 @@ Client --HTTPS:443--> Cloudflare CDN --HTTP:2082--> Your Server
 
 7. **Verify CDN Works:**
    ```bash
-   # Should return 400 (not 521)
-   # Use the path from your user bundle's cdn-vless.txt, or check:
-   #   grep CDN_WS_PATH on the bootstrap container state
-   curl -s -o /dev/null -w "%{http_code}" https://cdn.yourdomain.com/your-path
+   # Should return 400 or 404 (sing-box responding) — not 521/525
+   curl -s -o /dev/null -w "%{http_code}" https://cdn.yourdomain.com/test
+   # 521 = Origin Rule missing (Cloudflare can't reach port 2082)
+   # 525 = SSL mode wrong (set to Flexible, not Full)
    ```
 
 User bundles will now include `cdn-vless.txt` with Cloudflare-routed connection.

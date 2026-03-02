@@ -155,7 +155,11 @@ Click **Deploy** to activate the rule.
 curl -s -o /dev/null -w "%{http_code}" https://cdn.yourdomain.com/test
 ```
 
-A `400` response means sing-box is receiving the request. A `521` means the Origin Rule is missing or misconfigured.
+A `400` or `404` response means sing-box is receiving the request.
+- `521` = Origin Rule is missing or misconfigured
+- `525` = SSL mode is wrong — set Cloudflare SSL/TLS to **Flexible** (not Full/Strict), because MoaV's CDN port 2082 is plain HTTP
+
+> **Important:** Cloudflare SSL/TLS mode must be set to **Flexible** for CDN mode. MoaV's CDN inbound on port 2082 is plain HTTP (Cloudflare terminates TLS). If you need Full SSL for other subdomains, use a Configuration Rule to set Flexible for just `cdn.yourdomain.com`.
 
 See [CDN Setup Guide](SETUP.md#cdn-fronted-vlesswebsocket-cloudflare) for complete CDN configuration.
 
