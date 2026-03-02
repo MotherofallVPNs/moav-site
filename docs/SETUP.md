@@ -313,7 +313,7 @@ ls outputs/bundles/
 - `reality.txt` - Reality share link + QR code
 - `trojan.txt` - Trojan share link
 - `hysteria2.txt` - Hysteria2 share link
-- `cdn-vless-ws.txt` - CDN share link (if CDN_DOMAIN set)
+- `cdn-vless.txt` - CDN share link (if CDN_DOMAIN set)
 - `wireguard.conf` - WireGuard config + QR code
 - `wireguard-wstunnel.conf` - WireGuard over WebSocket
 - `amneziawg.conf` - AmneziaWG config (if enabled)
@@ -449,15 +449,19 @@ Client --HTTPS:443--> Cloudflare CDN --HTTP:2082--> Your Server
 
    > This is required because Cloudflare Flexible SSL connects to port 80 by default, but MoaV listens on 2082.
 
-3. **Set Cloudflare SSL Mode:**
-   - SSL/TLS → Overview → Set to **Flexible**
+3. **Set Cloudflare SSL/TLS Mode to Flexible (Required):**
+   - Go to **SSL/TLS** → **Overview** → Set encryption mode to **Flexible**
+   - MoaV's CDN inbound on port 2082 is **plain HTTP** (Cloudflare terminates TLS for you)
+   - **Full** or **Full (Strict)** will cause **525 SSL Handshake Failed** errors because Cloudflare tries HTTPS to your origin but port 2082 doesn't speak TLS
+   - If you need Full SSL for other subdomains, create a **Configuration Rule**: Rules → Configuration Rules → match hostname `cdn.yourdomain.com` → SSL → Flexible
 
 4. **Configure MoaV:**
    ```bash
    # In .env
    CDN_DOMAIN=cdn.yourdomain.com
-   CDN_WS_PATH=/ws
    PORT_CDN=2082
+   # CDN_WS_PATH is auto-generated with a realistic-looking path during bootstrap
+   # Only set manually if you need a specific path
    ```
 
 5. **Apply Changes:**
@@ -475,11 +479,13 @@ Client --HTTPS:443--> Cloudflare CDN --HTTP:2082--> Your Server
 
 7. **Verify CDN Works:**
    ```bash
-   # Should return 400 (not 521)
-   curl -s -o /dev/null -w "%{http_code}" https://cdn.yourdomain.com/ws
+   # Should return 400 or 404 (sing-box responding) — not 521/525
+   curl -s -o /dev/null -w "%{http_code}" https://cdn.yourdomain.com/test
+   # 521 = Origin Rule missing (Cloudflare can't reach port 2082)
+   # 525 = SSL mode wrong (set to Flexible, not Full)
    ```
 
-User bundles will now include `cdn-vless-ws.txt` with Cloudflare-routed connection.
+User bundles will now include `cdn-vless.txt` with Cloudflare-routed connection.
 
 ---
 

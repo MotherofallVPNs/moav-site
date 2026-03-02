@@ -538,7 +538,7 @@ Configure your browser/apps to use this proxy.
 
 Use this when direct connections to your server are blocked but Cloudflare IPs are accessible.
 
-**Your config file:** `cdn-vless-ws.txt`
+**Your config file:** `cdn-vless.txt`
 
 CDN mode routes your traffic through Cloudflare's CDN, making it appear as regular HTTPS traffic to a CDN-hosted website.
 
@@ -546,27 +546,27 @@ CDN mode routes your traffic through Cloudflare's CDN, making it appear as regul
 
 The CDN link works in any app that supports VLESS with WebSocket transport:
 
-1. Copy the link from `cdn-vless-ws.txt`
+1. Copy the link from `cdn-vless.txt`
 2. Import into your client app (Shadowrocket, v2rayNG, Hiddify, etc.)
 3. Connect
 
 **Link format:**
 ```
-vless://UUID@cdn.yourdomain.com:443?security=tls&type=ws&path=/ws&sni=cdn.yourdomain.com&host=cdn.yourdomain.com&fp=chrome&alpn=http/1.1#MoaV-CDN-username
+vless://UUID@cdn.yourdomain.com:443?security=tls&type=httpupgrade&path=/auto-generated-path&sni=cdn.yourdomain.com&host=cdn.yourdomain.com&fp=random&alpn=http/1.1#MoaV-CDN-username
 ```
 
 ### iOS (Shadowrocket)
 
 1. Open Shadowrocket
-2. Tap scanner icon → scan `cdn-vless-ws-qr.png`
-3. Or paste the link from `cdn-vless-ws.txt`
+2. Tap scanner icon → scan `cdn-vless-qr.png`
+3. Or paste the link from `cdn-vless.txt`
 4. Toggle ON to connect
 
 ### Android (v2rayNG / Hiddify)
 
 1. Open v2rayNG or Hiddify
 2. Tap "+" → "Import from clipboard"
-3. Paste the link from `cdn-vless-ws.txt`
+3. Paste the link from `cdn-vless.txt`
 4. Connect
 
 **Note:** CDN mode is slower than direct connections but works when your server's IP is blocked.
