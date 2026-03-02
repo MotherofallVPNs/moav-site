@@ -313,7 +313,7 @@ ls outputs/bundles/
 - `reality.txt` - Reality share link + QR code
 - `trojan.txt` - Trojan share link
 - `hysteria2.txt` - Hysteria2 share link
-- `cdn-vless-ws.txt` - CDN share link (if CDN_DOMAIN set)
+- `cdn-vless.txt` - CDN share link (if CDN_DOMAIN set)
 - `wireguard.conf` - WireGuard config + QR code
 - `wireguard-wstunnel.conf` - WireGuard over WebSocket
 - `amneziawg.conf` - AmneziaWG config (if enabled)
@@ -456,8 +456,9 @@ Client --HTTPS:443--> Cloudflare CDN --HTTP:2082--> Your Server
    ```bash
    # In .env
    CDN_DOMAIN=cdn.yourdomain.com
-   CDN_WS_PATH=/ws
    PORT_CDN=2082
+   # CDN_WS_PATH is auto-generated with a realistic-looking path during bootstrap
+   # Only set manually if you need a specific path
    ```
 
 5. **Apply Changes:**
@@ -476,10 +477,12 @@ Client --HTTPS:443--> Cloudflare CDN --HTTP:2082--> Your Server
 7. **Verify CDN Works:**
    ```bash
    # Should return 400 (not 521)
-   curl -s -o /dev/null -w "%{http_code}" https://cdn.yourdomain.com/ws
+   # Use the path from your user bundle's cdn-vless.txt, or check:
+   #   grep CDN_WS_PATH on the bootstrap container state
+   curl -s -o /dev/null -w "%{http_code}" https://cdn.yourdomain.com/your-path
    ```
 
-User bundles will now include `cdn-vless-ws.txt` with Cloudflare-routed connection.
+User bundles will now include `cdn-vless.txt` with Cloudflare-routed connection.
 
 ---
 

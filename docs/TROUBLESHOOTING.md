@@ -562,7 +562,7 @@ This usually means Cloudflare can't reach your origin on the correct port.
 2. **Verify port 2082 is reachable:**
    ```bash
    # From another machine, test direct access to your server
-   curl -s -o /dev/null -w "%{http_code}" http://YOUR_SERVER_IP:2082/ws
+   curl -s -o /dev/null -w "%{http_code}" http://YOUR_SERVER_IP:2082/test
    # Should return 400 (sing-box responding)
    ```
 

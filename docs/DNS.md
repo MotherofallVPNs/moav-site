@@ -151,7 +151,8 @@ Click **Deploy** to activate the rule.
 **Verify it works:**
 ```bash
 # Should return HTTP 400 (sing-box responding, not Cloudflare 521)
-curl -s -o /dev/null -w "%{http_code}" https://cdn.yourdomain.com/ws
+# Use any path - the CDN WS path is auto-generated during bootstrap
+curl -s -o /dev/null -w "%{http_code}" https://cdn.yourdomain.com/test
 ```
 
 A `400` response means sing-box is receiving the request. A `521` means the Origin Rule is missing or misconfigured.
@@ -416,6 +417,25 @@ For users in censored regions:
 3. **Choose a neutral TLD** - `.com`, `.net`, `.org` are less suspicious than country-specific TLDs
 4. **Avoid "VPN" or "proxy" in the domain name** - Keep it generic
 5. **Consider multiple domains** - Have backups ready if one gets blocked
+
+### Domain Naming Strategy
+
+Your domain name is the first thing DPI systems see in the TLS SNI. A good domain blends with legitimate traffic:
+
+**Good examples:**
+- Names that look like business infrastructure: `cloudops-services.com`, `cdn-platform.net`
+- Names that look like SaaS products: `dataflow-sync.com`, `metrics-hub.net`
+- Generic tech names: `stackbuilder.io`, `nodebridge.net`
+
+**Bad examples:**
+- Anything with "vpn", "proxy", "tunnel", "free", "bypass" in the name
+- Random strings: `xk4m2p.com` (suspicious to automated systems)
+- Known circumvention patterns: `v2ray-server.com`
+
+**Subdomain naming** also matters. MoaV's CDN subdomain defaults to `cdn` — consider changing it to something like `assets`, `static`, `api`, or `app` in your `.env`:
+```bash
+CDN_SUBDOMAIN=assets
+```
 
 ### Recommended Registrars
 
