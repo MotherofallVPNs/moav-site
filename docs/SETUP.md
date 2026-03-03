@@ -38,7 +38,7 @@ Complete guide to deploy MoaV on a VPS or home server.
 
 **Domain (Optional but Recommended):**
 - Required for: Reality, Trojan, Hysteria2, TrustTunnel, CDN mode, DNS tunnels (dnstt, Slipstream)
-- Not required for: WireGuard, AmneziaWG, Admin dashboard, Conduit, Snowflake
+- Not required for: Reality, WireGuard, AmneziaWG, Telegram MTProxy, Admin dashboard, Conduit, Snowflake
 - See [Domain-less Mode](#domain-less-mode) if you don't have a domain
 
 **Ports to Open:**
@@ -372,15 +372,17 @@ Don't have a domain? MoaV can run with limited but useful services.
 **Available without domain:**
 | Service | Port | Description |
 |---------|------|-------------|
+| Reality (VLESS) | 443/tcp | Uses dl.google.com for TLS camouflage — no domain needed |
 | WireGuard | 51820/udp | Full VPN, works on most networks |
 | AmneziaWG | 51821/udp | Obfuscated WireGuard, defeats DPI |
 | wstunnel | 8080/tcp | WireGuard over WebSocket (when UDP blocked) |
+| Telegram MTProxy | 993/tcp | Fake-TLS, works with IP only |
 | Admin | 9443/tcp | Dashboard with self-signed certificate |
 | Conduit | dynamic | Psiphon bandwidth donation |
 | Snowflake | dynamic | Tor bandwidth donation |
 
 **NOT available without domain:**
-- Reality, Trojan, Hysteria2 (require TLS certificates)
+- Trojan, Hysteria2 (require TLS certificates)
 - TrustTunnel (requires TLS)
 - CDN mode (requires Cloudflare domain)
 - DNS tunnel (requires NS delegation)
