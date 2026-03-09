@@ -44,17 +44,41 @@ Security recommendations for running and using MoaV safely.
 
 3. **Enable firewall:**
    ```bash
-   ufw allow 22/tcp    # SSH
-   ufw allow 443/tcp   # HTTPS/Trojan/Reality
-   ufw allow 443/udp   # Hysteria2
-   ufw allow 53/udp    # DNS tunnel
+   ufw allow 22/tcp      # SSH (IMPORTANT: always allow SSH first!)
+   ufw allow 443/tcp     # Reality (VLESS)
+   ufw allow 443/udp     # Hysteria2
+   ufw allow 8443/tcp    # Trojan
+   ufw allow 51820/udp   # WireGuard
+   ufw allow 51821/udp   # AmneziaWG
+   ufw allow 8080/tcp    # wstunnel (WireGuard over WebSocket)
+   ufw allow 4443/tcp    # TrustTunnel (HTTP/2)
+   ufw allow 4443/udp    # TrustTunnel (HTTP/3 QUIC)
+   ufw allow 993/tcp     # Telegram MTProxy (telemt)
+   ufw allow 53/udp      # DNS tunnels (dnstt + Slipstream)
+   ufw allow 2082/tcp    # CDN WebSocket (VLESS+WS via Cloudflare)
+   ufw allow 9443/tcp    # Admin dashboard
+   ufw allow 9444/tcp    # Grafana monitoring (if enabled)
+   ufw allow 80/tcp      # Let's Encrypt certificate renewal
    ufw enable
    ```
+   Only open ports for protocols you've enabled. At minimum: SSH (22) + your active protocols.
+
+   > **Warning:** If you change your SSH port (see below), add a rule for the new port **before** running `ufw enable`, or you will lock yourself out.
 
 4. **Change SSH port** (optional):
    ```bash
+   # 1. Add firewall rule for new port FIRST
+   ufw allow 2222/tcp
+
+   # 2. Then change SSH config
    # In /etc/ssh/sshd_config:
    Port 2222  # or another port
+
+   # 3. Restart SSH
+   systemctl restart sshd
+
+   # 4. Test new port works (from another terminal), then remove old rule
+   ufw delete allow 22/tcp
    ```
 
 ### Domain Security
