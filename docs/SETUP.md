@@ -694,7 +694,7 @@ Configure in `.env`:
 ```bash
 # Protocols to donate (space-separated)
 # Supported: reality, hysteria2, trojan, cdn, xhttp, telegram
-MAHSANET_PROTOCOLS="reality hysteria2 telegram"
+MAHSANET_PROTOCOLS="reality hysteria2"
 
 # Pool determines where configs appear in the Mahsa VPN app
 # Options: mahsa (default), warp, popup, telegram
