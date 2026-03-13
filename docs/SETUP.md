@@ -693,11 +693,12 @@ Configure in `.env`:
 
 ```bash
 # Protocols to donate (space-separated)
-# Supported: reality, hysteria2, trojan, cdn, xhttp
-MAHSANET_PROTOCOLS="reality hysteria2"
+# Supported: reality, hysteria2, trojan, cdn, xhttp, telegram
+MAHSANET_PROTOCOLS="reality hysteria2 telegram"
 
 # Pool determines where configs appear in the Mahsa VPN app
 # Options: mahsa (default), warp, popup, telegram
+# Note: telegram protocol configs are always sent to the "telegram" pool regardless of this setting
 MAHSANET_POOL=mahsa
 ```
 
@@ -707,6 +708,7 @@ MAHSANET_POOL=mahsa
 - `trojan` — TLS-based, requires domain
 - `cdn` — VLESS+WS via Cloudflare, requires CDN setup
 - `xhttp` — VLESS+XHTTP+Reality via Xray-core, requires xhttp profile
+- `telegram` — Telegram MTProxy link, automatically goes to the "telegram" pool
 
 ### Donating Configs
 
