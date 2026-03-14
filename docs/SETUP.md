@@ -17,6 +17,7 @@ Complete guide to deploy MoaV on a VPS or home server.
   - [Step 8: Distribute to Users](#step-8-distribute-to-users)
 - [Domain-less Mode](#domain-less-mode)
 - [CDN-Fronted Mode (Cloudflare)](#cdn-fronted-mode-cloudflare)
+- [Choosing a Reality Target (SNI)](#choosing-a-reality-target-sni)
 - [Managing Users](#managing-users)
 - [Service Management](#service-management)
 - [Server Migration](#server-migration)
@@ -526,6 +527,79 @@ CDN_TRANSPORT=ws
 4. Run `moav bootstrap` to regenerate configs
 
 See [DNS Configuration — AWS CloudFront](DNS.md#aws-cloudfront-alternative-cdn) for detailed setup instructions.
+
+---
+
+## Choosing a Reality Target (SNI)
+
+Reality protocols (VLESS+Reality and XHTTP+Reality) impersonate a legitimate website during the TLS handshake. The **Reality target** (also called SNI) is the domain your proxy pretends to be. DPI sees a normal TLS connection to that domain, not a proxy.
+
+### Requirements
+
+The target domain **must** support:
+- **TLS 1.3** — required for Reality's handshake
+- **HTTP/2 (h2)** — required for ALPN negotiation
+
+### How to Verify a Target
+
+Test any domain from your server:
+
+```bash
+curl -vsI --tlsv1.3 --http2 https://TARGET_DOMAIN 2>&1 | grep -E "SSL connection|ALPN"
+```
+
+**Good output** (both TLS 1.3 and h2):
+```
+* SSL connection using TLSv1.3 / TLS_AES_256_GCM_SHA384
+* ALPN, server accepted to use h2
+```
+
+**Bad output** (missing TLS 1.3 or h2) — don't use this domain.
+
+### Choosing a Good Target
+
+**For censored regions (Iran, China, Russia, etc.):**
+
+Avoid well-known targets like `google.com` or `microsoft.com` — censors monitor these heavily and can detect Reality by comparing your handshake to the real site.
+
+Instead, choose a domain that:
+1. **Is popular domestically** — blocking it would cause collateral damage (banks, fintech, e-commerce)
+2. **Has heavy TLS traffic** — your connection blends in with millions of real users
+3. **Isn't commonly used as a proxy target** — novel targets are harder to fingerprint
+
+**Examples for Iran:**
+| Domain | Why |
+|--------|-----|
+| `blubank.com` | Major fintech app, high traffic, can't be easily blocked |
+| `divar.ir` | Popular classifieds site |
+| `snapp.ir` | Ride-hailing app (like Uber) |
+
+**Generic (less optimal but widely compatible):**
+| Domain | Notes |
+|--------|-------|
+| `dl.google.com` | Default, works everywhere but well-known |
+| `www.doi.org` | Academic, low profile |
+| `gateway.icloud.com` | Apple services |
+
+> **Tip:** The best target is one that your ISP cannot afford to block. A domestic banking site is harder to block than a foreign tech company.
+
+### Configuration
+
+```bash
+# In .env — for sing-box (Reality VLESS)
+REALITY_TARGET=blubank.com:443
+
+# For Xray-core (XHTTP) — can be different from sing-box
+XHTTP_REALITY_TARGET=blubank.com:443
+```
+
+After changing targets, re-bootstrap and regenerate user bundles:
+```bash
+moav bootstrap
+moav user regenerate
+```
+
+> **Note:** `REALITY_TARGET` and `XHTTP_REALITY_TARGET` are independent — you can use different targets for each protocol to diversify your fingerprint.
 
 ---
 

@@ -1154,11 +1154,7 @@ Home ISPs often have stricter filtering:
 When ISP blocks everything:
 
 1. **DNS Tunnel** - Often still works as it's hard to block all DNS
-2. **Different Reality targets** - Try:
-   - `www.apple.com`
-   - `dl.google.com`
-   - `www.samsung.com`
-   - `update.microsoft.com`
+2. **Different Reality targets** — Choose a domain that your ISP can't easily block (e.g., domestic banking or fintech sites). See [Choosing a Reality Target](SETUP.md#choosing-a-reality-target-sni) for how to pick and verify targets.
 
 3. **Get a new server** - Your IP may be specifically blocked
 
