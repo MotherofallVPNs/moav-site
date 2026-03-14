@@ -246,6 +246,16 @@ CloudFront can be used as an alternative to Cloudflare for CDN-fronted VLESS. Th
 
 **How it works:** Client connects to CloudFront (AWS CDN IPs) → CloudFront forwards to your server on port 2082 → sing-box handles the VLESS+WS connection. DPI only sees connections to AWS infrastructure.
 
+#### Important: CloudFront Requires a Domain Name as Origin
+
+CloudFront **does not accept bare IP addresses** as origins — you'll get `InvalidArgument: The parameter origin name cannot be an IP address`. If you already have a domain, use it. If not, use the free wildcard DNS service **sslip.io**:
+
+```
+YOUR_SERVER_IP.sslip.io    →    resolves to YOUR_SERVER_IP
+```
+
+For example, `139.59.22.221.sslip.io` resolves to `139.59.22.221`. This works with any IP and requires no registration. `sslip.io` is purely a DNS service — no traffic passes through it. Users never interact with it; only CloudFront uses it internally to reach your server.
+
 #### Step 1: Create CloudFront Distribution
 
 ##### Option A: AWS Console (Web UI)
@@ -256,10 +266,12 @@ CloudFront can be used as an alternative to Cloudflare for CDN-fronted VLESS. Th
 
 | Setting | Value |
 |---------|-------|
-| Origin domain | `YOUR_SERVER_IP` (or your domain) |
+| Origin domain | `YOUR_SERVER_IP.sslip.io` (or your domain) |
 | Protocol | **HTTP only** |
 | HTTP port | `2082` |
 | HTTPS port | `443` |
+
+> **Note:** Type your origin domain (e.g., `139.59.22.221.sslip.io`) directly into the "Origin domain" field. Ignore the dropdown suggestions (S3 buckets, etc.) — CloudFront accepts any valid domain name.
 
 4. Configure behavior:
 
@@ -283,14 +295,15 @@ CloudFront can be used as an alternative to Cloudflare for CDN-fronted VLESS. Th
 
 ##### Option B: AWS CLI
 
-Install and configure the CLI first:
+Install the CLI first: [AWS CLI Installation Guide](https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html)
+
+Then authenticate:
 
 ```bash
-# Install AWS CLI
-curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o awscliv2.zip
-unzip awscliv2.zip && sudo ./aws/install
+# Option 1: SSO login (recommended if your org uses AWS IAM Identity Center)
+aws sso login
 
-# Configure (needs AWS Access Key + Secret Key from IAM)
+# Option 2: Configure with access keys (from IAM → Users → Security credentials)
 aws configure
 ```
 
@@ -306,7 +319,7 @@ aws cloudfront create-distribution --distribution-config '{
     "Items": [
       {
         "Id": "moav-origin",
-        "DomainName": "YOUR_SERVER_IP",
+        "DomainName": "YOUR_SERVER_IP.sslip.io",
         "CustomOriginConfig": {
           "HTTPPort": 2082,
           "HTTPSPort": 443,
@@ -330,6 +343,8 @@ aws cloudfront create-distribution --distribution-config '{
   "PriceClass": "PriceClass_200"
 }'
 ```
+
+> **Example:** For server IP `139.59.22.221`, use `"DomainName": "139.59.22.221.sslip.io"`
 
 The `PriceClass` controls which edge locations (regions) are used:
 

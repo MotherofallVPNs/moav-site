@@ -22,6 +22,7 @@ Complete guide to deploy MoaV on a VPS or home server.
 - [Server Migration](#server-migration)
 - [IPv6 Support](#ipv6-support)
 - [Bandwidth Donation (Conduit & Snowflake)](#bandwidth-donation-conduit--snowflake)
+- [MahsaNet Config Donation](#mahsanet-config-donation)
 - [Updating MoaV](#updating-moav)
 - [Re-bootstrapping](#re-bootstrapping)
 
@@ -509,7 +510,7 @@ If you don't have a domain, you can use AWS CloudFront instead of Cloudflare. Cl
 Client --HTTPS:443--> CloudFront CDN --HTTP:2082--> Your Server
 ```
 
-1. Create a CloudFront distribution with your server IP as origin (HTTP, port 2082)
+1. Create a CloudFront distribution with your server as origin (HTTP, port 2082)
 2. Set viewer protocol to HTTPS only, cache policy to CachingDisabled
 3. Configure MoaV:
 
