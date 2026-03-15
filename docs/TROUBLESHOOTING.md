@@ -32,6 +32,8 @@ Common issues and their solutions.
   - [Snowflake metrics showing zeros](#snowflake-metrics-showing-zeros)
   - [WireGuard exporter not starting](#wireguard-exporter-not-starting)
   - [GeoIP "Geographic Distribution" shows No Data](#geoip-geographic-distribution-shows-no-data)
+- [MahsaNet Issues](#mahsanet-issues)
+  - [Delete config returns 404](#delete-config-returns-404)
 - [MoaV Test/Client Issues](#moav-testclient-issues)
 - [Client-Side Issues](#client-side-issues)
 - [Network-Specific Issues](#network-specific-issues)
@@ -966,6 +968,34 @@ docker exec moav-grafana wget -qO- http://xray-exporter:9103/metrics | grep coun
 | WireGuard shows geo but sing-box doesn't | Clash API not reachable | Check `docker logs moav-singbox-exporter` for API errors |
 
 For complete monitoring documentation, see [MONITORING.md](MONITORING.md).
+
+---
+
+## MahsaNet Issues
+
+### Delete config returns 404
+
+**Symptom:** Clicking "del" on a donated config in the admin dashboard shows:
+```
+MahsaNet API returned 404: {"detail":"No Config matches the given query."}
+```
+
+**Cause:** The MahsaNet API uses `id` (not `hash`) as the delete identifier. The config list endpoint returns `hash` but some API versions may not include `id`. MoaV now automatically falls back to looking up the config by hash to find the `id` for deletion.
+
+**Fixes:**
+1. Update MoaV to the latest version (includes the fallback logic)
+2. If the error persists, the config may have already been deleted on MahsaNet's side — click "Refresh" to reload the list
+
+**MahsaNet API reference:** [https://www.mahsaserver.com/backend/api/schema/redoc/](https://www.mahsaserver.com/backend/api/schema/redoc/)
+
+Key endpoints:
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/backend/api/v1/config/` | List configs (supports `?hash=`, `?alias=`, `?is_active=` filters) |
+| POST | `/backend/api/v1/config/` | Create (donate) a config |
+| DELETE | `/backend/api/v1/config/{id}/` | Delete a config by `id` |
+
+Authentication: `Authorization: Token <your-api-key>` header on all requests.
 
 ---
 
