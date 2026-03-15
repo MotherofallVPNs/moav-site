@@ -690,6 +690,12 @@ DOMAIN=yourdomain.com
 
 After configuring DNS, wait for propagation (usually 5-30 minutes, up to 48 hours).
 
+### Verify with MoaV
+
+```bash
+moav doctor dns
+```
+
 ### Verify A Record
 
 ```bash

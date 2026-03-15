@@ -46,6 +46,7 @@ moav start                # Start all services
 moav stop                 # Stop all services
 moav status               # Show service status
 moav logs                 # View logs (follow mode)
+moav doctor               # Run diagnostics
 moav user add NAME        # Add new user
 moav user add --batch 5   # Batch create 5 users
 moav user revoke NAME     # Revoke user
@@ -123,6 +124,24 @@ Run prerequisites check (Docker, dependencies, ports).
 ```bash
 moav check
 ```
+
+#### `moav doctor`
+Run diagnostic checks for common MoaV issues.
+
+```bash
+moav doctor
+moav doctor dns
+```
+
+**Arguments:**
+- No arguments: Run all available diagnostic checks
+- `dns`: Verify DNS records for enabled protocols
+
+The initial DNS check validates:
+- Main A record for `DOMAIN`
+- `dns` A record and NS delegation for dnstt / Slipstream when enabled
+- CDN hostname resolution when CDN is configured
+- Domainless mode handling with a skip summary
 
 #### `moav bootstrap`
 Run first-time setup. Generates keys, obtains TLS certificates, creates initial users.
