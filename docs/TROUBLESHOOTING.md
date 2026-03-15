@@ -31,6 +31,9 @@ Common issues and their solutions.
   - [High memory usage from cAdvisor](#high-memory-usage-from-cadvisor)
   - [Snowflake metrics showing zeros](#snowflake-metrics-showing-zeros)
   - [WireGuard exporter not starting](#wireguard-exporter-not-starting)
+  - [GeoIP "Geographic Distribution" shows No Data](#geoip-geographic-distribution-shows-no-data)
+- [MahsaNet Issues](#mahsanet-issues)
+  - [Delete config returns 404](#delete-config-returns-404)
 - [MoaV Test/Client Issues](#moav-testclient-issues)
 - [Client-Side Issues](#client-side-issues)
 - [Network-Specific Issues](#network-specific-issues)
@@ -262,6 +265,42 @@ git stash drop stash@{0}
 ---
 
 ## Server-Side Issues
+
+### Disk space full
+
+If your server runs out of disk space, services may fail to start or behave unexpectedly.
+
+**Quick check:**
+```bash
+df -h /
+```
+
+**Find what's using space with `ncdu`** (interactive disk usage analyzer):
+```bash
+# Install ncdu
+apt install -y ncdu
+
+# Scan from root (shows largest directories first, navigate with arrow keys)
+ncdu /
+
+# Scan just Docker data
+ncdu /var/lib/docker
+```
+
+**Common space hogs:**
+```bash
+# Docker: remove unused images, containers, volumes
+docker system prune -a --volumes
+
+# Prometheus data (if monitoring enabled, ~50MB/day)
+# Reduce retention in docker-compose.yml: --storage.tsdb.retention.time=7d
+
+# Old log files
+journalctl --vacuum-size=100M
+
+# Docker container logs (can grow large)
+docker system df -v
+```
 
 ### Services won't start
 
@@ -920,7 +959,79 @@ docker logs moav-wireguard-exporter
 ls -la configs/wireguard/wg0.conf
 ```
 
+### GeoIP "Geographic Distribution" shows No Data
+
+The GeoIP feature requires the DB-IP Lite database to be downloaded first.
+
+**Step 1: Download the GeoIP database**
+```bash
+docker compose --profile setup run --rm geoip-updater
+```
+
+**Step 2: Verify the database is in the volume**
+```bash
+docker run --rm -v moav_geoip:/geoip alpine ls -la /geoip/
+# Should show: dbip-country-lite.mmdb (~5MB)
+```
+
+**Step 3: Restart the exporters**
+```bash
+docker compose restart singbox-exporter xray-exporter wireguard-exporter amneziawg-exporter
+```
+
+**Step 4: Verify GeoIP is loaded**
+```bash
+docker logs moav-singbox-exporter 2>&1 | grep GeoIP
+# Should show: GeoIP: loaded database from /geoip/dbip-country-lite.mmdb
+```
+
+**Step 5: Check metrics are being emitted**
+```bash
+# For sing-box:
+docker exec moav-grafana wget -qO- http://singbox-exporter:9102/metrics | grep country
+# For xray:
+docker exec moav-grafana wget -qO- http://xray-exporter:9103/metrics | grep country
+```
+
+**Common issues:**
+
+| Symptom | Cause | Fix |
+|---------|-------|-----|
+| `GeoIP: could not load ...` | Database not downloaded | Run `geoip-updater` (see step 1) |
+| `GeoIP: maxminddb not installed` | Exporter image outdated | Rebuild: `docker compose build singbox-exporter` |
+| Metrics show only `country="XX"` | Database loaded but IPs not resolving | DB may be corrupt — re-run `geoip-updater` |
+| sing-box geo works but xray doesn't | Xray log format issue | Check `docker logs moav-xray` for `accepted` lines with IPs |
+| WireGuard shows geo but sing-box doesn't | Clash API not reachable | Check `docker logs moav-singbox-exporter` for API errors |
+
 For complete monitoring documentation, see [MONITORING.md](MONITORING.md).
+
+---
+
+## MahsaNet Issues
+
+### Delete config returns 404
+
+**Symptom:** Clicking "del" on a donated config in the admin dashboard shows:
+```
+MahsaNet API returned 404: {"detail":"No Config matches the given query."}
+```
+
+**Cause:** The MahsaNet API uses `id` (not `hash`) as the delete identifier. The config list endpoint returns `hash` but some API versions may not include `id`. MoaV now automatically falls back to looking up the config by hash to find the `id` for deletion.
+
+**Fixes:**
+1. Update MoaV to the latest version (includes the fallback logic)
+2. If the error persists, the config may have already been deleted on MahsaNet's side — click "Refresh" to reload the list
+
+**MahsaNet API reference:** [https://www.mahsaserver.com/backend/api/schema/redoc/](https://www.mahsaserver.com/backend/api/schema/redoc/)
+
+Key endpoints:
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/backend/api/v1/config/` | List configs (supports `?hash=`, `?alias=`, `?is_active=` filters) |
+| POST | `/backend/api/v1/config/` | Create (donate) a config |
+| DELETE | `/backend/api/v1/config/{id}/` | Delete a config by `id` |
+
+Authentication: `Authorization: Token <your-api-key>` header on all requests.
 
 ---
 

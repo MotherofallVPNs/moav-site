@@ -12,8 +12,13 @@ The monitoring profile provides:
 - **Node Exporter** - System metrics (CPU, RAM, disk, network)
 - **cAdvisor** - Container metrics per service
 - **Clash Exporter** - sing-box proxy metrics via Clash API
-- **WireGuard Exporter** - VPN peer and traffic metrics
+- **sing-box Exporter** - Per-user connections, protocol breakdown, GeoIP country stats
+- **Xray Exporter** - Per-user connections and traffic (upload/download), GeoIP country stats
+- **WireGuard Exporter** - VPN peer and traffic metrics, GeoIP country labels
+- **AmneziaWG Exporter** - Per-peer traffic metrics, GeoIP country labels
+- **Telemt Exporter** - MTProxy pool health, DC availability, upstream quality
 - **Snowflake Exporter** - Tor donation metrics (people served, bandwidth donated)
+- **GeoIP Database** - [DB-IP Lite](https://db-ip.com/db/lite.php) country database for offline IP-to-country lookups
 
 ## Quick Start
 
@@ -94,6 +99,57 @@ Tor donation metrics from Snowflake Exporter:
 - Total bandwidth donated
 - Connections over time
 - Bandwidth over time
+
+## GeoIP Country Distribution
+
+All four protocol dashboards (sing-box, Xray, WireGuard, AmneziaWG) include a "Geographic Distribution" row showing user connections by country.
+
+### How it works
+
+- A shared [DB-IP Lite Country](https://db-ip.com/db/lite.php) database (~5MB) provides offline IP-to-country lookups — no external API calls at runtime
+- **sing-box**: polls the Clash API (`/connections`) for source IPs of active connections
+- **Xray**: extracts source IPs from Xray access logs
+- **WireGuard / AmneziaWG**: reads endpoint IPs from `wg show` / `awg show`
+- Country codes are ISO 3166-1 alpha-2 (e.g., `IR`, `DE`, `US`)
+
+### Setup
+
+The GeoIP database must be downloaded once before country metrics appear:
+
+```bash
+# Download the GeoIP database (run once, or monthly to refresh)
+docker compose --profile setup run --rm geoip-updater
+```
+
+The database is stored in a Docker volume (`moav_geoip`) and shared read-only with all exporters.
+
+### Refreshing the database
+
+DB-IP Lite is updated monthly. To refresh:
+
+```bash
+docker compose --profile setup run --rm geoip-updater
+docker compose restart singbox-exporter xray-exporter wireguard-exporter amneziawg-exporter
+```
+
+### Using MaxMind GeoLite2 instead
+
+The database format is MMDB — compatible with both DB-IP and MaxMind. To use MaxMind GeoLite2-Country instead:
+
+```bash
+# Download GeoLite2-Country.mmdb from maxmind.com (requires free account)
+# Copy into the volume:
+docker run --rm -v moav_geoip:/geoip -v /path/to/GeoLite2-Country.mmdb:/src/db.mmdb alpine \
+  cp /src/db.mmdb /geoip/dbip-country-lite.mmdb
+```
+
+### Graceful degradation
+
+If the GeoIP database is not downloaded, all country lookups return `"XX"` (unknown) and existing metrics continue to work normally. The exporters log a warning on startup:
+
+```
+GeoIP: could not load /geoip/dbip-country-lite.mmdb: [Errno 2] No such file or directory
+```
 
 ## Configuration
 

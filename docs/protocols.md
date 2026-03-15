@@ -144,7 +144,7 @@ Config donation to [MahsaServer.com](https://www.mahsaserver.com/), a decentrali
 
 - **Supported protocols:** Reality (VLESS), Hysteria2, Trojan, CDN (VLESS+WS)
 - **Clients:** [Mahsa VPN](https://www.mahsaserver.com/) app (Android, iOS)
-- **Setup:** Register on MahsaServer.com, get API key, then `moav donate mahsanet`
+- **Setup:** Register on MahsaServer.com, get API key, then `moav donate`
 - **Dashboard:** Donate, list, and manage configs from the Admin Dashboard
 
 ## Choosing Protocols

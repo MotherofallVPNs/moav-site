@@ -51,7 +51,7 @@ moav user add --batch 5   # Batch create 5 users
 moav user revoke NAME     # Revoke user
 moav test USERNAME        # Test connectivity
 moav admin password       # Reset admin password
-moav donate mahsanet      # Donate configs to MahsaNet
+moav donate               # Donate configs to MahsaNet
 ```
 
 ---
@@ -433,37 +433,41 @@ Donate VPN configs to sharing platforms.
 moav donate                  # Show available donation services
 ```
 
-#### `moav donate mahsanet`
-Donate configs to MahsaServer.com (Mahsa VPN, 2M+ users in Iran).
+#### `moav donate`
+Donate VPN configs to help people bypass censorship. Currently supports MahsaNet (MahsaServer.com, 2M+ users in Iran).
 
 ```bash
-# Set up API key (one-time)
-moav donate mahsanet --setup
+# Set up donation service API key (one-time)
+moav donate setup
 
-# Generate users and donate configs (interactive)
-moav donate mahsanet
+# Donate configs (interactive wizard)
+moav donate
 
 # List donated configs
-moav donate mahsanet --list
+moav donate list
 
 # Show donation summary
-moav donate mahsanet --status
+moav donate status
+
+# Select and delete specific configs
+moav donate delete
 
 # Remove all donated configs
-moav donate mahsanet --remove
+moav donate remove
 ```
 
-**Options:**
-- `--setup` — Interactive API key setup with validation
-- `--list` — List all donated configs with status and health
-- `--status` — Show total/active/inactive config count
-- `--remove` — Remove all donated configs (with confirmation)
+**Subcommands:**
+- `setup` — Interactive API key setup with validation
+- `list` — List all donated configs with status and health
+- `status` — Show total/active/inactive config count
+- `delete` — Select and delete specific configs interactively
+- `remove` — Remove all donated configs (with confirmation)
 
-**Default action (no flag):**
-1. Prompts for number of users to create and prefix
-2. Generates new dedicated users via the standard pipeline
-3. Reads share links and validates them
-4. Submits to MahsaNet API
+**Default action (no subcommand):**
+1. Shows configured donation services
+2. Auto-selects MahsaNet (if configured)
+3. Prompts for number of users to create and prefix
+4. Generates dedicated users and submits config share links
 
 **Configuration in `.env`:**
 ```bash
@@ -677,20 +681,23 @@ moav update -b main
 
 ```bash
 # One-time: set up API key
-moav donate mahsanet --setup
+moav donate setup
 
 # Donate 5 configs with Reality and Hysteria2
-moav donate mahsanet
+moav donate
 # Enter: 5 for count, "mahsa" for prefix
 
 # Check status
-moav donate mahsanet --status
+moav donate status
 
 # List all donated configs
-moav donate mahsanet --list
+moav donate list
+
+# Select and delete specific configs
+moav donate delete
 
 # Remove all donations
-moav donate mahsanet --remove
+moav donate remove
 ```
 
 ### Domain-less Quick Setup
