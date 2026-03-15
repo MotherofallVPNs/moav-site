@@ -31,6 +31,7 @@ Common issues and their solutions.
   - [High memory usage from cAdvisor](#high-memory-usage-from-cadvisor)
   - [Snowflake metrics showing zeros](#snowflake-metrics-showing-zeros)
   - [WireGuard exporter not starting](#wireguard-exporter-not-starting)
+  - [GeoIP "Geographic Distribution" shows No Data](#geoip-geographic-distribution-shows-no-data)
 - [MoaV Test/Client Issues](#moav-testclient-issues)
 - [Client-Side Issues](#client-side-issues)
 - [Network-Specific Issues](#network-specific-issues)
@@ -919,6 +920,50 @@ The exporter needs read access to WireGuard config. Check:
 docker logs moav-wireguard-exporter
 ls -la configs/wireguard/wg0.conf
 ```
+
+### GeoIP "Geographic Distribution" shows No Data
+
+The GeoIP feature requires the DB-IP Lite database to be downloaded first.
+
+**Step 1: Download the GeoIP database**
+```bash
+docker compose --profile setup run --rm geoip-updater
+```
+
+**Step 2: Verify the database is in the volume**
+```bash
+docker run --rm -v moav_geoip:/geoip alpine ls -la /geoip/
+# Should show: dbip-country-lite.mmdb (~5MB)
+```
+
+**Step 3: Restart the exporters**
+```bash
+docker compose restart singbox-exporter xray-exporter wireguard-exporter amneziawg-exporter
+```
+
+**Step 4: Verify GeoIP is loaded**
+```bash
+docker logs moav-singbox-exporter 2>&1 | grep GeoIP
+# Should show: GeoIP: loaded database from /geoip/dbip-country-lite.mmdb
+```
+
+**Step 5: Check metrics are being emitted**
+```bash
+# For sing-box:
+docker exec moav-grafana wget -qO- http://singbox-exporter:9102/metrics | grep country
+# For xray:
+docker exec moav-grafana wget -qO- http://xray-exporter:9103/metrics | grep country
+```
+
+**Common issues:**
+
+| Symptom | Cause | Fix |
+|---------|-------|-----|
+| `GeoIP: could not load ...` | Database not downloaded | Run `geoip-updater` (see step 1) |
+| `GeoIP: maxminddb not installed` | Exporter image outdated | Rebuild: `docker compose build singbox-exporter` |
+| Metrics show only `country="XX"` | Database loaded but IPs not resolving | DB may be corrupt — re-run `geoip-updater` |
+| sing-box geo works but xray doesn't | Xray log format issue | Check `docker logs moav-xray` for `accepted` lines with IPs |
+| WireGuard shows geo but sing-box doesn't | Clash API not reachable | Check `docker logs moav-singbox-exporter` for API errors |
 
 For complete monitoring documentation, see [MONITORING.md](MONITORING.md).
 
