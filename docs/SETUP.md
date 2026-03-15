@@ -786,7 +786,7 @@ Donate your server's VPN configs to [MahsaServer.com](https://www.mahsaserver.co
 
 ```bash
 # Set up your API key (interactive — validates the key)
-moav donate mahsanet --setup
+moav donate setup
 ```
 
 Or manually add to `.env`:
@@ -821,7 +821,7 @@ MAHSANET_POOL=mahsa
 
 ```bash
 # Generate new users and donate their configs
-moav donate mahsanet
+moav donate
 
 # You'll be prompted for:
 #   - Number of users to create (default: 1)
@@ -834,13 +834,16 @@ This creates dedicated users (e.g., `mahsa01`, `mahsa02`) and submits their conf
 
 ```bash
 # List your donated configs
-moav donate mahsanet --list
+moav donate list
 
 # Show donation summary (total/active/inactive)
-moav donate mahsanet --status
+moav donate status
+
+# Select and delete specific configs
+moav donate delete
 
 # Remove all donated configs from MahsaNet
-moav donate mahsanet --remove
+moav donate remove
 ```
 
 ### Admin Dashboard
@@ -850,11 +853,11 @@ When `MAHSANET_API_KEY` is set, the Admin Dashboard shows a **MahsaNet** section
 - View donation stats (total, active, inactive configs)
 - Donate new configs (with count, prefix, and protocol selection)
 - See all donated configs with health status and usage count
-- Delete individual configs
+- Collapse the section to a one-liner summary
 
 ### How It Works
 
-1. `moav donate mahsanet` creates new MoaV users with the standard user provisioning pipeline
+1. `moav donate` creates new MoaV users with the standard user provisioning pipeline
 2. For each user, it reads the share link files (e.g., `reality.txt`, `hysteria2.txt`)
 3. Each link is validated (correct prefix, structure, length)
 4. Links are submitted to the MahsaNet API as config donations
