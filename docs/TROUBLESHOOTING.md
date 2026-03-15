@@ -266,6 +266,42 @@ git stash drop stash@{0}
 
 ## Server-Side Issues
 
+### Disk space full
+
+If your server runs out of disk space, services may fail to start or behave unexpectedly.
+
+**Quick check:**
+```bash
+df -h /
+```
+
+**Find what's using space with `ncdu`** (interactive disk usage analyzer):
+```bash
+# Install ncdu
+apt install -y ncdu
+
+# Scan from root (shows largest directories first, navigate with arrow keys)
+ncdu /
+
+# Scan just Docker data
+ncdu /var/lib/docker
+```
+
+**Common space hogs:**
+```bash
+# Docker: remove unused images, containers, volumes
+docker system prune -a --volumes
+
+# Prometheus data (if monitoring enabled, ~50MB/day)
+# Reduce retention in docker-compose.yml: --storage.tsdb.retention.time=7d
+
+# Old log files
+journalctl --vacuum-size=100M
+
+# Docker container logs (can grow large)
+docker system df -v
+```
+
 ### Services won't start
 
 **Check logs:**
