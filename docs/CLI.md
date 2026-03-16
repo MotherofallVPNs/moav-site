@@ -434,46 +434,57 @@ moav donate                  # Show available donation services
 ```
 
 #### `moav donate`
-Donate VPN configs to help people bypass censorship. Currently supports MahsaNet (MahsaServer.com, 2M+ users in Iran).
+Donate VPN configs and bandwidth to help people bypass censorship. Supports three donation services:
+
+- **MahsaNet** — Donate VPN config links to Mahsa VPN (2M+ users in Iran)
+- **Psiphon Conduit** — Donate bandwidth to Psiphon's relay network (millions of users worldwide)
+- **Tor Snowflake** — Donate bandwidth as a Tor Snowflake proxy
 
 ```bash
-# Set up donation service API key (one-time)
-moav donate setup
-
-# Donate configs (interactive wizard)
+# Interactive donation wizard (shows all services, donates MahsaNet configs)
 moav donate
 
-# List donated configs
-moav donate list
+# Configure donation services (MahsaNet API key, Conduit/Snowflake bandwidth)
+moav donate setup
 
-# Show donation summary
+# Show all donation services status with live stats
 moav donate status
 
-# Select and delete specific configs
+# List donated MahsaNet configs
+moav donate list
+
+# Select and delete specific MahsaNet configs
 moav donate delete
 
-# Remove all donated configs
+# Remove all donated MahsaNet configs
 moav donate remove
+
+# Show Conduit Ryve deep link and QR code
+moav donate info
 ```
 
 **Subcommands:**
-- `setup` — Interactive API key setup with validation
-- `list` — List all donated configs with status and health
-- `status` — Show total/active/inactive config count
-- `delete` — Select and delete specific configs interactively
-- `remove` — Remove all donated configs (with confirmation)
-
-**Default action (no subcommand):**
-1. Shows configured donation services
-2. Auto-selects MahsaNet (if configured)
-3. Prompts for number of users to create and prefix
-4. Generates dedicated users and submits config share links
+- `setup` — Configure any donation service (menu: MahsaNet / Conduit / Snowflake)
+- `status` — Show all 3 services: MahsaNet config stats, Conduit connected clients and bandwidth, Snowflake people served and bandwidth
+- `list` — List all donated MahsaNet configs with status and health
+- `delete` — Select and delete specific MahsaNet configs interactively
+- `remove` — Remove all donated MahsaNet configs (with confirmation)
+- `info` — Show Psiphon Conduit Ryve deep link and QR code for claiming in the Ryve app
 
 **Configuration in `.env`:**
 ```bash
-MAHSANET_API_KEY=            # API key from mahsaserver.com/user/api
-MAHSANET_PROTOCOLS="reality hysteria2"   # Protocols to donate
-MAHSANET_POOL=mahsa          # Pool: mahsa, warp, popup, telegram
+# MahsaNet
+MAHSANET_API_KEY=                    # API key from mahsaserver.com/user/api
+MAHSANET_PROTOCOLS="reality hysteria2"  # Protocols to donate
+MAHSANET_POOL=mahsa                  # Pool: mahsa, warp, popup, telegram
+
+# Psiphon Conduit
+CONDUIT_BANDWIDTH=100                # Bandwidth limit in Mbps
+CONDUIT_MAX_COMMON_CLIENTS=200       # Max concurrent clients
+
+# Tor Snowflake
+SNOWFLAKE_BANDWIDTH=5                # Bandwidth limit in Mbps
+SNOWFLAKE_CAPACITY=50                # Max concurrent clients
 ```
 
 ---
@@ -677,27 +688,28 @@ moav restart
 moav update -b main
 ```
 
-### Config Donation to MahsaNet
+### Bandwidth & Config Donation
 
 ```bash
-# One-time: set up API key
+# Set up donation services (MahsaNet API key, Conduit/Snowflake bandwidth)
 moav donate setup
 
-# Donate 5 configs with Reality and Hysteria2
+# Donate 5 VPN configs to MahsaNet
 moav donate
 # Enter: 5 for count, "mahsa" for prefix
 
-# Check status
+# See all donation stats (MahsaNet configs + Conduit clients + Snowflake served)
 moav donate status
 
-# List all donated configs
+# Configure Conduit bandwidth limit
+moav donate setup  # Select option 2
+
+# Get Conduit Ryve deep link (for claiming in Ryve app)
+moav donate info
+
+# List/delete MahsaNet configs
 moav donate list
-
-# Select and delete specific configs
 moav donate delete
-
-# Remove all donations
-moav donate remove
 ```
 
 ### Domain-less Quick Setup
