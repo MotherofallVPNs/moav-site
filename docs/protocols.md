@@ -99,6 +99,47 @@ Telegram-specific proxy with Fake-TLS V2. Emulates real TLS connections, includi
 - **Engine:** [telemt](https://github.com/telemt/telemt)
 - **Clients:** Telegram app (built-in proxy settings)
 
+<details>
+<summary><strong>Anti-DPI Tuning Settings</strong></summary>
+
+telemt has 17+ configurable settings for hostile network environments. All configurable in `.env`:
+
+**Traffic Disguise (anti-DPI):**
+| Setting | Default | Purpose |
+|---------|---------|---------|
+| `TELEMT_KEEPALIVE_RANDOM` | `true` | Randomize keepalive payload to break DPI pattern-matching |
+| `TELEMT_KEEPALIVE_JITTER` | `4` | ±N seconds randomness on keepalive timing |
+| `TELEMT_KEEPALIVE_INTERVAL` | `20` | Base keepalive interval in seconds |
+| `TELEMT_WARMUP_JITTER` | `200` | Randomize connection establishment timing (ms) |
+
+**Connection Pool Resilience:**
+| Setting | Default | Purpose |
+|---------|---------|---------|
+| `TELEMT_POOL_SIZE` | `12` | Number of persistent connections to Telegram DCs |
+| `TELEMT_REINIT_SECS` | `600` | Rebuild all connections every N seconds (prevents long-connection fingerprinting) |
+| `TELEMT_HARDSWAP` | `true` | Build new pool before tearing down old (zero-downtime rotation) |
+| `TELEMT_HARDSWAP_DELAY_MIN` | `500` | Min delay between new connections during swap (ms) |
+| `TELEMT_HARDSWAP_DELAY_MAX` | `1200` | Max delay between new connections during swap (ms) |
+
+**Fast Reconnect:**
+| Setting | Default | Purpose |
+|---------|---------|---------|
+| `TELEMT_FAST_RETRIES` | `10` | Quick retries before exponential backoff |
+| `TELEMT_BACKOFF_BASE` | `300` | Backoff start interval (ms) |
+| `TELEMT_BACKOFF_CAP` | `10000` | Maximum backoff interval (ms) |
+
+**Config Stability:**
+| Setting | Default | Purpose |
+|---------|---------|---------|
+| `TELEMT_STABLE_SNAPSHOTS` | `3` | Require N consistent config snapshots before applying changes |
+| `TELEMT_APPLY_COOLDOWN` | `120` | Minimum seconds between config changes |
+
+**For aggressive censorship** (e.g., Iran during shutdowns): increase `TELEMT_POOL_SIZE` to 16-20, decrease `TELEMT_REINIT_SECS` to 300, and increase `TELEMT_FAST_RETRIES` to 20.
+
+Full tuning docs: [telemt TUNING.en.md](https://github.com/telemt/telemt/blob/main/docs/TUNING.en.md) | [API docs](https://github.com/telemt/telemt/blob/main/docs/API.md)
+
+</details>
+
 ### dnstt
 
 DNS tunnel that encodes TCP traffic within DNS queries. Extremely hard to block without breaking DNS entirely. Very slow but works as a last resort when almost everything is blocked.
