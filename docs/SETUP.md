@@ -740,35 +740,44 @@ SERVER_IPV6=disabled
 
 ## Bandwidth Donation (Conduit & Snowflake)
 
-Optionally donate bandwidth to help others bypass censorship.
+Donate bandwidth to help others bypass censorship. Both services can run simultaneously.
 
-**Psiphon Conduit:**
+**Psiphon Conduit** — Donate bandwidth to Psiphon's relay network (millions of users worldwide):
 ```bash
 # Start
 moav start conduit
 
-# View info
-./scripts/conduit-info.sh      # Ryve deep link (also shown in container logs on startup)
+# Configure bandwidth and max clients (interactive)
+moav donate setup    # Select option 2: Conduit
 
-# Configure in .env:
-CONDUIT_BANDWIDTH=200              # Mbps limit
-CONDUIT_MAX_COMMON_CLIENTS=100     # Max concurrent common clients
+# View Ryve deep link and QR code (for claiming in Ryve app)
+moav donate info
+
+# Check stats (connected clients, bandwidth donated)
+moav donate status
 ```
 
-**Tor Snowflake:**
+**Tor Snowflake** — Donate bandwidth as a Tor Snowflake proxy:
 ```bash
 # Start
 moav start snowflake
 
-# View logs
-moav logs snowflake
+# Configure bandwidth and capacity (interactive)
+moav donate setup    # Select option 3: Snowflake
 
-# Configure in .env:
-SNOWFLAKE_BANDWIDTH=50   # Mbps limit
-SNOWFLAKE_CAPACITY=20    # Max concurrent
+# Check stats (people served, bandwidth relayed)
+moav donate status
 ```
 
-Both can run simultaneously without conflicts.
+**Configuration in `.env`:**
+```bash
+CONDUIT_BANDWIDTH=100              # Mbps limit (default: 100)
+CONDUIT_MAX_COMMON_CLIENTS=200     # Max concurrent clients (default: 200)
+SNOWFLAKE_BANDWIDTH=5              # Mbps limit (default: 5)
+SNOWFLAKE_CAPACITY=50              # Max concurrent clients (default: 50)
+```
+
+Changes via `moav donate setup` are written to `.env` and the service is restarted automatically.
 
 ---
 
@@ -786,7 +795,7 @@ Donate your server's VPN configs to [MahsaServer.com](https://www.mahsaserver.co
 
 ```bash
 # Set up your API key (interactive — validates the key)
-moav donate setup
+moav donate setup    # Select option 1: MahsaNet
 ```
 
 Or manually add to `.env`:
@@ -833,11 +842,11 @@ This creates dedicated users (e.g., `mahsa01`, `mahsa02`) and submits their conf
 ### Managing Donations
 
 ```bash
-# List your donated configs
-moav donate list
-
-# Show donation summary (total/active/inactive)
+# Show all donation services status (MahsaNet + Conduit + Snowflake stats)
 moav donate status
+
+# List your donated MahsaNet configs
+moav donate list
 
 # Select and delete specific configs
 moav donate delete
