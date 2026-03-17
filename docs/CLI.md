@@ -129,19 +129,22 @@ moav check
 Run diagnostic checks for common MoaV issues.
 
 ```bash
-moav doctor
-moav doctor dns
+moav doctor              # Run all checks
+moav doctor dns          # DNS records only
+moav doctor services     # Enabled vs running services
+moav doctor config       # Config files and keys
+moav doctor ports        # Port availability
+moav doctor env          # Compare .env with .env.example
+moav doctor updates      # Check for MoaV updates
 ```
 
-**Arguments:**
-- No arguments: Run all available diagnostic checks
-- `dns`: Verify DNS records for enabled protocols
-
-The initial DNS check validates:
-- Main A record for `DOMAIN`
-- `dns` A record and NS delegation for dnstt / Slipstream when enabled
-- CDN hostname resolution when CDN is configured
-- Domainless mode handling with a skip summary
+**Available checks:**
+- `dns` — Verify DNS records for enabled protocols (A records, NS delegation, CDN)
+- `services` — Compare enabled services in `.env` with actually running containers; flag crash-looping services
+- `config` — Check that bootstrap has been run and config files exist for enabled protocols
+- `ports` — Verify required ports are listening; detect systemd-resolved conflicts on port 53
+- `env` — Compare `.env` with `.env.example` for missing variables; flag critical missing vars
+- `updates` — Check current version against latest GitHub release
 
 #### `moav bootstrap`
 Run first-time setup. Generates keys, obtains TLS certificates, creates initial users.
