@@ -12,12 +12,15 @@ moav doctor
 
 This runs all checks automatically and tells you exactly what's wrong:
 
-- **dns** — Verifies DNS records for your domain and enabled protocols
-- **services** — Compares enabled services with running containers, flags crash-looping services
-- **config** — Checks that bootstrap has been run and config files exist
-- **ports** — Verifies required ports are listening, detects conflicts (e.g., systemd-resolved on port 53)
-- **env** — Compares your `.env` with `.env.example` for missing variables
-- **updates** — Checks if a newer MoaV version is available
+- **docker** — Docker daemon running, Compose installed, disk usage
+- **memory** — Available RAM, warns if too low for your config
+- **disk** — Free disk space, warns before you run out
+- **dns** — DNS records for your domain and enabled protocols
+- **services** — Running containers vs enabled config, crash-looping detection
+- **config** — Bootstrap status, config files exist for enabled protocols
+- **ports** — Required ports listening, systemd-resolved conflicts
+- **env** — Missing `.env` variables compared to `.env.example`
+- **updates** — New MoaV version available
 
 You can also run individual checks:
 ```bash
