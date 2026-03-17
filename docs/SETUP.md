@@ -129,6 +129,9 @@ See [DNS.md](DNS.md) for provider-specific instructions.
 ```bash
 dig +short yourdomain.com
 # Should return your server IP
+
+# Or use MoaV's built-in DNS check (after install):
+moav doctor dns
 ```
 
 ### Step 3: Install MoaV
@@ -300,8 +303,7 @@ ufw allow 9444/tcp
 **Verify Services:**
 ```bash
 moav status
-# Or:
-docker compose ps
+moav doctor              # Run all diagnostic checks
 ```
 
 ### Step 7: Download User Bundles

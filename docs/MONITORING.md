@@ -260,7 +260,7 @@ Container-level metrics (CPU, memory, network) are still available for these ser
 
 ## Troubleshooting
 
-For monitoring-related issues, see [TROUBLESHOOTING.md](TROUBLESHOOTING.md#monitoring-issues).
+Run `moav doctor services` to quickly check if monitoring services are running. For detailed issues, see [TROUBLESHOOTING.md](TROUBLESHOOTING.md#monitoring-issues).
 
 Common issues covered:
 - System hangs after starting monitoring (RAM issues)
