@@ -59,7 +59,7 @@ Complete guide to deploy MoaV on a VPS or home server.
 | 9444/tcp | TCP | Grafana (monitoring) | No |
 | 993/tcp | TCP | Telegram MTProxy (telemt) | No |
 | 2096/tcp | TCP | XHTTP (VLESS+XHTTP+Reality) | No |
-| 53/udp | UDP | DNS tunnels (dnstt + Slipstream + XDNS) | Yes |
+| 53/udp | UDP | DNS tunnels (dnstt + Slipstream OR XDNS — not both) | Yes |
 | 80/tcp | TCP | Let's Encrypt | Yes (during setup) |
 
 ---

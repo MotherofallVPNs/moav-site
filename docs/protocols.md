@@ -170,10 +170,11 @@ QUIC-over-DNS tunnel. Similar to dnstt but uses QUIC for better throughput — t
 
 **Experimental.** DNS tunnel using Xray-core's mKCP transport with FinalMask XDNS. Encodes VPN traffic inside DNS queries — works when almost everything except DNS is blocked. Slower than other protocols but extremely resilient during heavy internet shutdowns.
 
-- **Port:** 53/udp (direct, NOT through dns-router — cannot run alongside dnstt/Slipstream)
-- **Engine:** [Xray-core](https://github.com/XTLS/Xray-core) (built from main branch)
-- **Clients:** Apps with FinalMask support (Happ beta, Xray CLI). Standard v2rayNG may not support FinalMask yet.
-- **Note:** XDNS and dnstt/Slipstream both need port 53. Enable one OR the other in `.env`, not both. Client connects directly to your server IP on port 53.
+- **Port:** 53/udp (direct to xray, not through dns-router)
+- **Engine:** [Xray-core](https://github.com/XTLS/Xray-core) (built from main branch for FinalMask support)
+- **Clients:** Apps with FinalMask support (Happ beta, Xray CLI). Standard v2rayNG does not support FinalMask yet.
+- **Requires:** Domain (for FinalMask packet formatting, NS delegation optional)
+- **Note:** XDNS and dnstt/Slipstream both use port 53 — enable one OR the other in `.env`. Client connects directly to server IP on port 53. Best for Telegram and lightweight chat apps — not fast enough for web browsing.
 
 <details>
 <summary><strong>XDNS Tuning</strong></summary>

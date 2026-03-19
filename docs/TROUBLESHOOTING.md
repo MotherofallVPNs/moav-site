@@ -758,13 +758,26 @@ moav restart wireguard
 
 ### DNS tunnel not working
 
-> **Quick check:** Run `moav doctor dns` to verify NS delegation for DNS tunnel subdomains, and `moav doctor ports` to check port 53 availability.
+> **Quick check:** Run `moav doctor dns` to verify NS delegation for DNS tunnel subdomains, and `moav doctor ports` to check port 53 conflicts.
+
+**Port 53 conflict:** XDNS and dnstt/Slipstream both use port 53. Only one can be active at a time. Check your `.env`:
+```bash
+# Use EITHER XDNS:
+ENABLE_XDNS=true
+ENABLE_DNSTT=false
+ENABLE_SLIPSTREAM=false
+
+# OR dnstt/Slipstream:
+ENABLE_XDNS=false
+ENABLE_DNSTT=true
+ENABLE_SLIPSTREAM=true
+```
 
 **Check logs for domain issues:**
 ```bash
 docker compose logs dnstt        # dnstt
 docker compose logs xray         # XDNS (runs inside xray container)
-docker compose logs dns-router   # DNS routing
+docker compose logs dns-router   # DNS routing (dnstt/Slipstream only)
 ```
 
 If you see `NXDOMAIN: not authoritative for example.com`, the domain wasn't set correctly during bootstrap:
