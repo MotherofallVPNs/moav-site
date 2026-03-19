@@ -805,7 +805,7 @@ XHTTP requires Xray-based clients that support the XHTTP transport:
 
 ## Tips for Highly Censored Environments
 
-1. **Keep multiple configs** - Have Reality, Hysteria2, WireGuard, and DNS tunnel ready
+1. **Keep multiple configs** - Have Reality, Hysteria2, WireGuard, XDNS, and DNS tunnel ready
 2. **Download client apps in advance** - Store APKs, wstunnel binaries, and Psiphon offline
 3. **Use mobile data** as backup - Sometimes less filtered than home internet
 4. **Avoid peak hours** - Filtering can be heavier during protests/events
