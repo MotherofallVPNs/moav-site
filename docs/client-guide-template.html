@@ -1117,41 +1117,49 @@
                     <span class="protocol-badge badge-fallback">mKCP DNS Tunnel</span>
                     <span class="protocol-port">53/udp</span>
                 </div>
-                <p class="protocol-desc">DNS tunnel via Xray-core mKCP transport. Encodes VPN traffic inside DNS queries — works when almost everything except DNS is blocked. Slow but reliable during heavy internet shutdowns.</p>
+                <p class="protocol-desc">DNS tunnel via Xray-core mKCP+FinalMask. Encodes VPN traffic inside DNS-like packets. Works during heavy internet shutdowns. <strong>Telegram proxy only</strong> — too slow for web browsing.</p>
 
-                <div class="info-box">
-                    <h4>When to use XDNS</h4>
-                    <p>Use when other protocols are blocked and only DNS traffic gets through. Best for Telegram or lightweight browsing. Similar to dnstt but uses Xray-core's mKCP transport.</p>
+                <div class="info-box" style="border-color: var(--accent-warn, #f59e0b);">
+                    <h4>Important</h4>
+                    <p>XDNS requires a client app with <strong>FinalMask support</strong>. Standard v2rayNG does not support this yet. Use <strong>Happ</strong> (Android beta) or <strong>Xray CLI</strong>.</p>
                 </div>
             </div>
 
             <div class="protocol-body">
                 <div class="extra-section">
-                    <h4>Setup</h4>
-                    <ol>
-                        <li>Find <code>xdns-config.json</code> in this bundle</li>
-                        <li>Import into an Xray-compatible client (v2rayNG, Streisand, Hiddify)</li>
-                        <li>The config connects via <code>8.8.8.8:53</code> — change to a working DNS resolver if needed</li>
-                        <li>Connect and use as SOCKS5 proxy on <code>127.0.0.1:7891</code></li>
-                    </ol>
+                    <h4>1. Connect with XDNS</h4>
+                    <p>Two config files are included in this bundle:</p>
+                    <table style="font-size: 12px; margin: 8px 0;">
+                        <tr><td><code>xdns-config.json</code></td><td>Via DNS resolver (stealthier, may reconnect periodically)</td></tr>
+                        <tr><td><code>xdns-direct-config.json</code></td><td>Via direct server (more stable, less stealthy)</td></tr>
+                    </table>
+                    <p>Import one into your Xray client and connect.</p>
+                </div>
+
+                <div class="extra-section">
+                    <h4>2. Add Telegram Proxy</h4>
+                    <p>After XDNS is connected, tap this link to configure Telegram:</p>
+                    <p><a href="https://t.me/socks?server=127.0.0.1&port=7891" target="_blank" style="color: var(--accent-primary); font-size: 14px; font-weight: 600;">Add Telegram Proxy (tap here)</a></p>
+                    <p style="color: var(--text-muted); font-size: 11px;">Or manually: Telegram → Settings → Data and Storage → Proxy → SOCKS5 → 127.0.0.1 : 7891</p>
                 </div>
 
                 <div class="config-box">
-                    <h4>XDNS Client Config</h4>
-                    <div class="config-value multiline" onclick="copyConfig(this)">{{CONFIG_XDNS}}</div>
+                    <h4>Config via DNS Resolver (click to copy)</h4>
+                    <div class="config-value multiline" onclick="copyConfig(this)" style="font-size: 9px; max-height: 120px; overflow-y: auto;">{{CONFIG_XDNS}}</div>
+                </div>
+
+                <div class="config-box">
+                    <h4>Config via Direct Connection (click to copy)</h4>
+                    <div class="config-value multiline" onclick="copyConfig(this)" style="font-size: 9px; max-height: 120px; overflow-y: auto;">{{CONFIG_XDNS_DIRECT}}</div>
                 </div>
 
                 <div class="extra-section">
                     <h4>Tips</h4>
-                    <p>This protocol is slow — <strong>best for Telegram only</strong>, not web browsing.</p>
-                    <p>DNS resolvers to try: <code>8.8.8.8</code>, <code>1.1.1.1</code>, your ISP's DNS server.</p>
-                </div>
-
-                <div class="extra-section">
-                    <h4>Quick Telegram Setup</h4>
-                    <p>After connecting with XDNS, tap this link to add the proxy to Telegram:</p>
-                    <p><a href="https://t.me/socks?server=127.0.0.1&port=7891" target="_blank" style="color: var(--accent-primary);">https://t.me/socks?server=127.0.0.1&port=7891</a></p>
-                    <p style="color: var(--text-muted); font-size: 12px;">Or manually: Telegram → Settings → Data and Storage → Proxy → SOCKS5 → 127.0.0.1:7891</p>
+                    <ul style="font-size: 12px; margin: 4px 0;">
+                        <li>Try DNS resolver config first — switch to direct if connections keep dropping</li>
+                        <li>Other DNS resolvers to try: <code>1.1.1.1</code>, your ISP's DNS</li>
+                        <li>This is a <strong>Telegram proxy only</strong> — do not use for web browsing</li>
+                    </ul>
                 </div>
             </div>
         </div>
@@ -1974,41 +1982,49 @@
                     <span class="protocol-badge badge-fallback">تونل DNS با mKCP</span>
                     <span class="protocol-port">53/udp</span>
                 </div>
-                <p class="protocol-desc">تونل DNS از طریق mKCP در Xray-core. ترافیک VPN رو داخل query های DNS رمزگذاری میکنه — وقتی تقریباً همه چیز جز DNS بلاکه کار میکنه. کنده ولی قابل اعتماده.</p>
+                <p class="protocol-desc">تونل DNS از طریق mKCP+FinalMask در Xray-core. ترافیک VPN رو داخل پکت‌های شبیه DNS رمزگذاری میکنه. تو قطعی‌های شدید اینترنت کار میکنه. <strong>فقط برای پروکسی تلگرام</strong> — برای وب‌گردی کنده.</p>
 
-                <div class="info-box">
-                    <h4>کی از XDNS استفاده کنید</h4>
-                    <p>وقتی پروتکل‌های دیگه بلاک شدن و فقط ترافیک DNS رد میشه. بهترین استفاده برای تلگرام یا وب‌گردی سبک.</p>
+                <div class="info-box" style="border-color: var(--accent-warn, #f59e0b);">
+                    <h4>مهم</h4>
+                    <p>XDNS نیاز به اپ کلاینت با پشتیبانی <strong>FinalMask</strong> داره. v2rayNG استاندارد فعلاً پشتیبانی نمیکنه. از <strong>Happ</strong> (اندروید بتا) یا <strong>Xray CLI</strong> استفاده کنید.</p>
                 </div>
             </div>
 
             <div class="protocol-body">
                 <div class="extra-section">
-                    <h4>راه‌اندازی</h4>
-                    <ol>
-                        <li>فایل <code>xdns-config.json</code> رو از این بسته پیدا کنید</li>
-                        <li>تو یه اپ سازگار با Xray وارد کنید (v2rayNG, Streisand, Hiddify)</li>
-                        <li>کانفیگ از طریق <code>8.8.8.8:53</code> وصل میشه — اگه لازمه DNS resolver رو عوض کنید</li>
-                        <li>وصل شید و از SOCKS5 proxy روی <code>127.0.0.1:7891</code> استفاده کنید</li>
-                    </ol>
+                    <h4>۱. اتصال با XDNS</h4>
+                    <p>دو فایل کانفیگ تو این بسته هست:</p>
+                    <table style="font-size: 12px; margin: 8px 0;">
+                        <tr><td><code>xdns-config.json</code></td><td>از طریق DNS resolver (مخفی‌تر، ممکنه هر چند دقیقه قطع و وصل بشه)</td></tr>
+                        <tr><td><code>xdns-direct-config.json</code></td><td>اتصال مستقیم به سرور (پایدارتر، کمتر مخفی)</td></tr>
+                    </table>
+                    <p>یکی رو تو اپ Xray وارد کنید و وصل شید.</p>
+                </div>
+
+                <div class="extra-section">
+                    <h4>۲. تنظیم تلگرام</h4>
+                    <p>بعد از اتصال XDNS، روی این لینک بزنید تا پروکسی به تلگرام اضافه بشه:</p>
+                    <p><a href="https://t.me/socks?server=127.0.0.1&port=7891" target="_blank" style="color: var(--accent-primary); font-size: 14px; font-weight: 600;">اضافه کردن پروکسی تلگرام (اینجا بزنید)</a></p>
+                    <p style="color: var(--text-muted); font-size: 11px;">یا دستی: تلگرام ← تنظیمات ← داده و ذخیره‌سازی ← پروکسی ← SOCKS5 ← 127.0.0.1 : 7891</p>
                 </div>
 
                 <div class="config-box">
-                    <h4>کانفیگ XDNS</h4>
-                    <div class="config-value multiline" onclick="copyConfig(this)">{{CONFIG_XDNS}}</div>
+                    <h4>کانفیگ از طریق DNS Resolver (برای کپی کلیک کنید)</h4>
+                    <div class="config-value multiline" onclick="copyConfig(this)" style="font-size: 9px; max-height: 120px; overflow-y: auto;">{{CONFIG_XDNS}}</div>
+                </div>
+
+                <div class="config-box">
+                    <h4>کانفیگ اتصال مستقیم (برای کپی کلیک کنید)</h4>
+                    <div class="config-value multiline" onclick="copyConfig(this)" style="font-size: 9px; max-height: 120px; overflow-y: auto;">{{CONFIG_XDNS_DIRECT}}</div>
                 </div>
 
                 <div class="extra-section">
                     <h4>نکات</h4>
-                    <p>این پروتکل کنده — <strong>فقط برای تلگرام</strong> مناسبه، نه وب‌گردی.</p>
-                    <p>DNS resolver هایی که میتونید امتحان کنید: <code>8.8.8.8</code>، <code>1.1.1.1</code>، DNS سرور ISP خودتون.</p>
-                </div>
-
-                <div class="extra-section">
-                    <h4>تنظیم سریع تلگرام</h4>
-                    <p>بعد از اتصال با XDNS، روی این لینک بزنید تا پروکسی به تلگرام اضافه بشه:</p>
-                    <p><a href="https://t.me/socks?server=127.0.0.1&port=7891" target="_blank" style="color: var(--accent-primary);">https://t.me/socks?server=127.0.0.1&port=7891</a></p>
-                    <p style="color: var(--text-muted); font-size: 12px;">یا دستی: تلگرام ← تنظیمات ← داده و ذخیره‌سازی ← پروکسی ← SOCKS5 ← 127.0.0.1:7891</p>
+                    <ul style="font-size: 12px; margin: 4px 0;">
+                        <li>اول کانفیگ DNS resolver رو امتحان کنید — اگه قطع و وصل شد برید رو مستقیم</li>
+                        <li>DNS resolver های دیگه: <code>1.1.1.1</code>، DNS سرور ISP خودتون</li>
+                        <li>این <strong>فقط پروکسی تلگرام</strong> هست — برای وب‌گردی استفاده نکنید</li>
+                    </ul>
                 </div>
             </div>
         </div>
