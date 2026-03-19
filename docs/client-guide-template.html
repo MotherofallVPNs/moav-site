@@ -736,14 +736,6 @@
             <div class="protocol-content">
                 <p class="protocol-desc">Use this when the server IP is blocked. Traffic routes through Cloudflare CDN, hiding your server's real IP.</p>
 
-                <div class="extra-section">
-                    <h4>When to use CDN mode</h4>
-                    <ul>
-                        <li>Reality/Hysteria2/Trojan suddenly stop working</li>
-                        <li>Your server IP has been blocked by the ISP</li>
-                        <li>Direct connections are being filtered</li>
-                    </ul>
-                </div>
 
                 <div class="qr-section">
                     <div class="qr-code">
@@ -787,14 +779,6 @@
             <div class="protocol-content">
                 <p class="protocol-desc">VLESS over XHTTP with Reality. Splits traffic into separate HTTP connections with no distinctive fingerprint, making it very hard to detect via DPI. Powered by Xray-core.</p>
 
-                <div class="extra-section">
-                    <h4>When to use XHTTP</h4>
-                    <ul>
-                        <li>Standard VLESS+Reality is being blocked</li>
-                        <li>Your network uses advanced DPI that detects ALPN fingerprints</li>
-                        <li>You need an alternative to sing-box protocols</li>
-                    </ul>
-                </div>
 
                 <div class="extra-section">
                     <h4>Compatible Client Apps</h4>
@@ -841,14 +825,6 @@
             <div class="protocol-content">
                 <p class="protocol-desc">DPI-resistant WireGuard fork. Obfuscates WireGuard packets to defeat deep packet inspection. Same performance, invisible to censors.</p>
 
-                <div class="extra-section">
-                    <h4>When to use AmneziaWG</h4>
-                    <ul>
-                        <li>Standard WireGuard is blocked or throttled</li>
-                        <li>Mobile carriers detect and limit WireGuard traffic</li>
-                        <li>You need a full VPN with DPI evasion</li>
-                    </ul>
-                </div>
 
                 <div class="extra-section">
                     <h4>Download AmneziaWG Client</h4>
@@ -965,14 +941,6 @@
             <div class="protocol-content">
                 <p class="protocol-desc">Modern VPN protocol by AdGuard that looks like regular HTTPS traffic. Uses HTTP/2 and HTTP/3 (QUIC) for stealth.</p>
 
-                <div class="extra-section">
-                    <h4>When to use TrustTunnel</h4>
-                    <ul>
-                        <li>Other protocols are being detected and blocked</li>
-                        <li>You need a full VPN (all traffic routed)</li>
-                        <li>Your network actively inspects traffic patterns</li>
-                    </ul>
-                </div>
 
                 <div class="extra-section">
                     <h4>Download TrustTunnel Client</h4>
@@ -1211,14 +1179,6 @@
             <div class="protocol-content">
                 <p class="protocol-desc">The Tor network provides anonymous access to the internet. Does not require your MoaV server - connects to the global Tor network.</p>
 
-                <div class="extra-section">
-                    <h4>When to use Tor</h4>
-                    <ul>
-                        <li>All MoaV protocols are blocked</li>
-                        <li>You need strong anonymity</li>
-                        <li>Accessing .onion sites</li>
-                    </ul>
-                </div>
 
                 <div class="extra-section">
                     <h4>Download Tor Browser</h4>
@@ -1248,14 +1208,6 @@
             <div class="protocol-content">
                 <p class="protocol-desc">Free circumvention tool with its own network. Does not require your MoaV server - connects to Psiphon's global infrastructure.</p>
 
-                <div class="extra-section">
-                    <h4>When to use Psiphon</h4>
-                    <ul>
-                        <li>All MoaV protocols are blocked</li>
-                        <li>You need a quick, no-setup solution</li>
-                        <li>Your MoaV server IP is blocked</li>
-                    </ul>
-                </div>
 
                 <div class="extra-section">
                     <h4>Download Psiphon</h4>
@@ -1604,14 +1556,6 @@
             <div class="protocol-content">
                 <p class="protocol-desc">زمانی استفاده کنید که IP سرور مسدود شده. ترافیک از طریق CDN کلودفلر عبور می‌کند.</p>
 
-                <div class="extra-section">
-                    <h4>چه زمانی از حالت CDN استفاده کنید</h4>
-                    <ul>
-                        <li>Reality/Hysteria2/Trojan ناگهان کار نمی‌کنند</li>
-                        <li>IP سرور توسط ISP مسدود شده</li>
-                        <li>اتصال مستقیم فیلتر می‌شود</li>
-                    </ul>
-                </div>
 
                 <div class="qr-section">
                     <div class="qr-code">
@@ -1655,14 +1599,6 @@
             <div class="protocol-content">
                 <p class="protocol-desc">VLESS روی XHTTP با Reality. ترافیک را به اتصالات HTTP جداگانه تقسیم می‌کند بدون اثر انگشت قابل تشخیص، که شناسایی توسط DPI را بسیار دشوار می‌کند. با Xray-core کار می‌کند.</p>
 
-                <div class="extra-section">
-                    <h4>چه زمانی از XHTTP استفاده کنید</h4>
-                    <ul>
-                        <li>VLESS+Reality استاندارد مسدود شده است</li>
-                        <li>شبکه شما از DPI پیشرفته استفاده می‌کند که اثر انگشت ALPN را شناسایی می‌کند</li>
-                        <li>به جایگزینی برای پروتکل‌های sing-box نیاز دارید</li>
-                    </ul>
-                </div>
 
                 <div class="extra-section">
                     <h4>برنامه‌های سازگار</h4>
@@ -1709,14 +1645,6 @@
             <div class="protocol-content">
                 <p class="protocol-desc">نسخه ضد فیلتر WireGuard. بسته‌های WireGuard را مبهم‌سازی می‌کند تا از بازرسی عمیق بسته‌ها عبور کند. همان عملکرد، نامرئی برای سانسورگرها.</p>
 
-                <div class="extra-section">
-                    <h4>چه زمانی از AmneziaWG استفاده کنید</h4>
-                    <ul>
-                        <li>WireGuard معمولی مسدود یا کند شده</li>
-                        <li>اپراتورهای موبایل ترافیک WireGuard را شناسایی می‌کنند</li>
-                        <li>به VPN کامل با دور زدن DPI نیاز دارید</li>
-                    </ul>
-                </div>
 
                 <div class="extra-section">
                     <h4>دانلود کلاینت AmneziaWG</h4>
@@ -1833,14 +1761,6 @@
             <div class="protocol-content">
                 <p class="protocol-desc">پروتکل VPN مدرن از AdGuard که شبیه ترافیک HTTPS معمولی به نظر می‌رسد. از HTTP/2 و HTTP/3 (QUIC) برای پنهان‌کاری استفاده می‌کند.</p>
 
-                <div class="extra-section">
-                    <h4>چه زمانی از TrustTunnel استفاده کنید</h4>
-                    <ul>
-                        <li>سایر پروتکل‌ها شناسایی و مسدود می‌شوند</li>
-                        <li>به VPN کامل نیاز دارید (همه ترافیک هدایت شود)</li>
-                        <li>شبکه شما فعالانه الگوهای ترافیک را بررسی می‌کند</li>
-                    </ul>
-                </div>
 
                 <div class="extra-section">
                     <h4>دانلود کلاینت TrustTunnel</h4>
