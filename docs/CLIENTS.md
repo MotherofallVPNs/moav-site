@@ -632,6 +632,23 @@ Slipstream is a QUIC-over-DNS tunnel that is 1.5-5x faster than dnstt. See `slip
 **Modes:**
 - **Resolver mode** (default, stealthier): Uses public DNS resolvers (~60 KB/s)
 - **Authoritative mode** (faster, less stealthy): Connects directly to server (~3-4 MB/s)
+
+### XDNS (Xray mKCP DNS Tunnel)
+
+XDNS encodes VPN traffic inside DNS queries using Xray-core's mKCP transport with FinalMask. Works when almost everything except DNS is blocked. Slow but reliable during heavy internet shutdowns.
+
+**Setup:**
+1. Find `xdns-config.json` in your user bundle
+2. Import into an Xray-compatible client (v2rayNG, Streisand, Hiddify)
+3. The default config connects via `8.8.8.8:53` — change this to a working DNS resolver if needed
+4. Connect and use as SOCKS5 proxy on `127.0.0.1:7891`
+
+**DNS resolvers to try:** `8.8.8.8`, `1.1.1.1`, your ISP's DNS server
+
+**Tips:**
+- This protocol is slow — best for Telegram or lightweight browsing
+- MTU 35 (default) works with most resolvers. Try 67 or 130 for faster speeds if your resolver allows
+- Use `moav doctor dns` to verify NS delegation for the XDNS subdomain
   - Add `--authoritative SERVER_IP:53` instead of `--dns-server`
 
 ---

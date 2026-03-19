@@ -760,9 +760,11 @@ moav restart wireguard
 
 > **Quick check:** Run `moav doctor dns` to verify NS delegation for DNS tunnel subdomains, and `moav doctor ports` to check port 53 availability.
 
-**Check dnstt logs for domain issues:**
+**Check logs for domain issues:**
 ```bash
-docker compose logs dnstt
+docker compose logs dnstt        # dnstt
+docker compose logs xray         # XDNS (runs inside xray container)
+docker compose logs dns-router   # DNS routing
 ```
 
 If you see `NXDOMAIN: not authoritative for example.com`, the domain wasn't set correctly during bootstrap:
