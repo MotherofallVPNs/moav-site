@@ -593,6 +593,7 @@
                 <li><a href="#en" onclick="scrollToSection('trusttunnel-en')">7. TrustTunnel <span class="toc-badge badge-secondary">Stealth VPN</span></a></li>
                 <li><a href="#en" onclick="scrollToSection('dns-tunnel-en')">8. DNS Tunnel <span class="toc-badge badge-fallback">Last Resort</span></a></li>
                 <li><a href="#en" onclick="scrollToSection('slipstream-en')">8b. Slipstream <span class="toc-badge badge-fallback">Faster DNS Tunnel</span></a></li>
+                <li><a href="#en" onclick="scrollToSection('xdns-en')">8c. XDNS <span class="toc-badge badge-fallback">mKCP DNS Tunnel</span></a></li>
                 <li><a href="#en" onclick="scrollToSection('telemt-en')">9. Telegram MTProxy <span class="toc-badge badge-secondary">Telegram</span></a></li>
                 <li><a href="#en" onclick="scrollToSection('tor-en')">10. Tor <span class="toc-badge badge-standalone">Standalone</span></a></li>
                 <li><a href="#en" onclick="scrollToSection('psiphon-en')">11. Psiphon <span class="toc-badge badge-standalone">Standalone</span></a></li>
@@ -1108,6 +1109,46 @@
             </div>
         </div>
 
+        <!-- XDNS (mKCP DNS Tunnel) -->
+        <div class="protocol-section" id="xdns-en" style="{{XDNS_DISPLAY}}">
+            <div class="protocol-header">
+                <div class="protocol-title">
+                    <h2>8c. XDNS</h2>
+                    <span class="protocol-badge badge-fallback">mKCP DNS Tunnel</span>
+                    <span class="protocol-port">53/udp</span>
+                </div>
+                <p class="protocol-desc">DNS tunnel via Xray-core mKCP transport. Encodes VPN traffic inside DNS queries — works when almost everything except DNS is blocked. Slow but reliable during heavy internet shutdowns.</p>
+
+                <div class="info-box">
+                    <h4>When to use XDNS</h4>
+                    <p>Use when other protocols are blocked and only DNS traffic gets through. Best for Telegram or lightweight browsing. Similar to dnstt but uses Xray-core's mKCP transport.</p>
+                </div>
+            </div>
+
+            <div class="protocol-body">
+                <div class="extra-section">
+                    <h4>Setup</h4>
+                    <ol>
+                        <li>Find <code>xdns-config.json</code> in this bundle</li>
+                        <li>Import into an Xray-compatible client (v2rayNG, Streisand, Hiddify)</li>
+                        <li>The config connects via <code>8.8.8.8:53</code> — change to a working DNS resolver if needed</li>
+                        <li>Connect and use as SOCKS5 proxy on <code>127.0.0.1:7891</code></li>
+                    </ol>
+                </div>
+
+                <div class="config-box">
+                    <h4>XDNS Client Config</h4>
+                    <div class="config-value multiline" onclick="copyConfig(this)">{{CONFIG_XDNS}}</div>
+                </div>
+
+                <div class="extra-section">
+                    <h4>Tips</h4>
+                    <p>This protocol is slow — best for Telegram or lightweight browsing.</p>
+                    <p>DNS resolvers to try: <code>8.8.8.8</code>, <code>1.1.1.1</code>, your ISP's DNS server.</p>
+                </div>
+            </div>
+        </div>
+
         <!-- Telegram MTProxy -->
         <div class="protocol-section" id="telemt-en">
             <div class="protocol-header">
@@ -1405,6 +1446,7 @@
                 <li><a href="#fa" onclick="scrollToSection('trusttunnel-fa')">۷. TrustTunnel <span class="toc-badge badge-secondary">VPN مخفی</span></a></li>
                 <li><a href="#fa" onclick="scrollToSection('dns-tunnel-fa')">۸. تونل DNS <span class="toc-badge badge-fallback">آخرین راه‌حل</span></a></li>
                 <li><a href="#fa" onclick="scrollToSection('slipstream-fa')">۸ب. Slipstream <span class="toc-badge badge-fallback">تونل DNS سریع‌تر</span></a></li>
+                <li><a href="#fa" onclick="scrollToSection('xdns-fa')">۸پ. XDNS <span class="toc-badge badge-fallback">تونل DNS با mKCP</span></a></li>
                 <li><a href="#fa" onclick="scrollToSection('telemt-fa')">۹. Telegram MTProxy <span class="toc-badge badge-secondary">فقط تلگرام</span></a></li>
                 <li><a href="#fa" onclick="scrollToSection('tor-fa')">۱۰. Tor <span class="toc-badge badge-standalone">مستقل</span></a></li>
                 <li><a href="#fa" onclick="scrollToSection('psiphon-fa')">۱۱. Psiphon <span class="toc-badge badge-standalone">مستقل</span></a></li>
@@ -1913,6 +1955,46 @@
                 <div class="config-box">
                     <h4>دامنه Slipstream</h4>
                     <div class="config-value" onclick="copyConfig(this)">{{SLIPSTREAM_DOMAIN}}</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- XDNS (mKCP DNS Tunnel) -->
+        <div class="protocol-section" id="xdns-fa" style="{{XDNS_DISPLAY}}">
+            <div class="protocol-header">
+                <div class="protocol-title">
+                    <h2>۸پ. XDNS</h2>
+                    <span class="protocol-badge badge-fallback">تونل DNS با mKCP</span>
+                    <span class="protocol-port">53/udp</span>
+                </div>
+                <p class="protocol-desc">تونل DNS از طریق mKCP در Xray-core. ترافیک VPN رو داخل query های DNS رمزگذاری میکنه — وقتی تقریباً همه چیز جز DNS بلاکه کار میکنه. کنده ولی قابل اعتماده.</p>
+
+                <div class="info-box">
+                    <h4>کی از XDNS استفاده کنید</h4>
+                    <p>وقتی پروتکل‌های دیگه بلاک شدن و فقط ترافیک DNS رد میشه. بهترین استفاده برای تلگرام یا وب‌گردی سبک.</p>
+                </div>
+            </div>
+
+            <div class="protocol-body">
+                <div class="extra-section">
+                    <h4>راه‌اندازی</h4>
+                    <ol>
+                        <li>فایل <code>xdns-config.json</code> رو از این بسته پیدا کنید</li>
+                        <li>تو یه اپ سازگار با Xray وارد کنید (v2rayNG, Streisand, Hiddify)</li>
+                        <li>کانفیگ از طریق <code>8.8.8.8:53</code> وصل میشه — اگه لازمه DNS resolver رو عوض کنید</li>
+                        <li>وصل شید و از SOCKS5 proxy روی <code>127.0.0.1:7891</code> استفاده کنید</li>
+                    </ol>
+                </div>
+
+                <div class="config-box">
+                    <h4>کانفیگ XDNS</h4>
+                    <div class="config-value multiline" onclick="copyConfig(this)">{{CONFIG_XDNS}}</div>
+                </div>
+
+                <div class="extra-section">
+                    <h4>نکات</h4>
+                    <p>این پروتکل کنده — بهترین استفاده برای تلگرام یا وب‌گردی سبک.</p>
+                    <p>DNS resolver هایی که میتونید امتحان کنید: <code>8.8.8.8</code>، <code>1.1.1.1</code>، DNS سرور ISP خودتون.</p>
                 </div>
             </div>
         </div>
