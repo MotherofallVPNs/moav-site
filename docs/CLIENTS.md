@@ -632,6 +632,25 @@ Slipstream is a QUIC-over-DNS tunnel that is 1.5-5x faster than dnstt. See `slip
 **Modes:**
 - **Resolver mode** (default, stealthier): Uses public DNS resolvers (~60 KB/s)
 - **Authoritative mode** (faster, less stealthy): Connects directly to server (~3-4 MB/s)
+
+### XDNS (Xray mKCP DNS Tunnel)
+
+XDNS encodes VPN traffic inside DNS-like packets using Xray-core's mKCP transport with FinalMask. Works when most protocols are blocked. Slow but reliable during heavy internet shutdowns — best for Telegram and chat apps, not web browsing.
+
+**Important:** XDNS requires a client app with FinalMask support. Standard v2rayNG does not support this yet. Use Happ (Android beta) or Xray CLI.
+
+**Setup:**
+1. Find `xdns-config.json` in your user bundle
+2. Import into an Xray-compatible client with FinalMask support
+3. The config connects directly to the server IP on port 53
+4. Use as SOCKS5 proxy: `127.0.0.1:7891`
+5. **For Telegram:** Settings > Proxy > SOCKS5 > `127.0.0.1:7891`
+
+**Tips:**
+- Best for **Telegram only** — too slow for web browsing
+- MTU 35 (default) is safest. Try 67 or 130 for faster speeds if your network allows
+- MTU must match on both server and client
+- XDNS and dnstt/Slipstream cannot run at the same time (both use port 53)
   - Add `--authoritative SERVER_IP:53` instead of `--dns-server`
 
 ---

@@ -46,6 +46,7 @@ moav start                # Start all services
 moav stop                 # Stop all services
 moav status               # Show service status
 moav logs                 # View logs (follow mode)
+moav doctor               # Run diagnostics
 moav user add NAME        # Add new user
 moav user add --batch 5   # Batch create 5 users
 moav user revoke NAME     # Revoke user
@@ -123,6 +124,33 @@ Run prerequisites check (Docker, dependencies, ports).
 ```bash
 moav check
 ```
+
+#### `moav doctor`
+Run diagnostic checks for common MoaV issues.
+
+```bash
+moav doctor              # Run all checks
+moav doctor docker       # Docker and prerequisites
+moav doctor memory       # RAM availability
+moav doctor disk         # Disk space
+moav doctor dns          # DNS records
+moav doctor services     # Enabled vs running services
+moav doctor config       # Config files and keys
+moav doctor ports        # Port availability
+moav doctor env          # Compare .env with .env.example
+moav doctor updates      # Check for MoaV updates
+```
+
+**Available checks:**
+- `docker` — Docker daemon running, Compose available, Docker disk usage summary
+- `memory` — Total RAM, available memory, warns if <1GB or <2GB with monitoring enabled
+- `disk` — Disk space on root and Docker partition, warns if <2GB free
+- `dns` — Verify DNS records for enabled protocols (A records, NS delegation, CDN)
+- `services` — Compare enabled services in `.env` with running containers; flag crash-looping services
+- `config` — Check bootstrap has been run and config files exist for enabled protocols
+- `ports` — Verify required ports are listening; detect systemd-resolved on port 53
+- `env` — Compare `.env` with `.env.example` for missing variables; flag critical missing vars
+- `updates` — Check current version against latest GitHub release
 
 #### `moav bootstrap`
 Run first-time setup. Generates keys, obtains TLS certificates, creates initial users.

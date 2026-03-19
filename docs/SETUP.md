@@ -39,7 +39,7 @@ Complete guide to deploy MoaV on a VPS or home server.
 - Public IPv6 address (optional, see [IPv6 Support](#ipv6-support))
 
 **Domain (Optional but Recommended):**
-- Required for: Reality, Trojan, Hysteria2, TrustTunnel, CDN mode, DNS tunnels (dnstt, Slipstream)
+- Required for: Reality, Trojan, Hysteria2, TrustTunnel, CDN mode, DNS tunnels (dnstt, Slipstream, XDNS)
 - Not required for: Reality, WireGuard, AmneziaWG, Telegram MTProxy, Admin dashboard, Conduit, Snowflake
 - See [Domainless Mode](#domainless-mode) if you don't have a domain
 
@@ -59,7 +59,7 @@ Complete guide to deploy MoaV on a VPS or home server.
 | 9444/tcp | TCP | Grafana (monitoring) | No |
 | 993/tcp | TCP | Telegram MTProxy (telemt) | No |
 | 2096/tcp | TCP | XHTTP (VLESS+XHTTP+Reality) | No |
-| 53/udp | UDP | DNS tunnels (dnstt + Slipstream) | Yes |
+| 53/udp | UDP | DNS tunnels (dnstt + Slipstream OR XDNS — not both) | Yes |
 | 80/tcp | TCP | Let's Encrypt | Yes (during setup) |
 
 ---
@@ -118,7 +118,9 @@ Point your domain to your server **before** running setup.
 | Type | Name | Value | Notes |
 |------|------|-------|-------|
 | A | dns | YOUR_SERVER_IP | For DNS tunnel NS delegation |
-| NS | t | dns.yourdomain.com | DNS tunnel subdomain |
+| NS | t | dns.yourdomain.com | dnstt tunnel subdomain |
+| NS | s | dns.yourdomain.com | Slipstream tunnel subdomain |
+| NS | x | dns.yourdomain.com | XDNS tunnel subdomain |
 | A | cdn | YOUR_SERVER_IP | CDN mode (Cloudflare: **Proxied** orange cloud) |
 
 **Important:** For Cloudflare users, the main `@` record must be **DNS only** (gray cloud). Only the `cdn` record should be **Proxied** (orange cloud).
@@ -129,6 +131,9 @@ See [DNS.md](DNS.md) for provider-specific instructions.
 ```bash
 dig +short yourdomain.com
 # Should return your server IP
+
+# Or use MoaV's built-in DNS check (after install):
+moav doctor dns
 ```
 
 ### Step 3: Install MoaV
@@ -300,8 +305,7 @@ ufw allow 9444/tcp
 **Verify Services:**
 ```bash
 moav status
-# Or:
-docker compose ps
+moav doctor              # Run all diagnostic checks
 ```
 
 ### Step 7: Download User Bundles

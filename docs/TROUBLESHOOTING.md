@@ -2,6 +2,37 @@
 
 Common issues and their solutions.
 
+## Start Here: `moav doctor`
+
+Before diving into specific issues, run the built-in diagnostics:
+
+```bash
+moav doctor
+```
+
+This runs all checks automatically and tells you exactly what's wrong:
+
+- **docker** — Docker daemon running, Compose installed, disk usage
+- **memory** — Available RAM, warns if too low for your config
+- **disk** — Free disk space, warns before you run out
+- **dns** — DNS records for your domain and enabled protocols
+- **services** — Running containers vs enabled config, crash-looping detection
+- **config** — Bootstrap status, config files exist for enabled protocols
+- **ports** — Required ports listening, systemd-resolved conflicts
+- **env** — Missing `.env` variables compared to `.env.example`
+- **updates** — New MoaV version available
+
+You can also run individual checks:
+```bash
+moav doctor dns          # Just DNS
+moav doctor services     # Just service status
+moav doctor config       # Just config files
+```
+
+If `moav doctor` identifies the issue, follow its hints. If not, continue below.
+
+---
+
 ## Table of Contents
 
 - [Git and Update Issues](#git-and-update-issues)
@@ -304,6 +335,8 @@ docker system df -v
 
 ### Services won't start
 
+> **Quick check:** Run `moav doctor services` to see which services are enabled vs running.
+
 **Check logs:**
 ```bash
 docker compose logs sing-box
@@ -387,6 +420,8 @@ docker compose logs certbot
    ```
 
 ### Certificate issues
+
+> **Quick check:** Run `moav doctor dns` to verify DNS records point to your server, and `moav doctor config` to verify certificate files exist.
 
 **Certificate not renewing:**
 ```bash
@@ -723,9 +758,26 @@ moav restart wireguard
 
 ### DNS tunnel not working
 
-**Check dnstt logs for domain issues:**
+> **Quick check:** Run `moav doctor dns` to verify NS delegation for DNS tunnel subdomains, and `moav doctor ports` to check port 53 conflicts.
+
+**Port 53 conflict:** XDNS and dnstt/Slipstream both use port 53. Only one can be active at a time. Check your `.env`:
 ```bash
-docker compose logs dnstt
+# Use EITHER XDNS:
+ENABLE_XDNS=true
+ENABLE_DNSTT=false
+ENABLE_SLIPSTREAM=false
+
+# OR dnstt/Slipstream:
+ENABLE_XDNS=false
+ENABLE_DNSTT=true
+ENABLE_SLIPSTREAM=true
+```
+
+**Check logs for domain issues:**
+```bash
+docker compose logs dnstt        # dnstt
+docker compose logs xray         # XDNS (runs inside xray container)
+docker compose logs dns-router   # DNS routing (dnstt/Slipstream only)
 ```
 
 If you see `NXDOMAIN: not authoritative for example.com`, the domain wasn't set correctly during bootstrap:
@@ -890,6 +942,8 @@ docker stop moav-cadvisor
 ```
 
 ### Grafana shows "No Data"
+
+> **Quick check:** Run `moav doctor services` to verify monitoring services are running.
 
 1. Check Prometheus is running:
    ```bash

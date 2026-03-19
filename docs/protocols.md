@@ -19,6 +19,7 @@ MoaV deploys 13 protocols, each with different stealth characteristics, speed pr
 | [Slipstream](#slipstream) | 53/udp | Medium | Low-Medium | Yes |
 | [Psiphon Conduit](#psiphon-conduit) | dynamic | High | Medium | No |
 | [XHTTP (VLESS+XHTTP+Reality)](#xhttp-vlessxhttpreality) | 2096/tcp | Very High | High | No |
+| [XDNS (VLESS+mKCP+DNS)](#xdns-vlesmkcpdns) | 53/udp | Medium | Low | Yes |
 | [Tor Snowflake](#tor-snowflake) | dynamic | High | Low | No |
 | [MahsaNet](#mahsanet) | — | — | — | No |
 
@@ -164,6 +165,30 @@ QUIC-over-DNS tunnel. Similar to dnstt but uses QUIC for better throughput — t
 - **Engine:** [Xray-core](https://github.com/XTLS/Xray-core)
 - **Clients:** V2rayNG, Hiddify, Streisand, V2Box, V2rayN, V2rayU, NekoBox
 - **Note:** Uses Xray-core (separate from sing-box). Disable with `ENABLE_XHTTP=false` in `.env`.
+
+### XDNS (VLESS+mKCP+DNS)
+
+**Experimental.** DNS tunnel using Xray-core's mKCP transport with FinalMask XDNS. Encodes VPN traffic inside DNS queries — works when almost everything except DNS is blocked. Slower than other protocols but extremely resilient during heavy internet shutdowns.
+
+- **Port:** 53/udp (direct to xray, not through dns-router)
+- **Engine:** [Xray-core](https://github.com/XTLS/Xray-core) (built from main branch for FinalMask support)
+- **Clients:** Apps with FinalMask support (Happ beta, Xray CLI). Standard v2rayNG does not support FinalMask yet.
+- **Requires:** Domain (for FinalMask packet formatting, NS delegation optional)
+- **Note:** XDNS and dnstt/Slipstream both use port 53 — enable one OR the other in `.env`. Client connects directly to server IP on port 53. Best for Telegram and lightweight chat apps — not fast enough for web browsing.
+
+<details>
+<summary><strong>XDNS Tuning</strong></summary>
+
+| Setting | Default | Purpose |
+|---------|---------|---------|
+| `XDNS_MTU` | `35` | mKCP packet size. Smaller = works with more DNS resolvers. 35=safest, 67=most, 130=unrestricted |
+| `XDNS_SUBDOMAIN` | `x` | Subdomain for XDNS queries (x.yourdomain.com) |
+
+MTU depends on domain name length — shorter domain allows higher MTU. The values above are for ~19-character domains.
+
+For aggressive censorship: use `MTU=35` and connect via your ISP's DNS resolver.
+
+</details>
 
 ### Psiphon Conduit
 
