@@ -2163,23 +2163,45 @@
         }
 
         function copyConfig(el) {
-            if (el.classList.contains('multiline')) return;
-            var text = el.textContent;
-            if (navigator.clipboard) {
+            var text = el.textContent.trim();
+            var copied = false;
+
+            // Try modern clipboard API first
+            if (navigator.clipboard && window.isSecureContext) {
                 navigator.clipboard.writeText(text).then(function() {
-                    el.classList.add('copied');
-                    setTimeout(function() { el.classList.remove('copied'); }, 1500);
+                    showCopied(el);
+                }).catch(function() {
+                    fallbackCopy(el, text);
                 });
-            } else {
-                var ta = document.createElement('textarea');
-                ta.value = text;
-                document.body.appendChild(ta);
-                ta.select();
-                document.execCommand('copy');
-                document.body.removeChild(ta);
-                el.classList.add('copied');
-                setTimeout(function() { el.classList.remove('copied'); }, 1500);
+                return;
             }
+
+            fallbackCopy(el, text);
+        }
+
+        function fallbackCopy(el, text) {
+            var ta = document.createElement('textarea');
+            ta.value = text;
+            ta.style.position = 'fixed';
+            ta.style.left = '-9999px';
+            document.body.appendChild(ta);
+            ta.select();
+            try {
+                document.execCommand('copy');
+                showCopied(el);
+            } catch(e) {
+                // Select text for manual copy
+                var range = document.createRange();
+                range.selectNodeContents(el);
+                window.getSelection().removeAllRanges();
+                window.getSelection().addRange(range);
+            }
+            document.body.removeChild(ta);
+        }
+
+        function showCopied(el) {
+            el.classList.add('copied');
+            setTimeout(function() { el.classList.remove('copied'); }, 1500);
         }
 
         // On load: check URL hash or saved preference
