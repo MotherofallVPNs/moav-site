@@ -781,13 +781,7 @@
 
 
                 <div class="extra-section">
-                    <h4>Compatible Client Apps</h4>
-                    <ul>
-                        <li><strong>iOS:</strong> <a href="https://apps.apple.com/app/streisand/id6450534064" target="_blank">Streisand</a>, <a href="https://apps.apple.com/app/v2box/id6446814690" target="_blank">V2Box</a></li>
-                        <li><strong>Android:</strong> <a href="https://play.google.com/store/apps/details?id=com.v2ray.ang" target="_blank">V2rayNG</a>, <a href="https://play.google.com/store/apps/details?id=app.hiddify.com" target="_blank">Hiddify</a></li>
-                        <li><strong>Windows:</strong> <a href="https://github.com/2dust/v2rayN/releases" target="_blank">V2rayN</a>, <a href="https://github.com/hiddify/hiddify-app/releases" target="_blank">Hiddify</a></li>
-                        <li><strong>macOS:</strong> <a href="https://github.com/yanue/V2rayU/releases" target="_blank">V2rayU</a>, <a href="https://github.com/hiddify/hiddify-app/releases" target="_blank">Hiddify</a></li>
-                    </ul>
+                    <p>Compatible clients → <a href="#apps-en" onclick="scrollToSection('apps-en')" style="color: var(--accent-primary);">See Client Apps below</a></p>
                 </div>
 
                 <div class="extra-section">
@@ -1099,23 +1093,24 @@
                     <p style="color: var(--text-muted); font-size: 11px;">Or manually: Telegram → Settings → Data and Storage → Proxy → SOCKS5 → 127.0.0.1 : 7891</p>
                 </div>
 
-                <div class="config-box">
-                    <h4>Config via DNS Resolver (click to copy)</h4>
-                    <div class="config-value multiline" onclick="copyConfig(this)" style="font-size: 9px; max-height: 120px; overflow-y: auto;">{{CONFIG_XDNS}}</div>
-                </div>
-
-                <div class="config-box">
-                    <h4>Config via Direct Connection (click to copy)</h4>
-                    <div class="config-value multiline" onclick="copyConfig(this)" style="font-size: 9px; max-height: 120px; overflow-y: auto;">{{CONFIG_XDNS_DIRECT}}</div>
+                <div class="extra-section">
+                    <details>
+                        <summary style="cursor:pointer; color: var(--text-muted); font-size: 12px;">Show config JSON (click to copy)</summary>
+                        <div style="margin-top: 8px;">
+                            <p style="font-size: 11px; color: var(--text-muted); margin-bottom: 4px;">DNS Resolver config:</p>
+                            <div class="config-value multiline" onclick="copyConfig(this)" style="font-size: 9px; max-height: 150px; overflow-y: auto;">{{CONFIG_XDNS}}</div>
+                            <p style="font-size: 11px; color: var(--text-muted); margin: 8px 0 4px;">Direct connection config:</p>
+                            <div class="config-value multiline" onclick="copyConfig(this)" style="font-size: 9px; max-height: 150px; overflow-y: auto;">{{CONFIG_XDNS_DIRECT}}</div>
+                        </div>
+                    </details>
                 </div>
 
                 <div class="extra-section">
-                    <h4>Tips</h4>
-                    <ul style="font-size: 12px; margin: 4px 0;">
-                        <li>Try DNS resolver config first — switch to direct if connections keep dropping</li>
-                        <li>Other DNS resolvers to try: <code>1.1.1.1</code>, your ISP's DNS</li>
-                        <li>This is a <strong>Telegram proxy only</strong> — do not use for web browsing</li>
-                    </ul>
+                    <p style="font-size: 12px; color: var(--text-muted);">
+                        <strong>Tips:</strong> Try DNS resolver config first — switch to direct if dropping.
+                        Other resolvers: <code>1.1.1.1</code>, ISP DNS.
+                        <strong>Telegram proxy only</strong> — not for web browsing.
+                    </p>
                 </div>
             </div>
         </div>
@@ -1233,7 +1228,7 @@
                     <tr>
                         <td rowspan="9"><span class="platform-icon">📱</span>iOS</td>
                         <td><a href="https://apps.apple.com/us/app/streisand/id6450534064" target="_blank">Streisand</a> (Free)</td>
-                        <td class="protocols">Reality, Trojan, Hysteria2, WireGuard</td>
+                        <td class="protocols">Reality, Trojan, Hysteria2, XHTTP, WireGuard</td>
                     </tr>
                     <tr>
                         <td><a href="https://apps.apple.com/us/app/happ-proxy-utility/id6504287215" target="_blank">Happ</a> (Free)</td>
@@ -1241,11 +1236,11 @@
                     </tr>
                     <tr>
                         <td><a href="https://apps.apple.com/us/app/hiddify-proxy-vpn/id6596777532" target="_blank">Hiddify</a> (Free)</td>
-                        <td class="protocols">Reality, Trojan, Hysteria2</td>
+                        <td class="protocols">Reality, Trojan, Hysteria2, XHTTP</td>
                     </tr>
                     <tr>
                         <td><a href="https://apps.apple.com/ca/app/v2box-v2ray-client/id6446814690" target="_blank">V2Box</a> (Free)</td>
-                        <td class="protocols">Reality, Trojan, Hysteria2</td>
+                        <td class="protocols">Reality, Trojan, Hysteria2, XHTTP</td>
                     </tr>
                     <tr>
                         <td><a href="https://apps.apple.com/us/app/wireguard/id1441195209" target="_blank">WireGuard</a> (Free)</td>
@@ -1265,12 +1260,12 @@
                     </tr>
                     <tr>
                         <td><a href="https://apps.apple.com/us/app/shadowrocket/id932747118" target="_blank">Shadowrocket</a> ($2.99)</td>
-                        <td class="protocols">Reality, Trojan, Hysteria2, WireGuard</td>
+                        <td class="protocols">Reality, Trojan, Hysteria2, XHTTP, WireGuard</td>
                     </tr>
                     <tr>
                         <td rowspan="8"><span class="platform-icon">🤖</span>Android</td>
                         <td><a href="https://github.com/2dust/v2rayNG/releases" target="_blank">v2rayNG</a></td>
-                        <td class="protocols">Reality, Trojan, Hysteria2</td>
+                        <td class="protocols">Reality, Trojan, Hysteria2, XHTTP</td>
                     </tr>
                     <tr>
                         <td><a href="https://play.google.com/store/apps/details?id=com.happproxy" target="_blank">Happ</a></td>
@@ -1278,7 +1273,7 @@
                     </tr>
                     <tr>
                         <td><a href="https://github.com/hiddify/hiddify-app/releases" target="_blank">Hiddify</a></td>
-                        <td class="protocols">Reality, Trojan, Hysteria2</td>
+                        <td class="protocols">Reality, Trojan, Hysteria2, XHTTP</td>
                     </tr>
                     <tr>
                         <td><a href="https://play.google.com/store/apps/details?id=com.wireguard.android" target="_blank">WireGuard</a></td>
@@ -1307,11 +1302,11 @@
                     </tr>
                     <tr>
                         <td><a href="https://github.com/2dust/v2rayN/releases" target="_blank">v2rayN</a></td>
-                        <td class="protocols">Reality, Trojan, Hysteria2</td>
+                        <td class="protocols">Reality, Trojan, Hysteria2, XHTTP</td>
                     </tr>
                     <tr>
                         <td><a href="https://github.com/hiddify/hiddify-app/releases" target="_blank">Hiddify</a></td>
-                        <td class="protocols">Reality, Trojan, Hysteria2</td>
+                        <td class="protocols">Reality, Trojan, Hysteria2, XHTTP</td>
                     </tr>
                     <tr>
                         <td><a href="https://www.wireguard.com/install/" target="_blank">WireGuard</a></td>
@@ -1332,15 +1327,15 @@
                     <tr>
                         <td rowspan="7"><span class="platform-icon">🍎</span>macOS</td>
                         <td><a href="https://apps.apple.com/us/app/streisand/id6450534064" target="_blank">Streisand</a> (Free)</td>
-                        <td class="protocols">Reality, Trojan, Hysteria2, WireGuard</td>
+                        <td class="protocols">Reality, Trojan, Hysteria2, XHTTP, WireGuard</td>
                     </tr>
                     <tr>
                         <td><a href="https://github.com/hiddify/hiddify-app/releases" target="_blank">Hiddify</a></td>
-                        <td class="protocols">Reality, Trojan, Hysteria2</td>
+                        <td class="protocols">Reality, Trojan, Hysteria2, XHTTP</td>
                     </tr>
                     <tr>
                         <td><a href="https://github.com/clash-verge-rev/clash-verge-rev/releases" target="_blank">Clash Verge</a></td>
-                        <td class="protocols">Reality, Trojan, Hysteria2</td>
+                        <td class="protocols">Reality, Trojan, Hysteria2, XHTTP</td>
                     </tr>
                     <tr>
                         <td><a href="https://apps.apple.com/us/app/wireguard/id1451685025" target="_blank">WireGuard</a></td>
@@ -1361,7 +1356,7 @@
                     <tr>
                         <td rowspan="5"><span class="platform-icon">🐧</span>Linux</td>
                         <td><a href="https://github.com/hiddify/hiddify-app/releases" target="_blank">Hiddify</a></td>
-                        <td class="protocols">Reality, Trojan, Hysteria2</td>
+                        <td class="protocols">Reality, Trojan, Hysteria2, XHTTP</td>
                     </tr>
                     <tr>
                         <td><a href="https://www.wireguard.com/install/" target="_blank">WireGuard</a></td>
@@ -1601,13 +1596,7 @@
 
 
                 <div class="extra-section">
-                    <h4>برنامه‌های سازگار</h4>
-                    <ul>
-                        <li><strong>iOS:</strong> <a href="https://apps.apple.com/app/streisand/id6450534064" target="_blank">Streisand</a>، <a href="https://apps.apple.com/app/v2box/id6446814690" target="_blank">V2Box</a></li>
-                        <li><strong>Android:</strong> <a href="https://play.google.com/store/apps/details?id=com.v2ray.ang" target="_blank">V2rayNG</a>، <a href="https://play.google.com/store/apps/details?id=app.hiddify.com" target="_blank">Hiddify</a></li>
-                        <li><strong>Windows:</strong> <a href="https://github.com/2dust/v2rayN/releases" target="_blank">V2rayN</a>، <a href="https://github.com/hiddify/hiddify-app/releases" target="_blank">Hiddify</a></li>
-                        <li><strong>macOS:</strong> <a href="https://github.com/yanue/V2rayU/releases" target="_blank">V2rayU</a>، <a href="https://github.com/hiddify/hiddify-app/releases" target="_blank">Hiddify</a></li>
-                    </ul>
+                    <p>برنامه‌های سازگار ← <a href="#apps-fa" onclick="scrollToSection('apps-fa')" style="color: var(--accent-primary);">اپلیکیشن‌های کلاینت در پایین صفحه</a></p>
                 </div>
 
                 <div class="extra-section">
@@ -1916,23 +1905,24 @@
                     <p style="color: var(--text-muted); font-size: 11px;">یا دستی: تلگرام ← تنظیمات ← داده و ذخیره‌سازی ← پروکسی ← SOCKS5 ← 127.0.0.1 : 7891</p>
                 </div>
 
-                <div class="config-box">
-                    <h4>کانفیگ از طریق DNS Resolver (برای کپی کلیک کنید)</h4>
-                    <div class="config-value multiline" onclick="copyConfig(this)" style="font-size: 9px; max-height: 120px; overflow-y: auto;">{{CONFIG_XDNS}}</div>
-                </div>
-
-                <div class="config-box">
-                    <h4>کانفیگ اتصال مستقیم (برای کپی کلیک کنید)</h4>
-                    <div class="config-value multiline" onclick="copyConfig(this)" style="font-size: 9px; max-height: 120px; overflow-y: auto;">{{CONFIG_XDNS_DIRECT}}</div>
+                <div class="extra-section">
+                    <details>
+                        <summary style="cursor:pointer; color: var(--text-muted); font-size: 12px;">نمایش کانفیگ JSON (برای کپی کلیک کنید)</summary>
+                        <div style="margin-top: 8px;">
+                            <p style="font-size: 11px; color: var(--text-muted); margin-bottom: 4px;">کانفیگ DNS Resolver:</p>
+                            <div class="config-value multiline" onclick="copyConfig(this)" style="font-size: 9px; max-height: 150px; overflow-y: auto;">{{CONFIG_XDNS}}</div>
+                            <p style="font-size: 11px; color: var(--text-muted); margin: 8px 0 4px;">کانفیگ اتصال مستقیم:</p>
+                            <div class="config-value multiline" onclick="copyConfig(this)" style="font-size: 9px; max-height: 150px; overflow-y: auto;">{{CONFIG_XDNS_DIRECT}}</div>
+                        </div>
+                    </details>
                 </div>
 
                 <div class="extra-section">
-                    <h4>نکات</h4>
-                    <ul style="font-size: 12px; margin: 4px 0;">
-                        <li>اول کانفیگ DNS resolver رو امتحان کنید — اگه قطع و وصل شد برید رو مستقیم</li>
-                        <li>DNS resolver های دیگه: <code>1.1.1.1</code>، DNS سرور ISP خودتون</li>
-                        <li>این <strong>فقط پروکسی تلگرام</strong> هست — برای وب‌گردی استفاده نکنید</li>
-                    </ul>
+                    <p style="font-size: 12px; color: var(--text-muted);">
+                        <strong>نکات:</strong> اول کانفیگ DNS resolver رو امتحان کنید — اگه قطع و وصل شد برید رو مستقیم.
+                        DNS های دیگه: <code>1.1.1.1</code>، DNS سرور ISP.
+                        <strong>فقط پروکسی تلگرام</strong> — برای وب‌گردی نیست.
+                    </p>
                 </div>
             </div>
         </div>
@@ -2038,7 +2028,7 @@
                     <tr>
                         <td rowspan="9"><span class="platform-icon">📱</span>iOS</td>
                         <td><a href="https://apps.apple.com/us/app/streisand/id6450534064" target="_blank">Streisand</a></td>
-                        <td class="protocols">Reality, Trojan, Hysteria2, WireGuard</td>
+                        <td class="protocols">Reality, Trojan, Hysteria2, XHTTP, WireGuard</td>
                     </tr>
                     <tr>
                         <td><a href="https://apps.apple.com/us/app/happ-proxy-utility/id6504287215" target="_blank">Happ</a></td>
@@ -2046,11 +2036,11 @@
                     </tr>
                     <tr>
                         <td><a href="https://apps.apple.com/us/app/v2box-v2ray-client/id6446814690" target="_blank">V2Box</a></td>
-                        <td class="protocols">Reality, Trojan, Hysteria2</td>
+                        <td class="protocols">Reality, Trojan, Hysteria2, XHTTP</td>
                     </tr>
                     <tr>
                         <td><a href="https://apps.apple.com/us/app/hiddify-proxy-vpn/id6596777532" target="_blank">Hiddify</a></td>
-                        <td class="protocols">Reality, Trojan, Hysteria2</td>
+                        <td class="protocols">Reality, Trojan, Hysteria2, XHTTP</td>
                     </tr>
                     <tr>
                         <td><a href="https://apps.apple.com/us/app/wireguard/id1441195209" target="_blank">WireGuard</a></td>
@@ -2070,7 +2060,7 @@
                     </tr>
                     <tr>
                         <td><a href="https://apps.apple.com/us/app/shadowrocket/id932747118" target="_blank">Shadowrocket</a></td>
-                        <td class="protocols">Reality, Trojan, Hysteria2, WireGuard</td>
+                        <td class="protocols">Reality, Trojan, Hysteria2, XHTTP, WireGuard</td>
                     </tr>
                     <tr>
                         <td rowspan="7"><span class="platform-icon">🤖</span>Android</td>
@@ -2079,11 +2069,11 @@
                     </tr>
                     <tr>
                         <td><a href="https://github.com/2dust/v2rayNG/releases" target="_blank">v2rayNG</a></td>
-                        <td class="protocols">Reality, Trojan, Hysteria2</td>
+                        <td class="protocols">Reality, Trojan, Hysteria2, XHTTP</td>
                     </tr>
                     <tr>
                         <td><a href="https://github.com/hiddify/hiddify-app/releases" target="_blank">Hiddify</a></td>
-                        <td class="protocols">Reality, Trojan, Hysteria2</td>
+                        <td class="protocols">Reality, Trojan, Hysteria2, XHTTP</td>
                     </tr>
                     <tr>
                         <td><a href="https://play.google.com/store/apps/details?id=com.wireguard.android" target="_blank">WireGuard</a></td>
@@ -2108,7 +2098,7 @@
                     </tr>
                     <tr>
                         <td><a href="https://github.com/2dust/v2rayN/releases" target="_blank">v2rayN</a></td>
-                        <td class="protocols">Reality, Trojan, Hysteria2</td>
+                        <td class="protocols">Reality, Trojan, Hysteria2, XHTTP</td>
                     </tr>
                     <tr>
                         <td><a href="https://www.wireguard.com/install/" target="_blank">WireGuard</a></td>
@@ -2129,11 +2119,11 @@
                     <tr>
                         <td rowspan="6"><span class="platform-icon">🍎</span>macOS</td>
                         <td><a href="https://github.com/hiddify/hiddify-app/releases" target="_blank">Hiddify</a></td>
-                        <td class="protocols">Reality, Trojan, Hysteria2</td>
+                        <td class="protocols">Reality, Trojan, Hysteria2, XHTTP</td>
                     </tr>
                     <tr>
                         <td><a href="https://apps.apple.com/us/app/streisand/id6450534064" target="_blank">Streisand</a></td>
-                        <td class="protocols">Reality, Trojan, Hysteria2, WireGuard</td>
+                        <td class="protocols">Reality, Trojan, Hysteria2, XHTTP, WireGuard</td>
                     </tr>
                     <tr>
                         <td><a href="https://apps.apple.com/us/app/wireguard/id1451685025" target="_blank">WireGuard</a></td>
