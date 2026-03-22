@@ -736,14 +736,6 @@
             <div class="protocol-content">
                 <p class="protocol-desc">Use this when the server IP is blocked. Traffic routes through Cloudflare CDN, hiding your server's real IP.</p>
 
-                <div class="extra-section">
-                    <h4>When to use CDN mode</h4>
-                    <ul>
-                        <li>Reality/Hysteria2/Trojan suddenly stop working</li>
-                        <li>Your server IP has been blocked by the ISP</li>
-                        <li>Direct connections are being filtered</li>
-                    </ul>
-                </div>
 
                 <div class="qr-section">
                     <div class="qr-code">
@@ -787,23 +779,9 @@
             <div class="protocol-content">
                 <p class="protocol-desc">VLESS over XHTTP with Reality. Splits traffic into separate HTTP connections with no distinctive fingerprint, making it very hard to detect via DPI. Powered by Xray-core.</p>
 
-                <div class="extra-section">
-                    <h4>When to use XHTTP</h4>
-                    <ul>
-                        <li>Standard VLESS+Reality is being blocked</li>
-                        <li>Your network uses advanced DPI that detects ALPN fingerprints</li>
-                        <li>You need an alternative to sing-box protocols</li>
-                    </ul>
-                </div>
 
                 <div class="extra-section">
-                    <h4>Compatible Client Apps</h4>
-                    <ul>
-                        <li><strong>iOS:</strong> <a href="https://apps.apple.com/app/streisand/id6450534064" target="_blank">Streisand</a>, <a href="https://apps.apple.com/app/v2box/id6446814690" target="_blank">V2Box</a></li>
-                        <li><strong>Android:</strong> <a href="https://play.google.com/store/apps/details?id=com.v2ray.ang" target="_blank">V2rayNG</a>, <a href="https://play.google.com/store/apps/details?id=app.hiddify.com" target="_blank">Hiddify</a></li>
-                        <li><strong>Windows:</strong> <a href="https://github.com/2dust/v2rayN/releases" target="_blank">V2rayN</a>, <a href="https://github.com/hiddify/hiddify-app/releases" target="_blank">Hiddify</a></li>
-                        <li><strong>macOS:</strong> <a href="https://github.com/yanue/V2rayU/releases" target="_blank">V2rayU</a>, <a href="https://github.com/hiddify/hiddify-app/releases" target="_blank">Hiddify</a></li>
-                    </ul>
+                    <p>Compatible clients → <a href="#apps-en" onclick="scrollToSection('apps-en')" style="color: var(--accent-primary);">See Client Apps below</a></p>
                 </div>
 
                 <div class="extra-section">
@@ -841,24 +819,9 @@
             <div class="protocol-content">
                 <p class="protocol-desc">DPI-resistant WireGuard fork. Obfuscates WireGuard packets to defeat deep packet inspection. Same performance, invisible to censors.</p>
 
-                <div class="extra-section">
-                    <h4>When to use AmneziaWG</h4>
-                    <ul>
-                        <li>Standard WireGuard is blocked or throttled</li>
-                        <li>Mobile carriers detect and limit WireGuard traffic</li>
-                        <li>You need a full VPN with DPI evasion</li>
-                    </ul>
-                </div>
 
                 <div class="extra-section">
-                    <h4>Download AmneziaWG Client</h4>
-                    <ul>
-                        <li><strong>iOS:</strong> <a href="https://apps.apple.com/app/amneziawg/id6478942365" target="_blank">AmneziaWG on App Store</a></li>
-                        <li><strong>Android:</strong> <a href="https://play.google.com/store/apps/details?id=org.amnezia.awg" target="_blank">AmneziaWG on Play Store</a></li>
-                        <li><strong>Windows:</strong> <a href="https://github.com/amnezia-vpn/amneziawg-windows-client/releases" target="_blank">AmneziaWG Client</a></li>
-                        <li><strong>macOS:</strong> <a href="https://apps.apple.com/app/amneziawg/id6478942365" target="_blank">AmneziaWG on App Store</a> or <code>awg-quick</code> CLI</li>
-                        <li><strong>Linux:</strong> Use <code>awg-quick</code> CLI tool (included in awg-tools)</li>
-                    </ul>
+                    <p>Download AmneziaWG client → <a href="#apps-en" onclick="scrollToSection('apps-en')" style="color: var(--accent-primary);">See Client Apps below</a></p>
                 </div>
 
                 <div class="qr-section">
@@ -965,22 +928,9 @@
             <div class="protocol-content">
                 <p class="protocol-desc">Modern VPN protocol by AdGuard that looks like regular HTTPS traffic. Uses HTTP/2 and HTTP/3 (QUIC) for stealth.</p>
 
-                <div class="extra-section">
-                    <h4>When to use TrustTunnel</h4>
-                    <ul>
-                        <li>Other protocols are being detected and blocked</li>
-                        <li>You need a full VPN (all traffic routed)</li>
-                        <li>Your network actively inspects traffic patterns</li>
-                    </ul>
-                </div>
 
                 <div class="extra-section">
-                    <h4>Download TrustTunnel Client</h4>
-                    <ul>
-                        <li><strong>iOS:</strong> <a href="https://apps.apple.com/ca/app/trusttunnel/id6755807890" target="_blank">TrustTunnel on App Store</a></li>
-                        <li><strong>Android:</strong> <a href="https://play.google.com/store/apps/details?id=com.adguard.trusttunnel" target="_blank">TrustTunnel on Play Store</a> or <a href="https://github.com/TrustTunnel/TrustTunnel/releases" target="_blank">Direct APK</a></li>
-                        <li><strong>Windows/macOS/Linux:</strong> <a href="https://github.com/TrustTunnel/TrustTunnel/releases" target="_blank">GitHub Releases</a></li>
-                    </ul>
+                    <p>Download TrustTunnel client → <a href="#apps-en" onclick="scrollToSection('apps-en')" style="color: var(--accent-primary);">See Client Apps below</a></p>
                 </div>
 
                 <div class="extra-section">
@@ -1115,51 +1065,37 @@
                 <div class="protocol-title">
                     <h2>8c. XDNS</h2>
                     <span class="protocol-badge badge-fallback">mKCP DNS Tunnel</span>
-                    <span class="protocol-port">53/udp</span>
                 </div>
-                <p class="protocol-desc">DNS tunnel via Xray-core mKCP+FinalMask. Encodes VPN traffic inside DNS-like packets. Works during heavy internet shutdowns. <strong>Telegram proxy only</strong> — too slow for web browsing.</p>
-
-                <div class="info-box" style="border-color: var(--accent-warn, #f59e0b);">
-                    <h4>Important</h4>
-                    <p>XDNS requires a client app with <strong>FinalMask support</strong>. Standard v2rayNG does not support this yet. Use <strong>Happ</strong> (Android beta) or <strong>Xray CLI</strong>.</p>
-                </div>
+                <span class="protocol-port">Port 53/udp</span>
             </div>
-
-            <div class="protocol-body">
-                <div class="extra-section">
-                    <h4>1. Connect with XDNS</h4>
-                    <p>Two config files are included in this bundle:</p>
-                    <table style="font-size: 12px; margin: 8px 0;">
-                        <tr><td><code>xdns-config.json</code></td><td>Via DNS resolver (stealthier, may reconnect periodically)</td></tr>
-                        <tr><td><code>xdns-direct-config.json</code></td><td>Via direct server (more stable, less stealthy)</td></tr>
-                    </table>
-                    <p>Import one into your Xray client and connect.</p>
-                </div>
+            <div class="protocol-content">
+                <p class="protocol-desc">DNS tunnel for Telegram via Xray-core mKCP transport. Encodes VPN traffic inside DNS-like packets — works during heavy internet shutdowns when other protocols are blocked. Slow but reliable, best for Telegram and lightweight chat. Requires <a href="https://github.com/Happ-proxy" target="_blank"><strong>Happ</strong></a> client (v2rayNG not supported).</p>
 
                 <div class="extra-section">
-                    <h4>2. Add Telegram Proxy</h4>
-                    <p>After XDNS is connected, tap this link to configure Telegram:</p>
-                    <p><a href="https://t.me/socks?server=127.0.0.1&port=7891" target="_blank" style="color: var(--accent-primary); font-size: 14px; font-weight: 600;">Add Telegram Proxy (tap here)</a></p>
-                    <p style="color: var(--text-muted); font-size: 11px;">Or manually: Telegram → Settings → Data and Storage → Proxy → SOCKS5 → 127.0.0.1 : 7891</p>
+                    <h4>Setup</h4>
+                    <ol>
+                        <li>Install <a href="https://github.com/Happ-proxy" target="_blank"><strong>Happ</strong></a> for your platform (iOS / Android / Desktop)</li>
+                        <li>Import one of the config files below into Happ</li>
+                        <li>Connect, then <a href="https://t.me/socks?server=127.0.0.1&port=7891" target="_blank" style="color: var(--accent-primary); font-weight: 700; text-decoration: underline;">click here to add Telegram proxy</a> or add manually: <code>127.0.0.1:7891</code></li>
+                    </ol>
                 </div>
 
                 <div class="config-box">
-                    <h4>Config via DNS Resolver (click to copy)</h4>
+                    <h4>DNS Resolver Config (stealthier)</h4>
                     <div class="config-value multiline" onclick="copyConfig(this)" style="font-size: 9px; max-height: 120px; overflow-y: auto;">{{CONFIG_XDNS}}</div>
                 </div>
 
                 <div class="config-box">
-                    <h4>Config via Direct Connection (click to copy)</h4>
+                    <h4>Direct Config (more stable)</h4>
                     <div class="config-value multiline" onclick="copyConfig(this)" style="font-size: 9px; max-height: 120px; overflow-y: auto;">{{CONFIG_XDNS_DIRECT}}</div>
                 </div>
 
-                <div class="extra-section">
-                    <h4>Tips</h4>
-                    <ul style="font-size: 12px; margin: 4px 0;">
-                        <li>Try DNS resolver config first — switch to direct if connections keep dropping</li>
-                        <li>Other DNS resolvers to try: <code>1.1.1.1</code>, your ISP's DNS</li>
-                        <li>This is a <strong>Telegram proxy only</strong> — do not use for web browsing</li>
-                    </ul>
+                <div class="extra-section" style="margin-top: 16px;">
+                    <h4>DNS Resolvers</h4>
+                    <p><strong>DNS Resolver mode</strong> (default, stealthier): routes through public DNS — may reconnect periodically if resolver rate-limits</p>
+                    <p><strong>Direct mode</strong> (more stable): connects to server IP directly — no DNS resolver needed</p>
+                    <p style="margin-top: 8px;">If DNS resolver keeps dropping, switch to direct config or try other resolvers. Find working DNS resolvers: <a href="https://github.com/SamNet-dev/findns" target="_blank">findns</a> / <a href="https://gitlab.com/E-Gurl/dns-mns" target="_blank">dns-mns</a></p>
+                    <p style="color: var(--text-muted); font-size: 12px;"><strong>Telegram only</strong> — this protocol is too slow for web browsing.</p>
                 </div>
             </div>
         </div>
@@ -1211,14 +1147,6 @@
             <div class="protocol-content">
                 <p class="protocol-desc">The Tor network provides anonymous access to the internet. Does not require your MoaV server - connects to the global Tor network.</p>
 
-                <div class="extra-section">
-                    <h4>When to use Tor</h4>
-                    <ul>
-                        <li>All MoaV protocols are blocked</li>
-                        <li>You need strong anonymity</li>
-                        <li>Accessing .onion sites</li>
-                    </ul>
-                </div>
 
                 <div class="extra-section">
                     <h4>Download Tor Browser</h4>
@@ -1248,14 +1176,6 @@
             <div class="protocol-content">
                 <p class="protocol-desc">Free circumvention tool with its own network. Does not require your MoaV server - connects to Psiphon's global infrastructure.</p>
 
-                <div class="extra-section">
-                    <h4>When to use Psiphon</h4>
-                    <ul>
-                        <li>All MoaV protocols are blocked</li>
-                        <li>You need a quick, no-setup solution</li>
-                        <li>Your MoaV server IP is blocked</li>
-                    </ul>
-                </div>
 
                 <div class="extra-section">
                     <h4>Download Psiphon</h4>
@@ -1291,17 +1211,21 @@
                 </thead>
                 <tbody>
                     <tr>
-                        <td rowspan="8"><span class="platform-icon">📱</span>iOS</td>
+                        <td rowspan="9"><span class="platform-icon">📱</span>iOS</td>
                         <td><a href="https://apps.apple.com/us/app/streisand/id6450534064" target="_blank">Streisand</a> (Free)</td>
-                        <td class="protocols">Reality, Trojan, Hysteria2, WireGuard</td>
+                        <td class="protocols">Reality, Trojan, Hysteria2, XHTTP, WireGuard</td>
+                    </tr>
+                    <tr>
+                        <td><a href="https://apps.apple.com/us/app/happ-proxy-utility/id6504287215" target="_blank">Happ</a> (Free)</td>
+                        <td class="protocols">Reality, Trojan, XHTTP, XDNS, Hysteria2</td>
                     </tr>
                     <tr>
                         <td><a href="https://apps.apple.com/us/app/hiddify-proxy-vpn/id6596777532" target="_blank">Hiddify</a> (Free)</td>
-                        <td class="protocols">Reality, Trojan, Hysteria2</td>
+                        <td class="protocols">Reality, Trojan, Hysteria2, XHTTP</td>
                     </tr>
                     <tr>
                         <td><a href="https://apps.apple.com/ca/app/v2box-v2ray-client/id6446814690" target="_blank">V2Box</a> (Free)</td>
-                        <td class="protocols">Reality, Trojan, Hysteria2</td>
+                        <td class="protocols">Reality, Trojan, Hysteria2, XHTTP</td>
                     </tr>
                     <tr>
                         <td><a href="https://apps.apple.com/us/app/wireguard/id1441195209" target="_blank">WireGuard</a> (Free)</td>
@@ -1321,16 +1245,20 @@
                     </tr>
                     <tr>
                         <td><a href="https://apps.apple.com/us/app/shadowrocket/id932747118" target="_blank">Shadowrocket</a> ($2.99)</td>
-                        <td class="protocols">Reality, Trojan, Hysteria2, WireGuard</td>
+                        <td class="protocols">Reality, Trojan, Hysteria2, XHTTP, WireGuard</td>
                     </tr>
                     <tr>
-                        <td rowspan="7"><span class="platform-icon">🤖</span>Android</td>
+                        <td rowspan="8"><span class="platform-icon">🤖</span>Android</td>
                         <td><a href="https://github.com/2dust/v2rayNG/releases" target="_blank">v2rayNG</a></td>
-                        <td class="protocols">Reality, Trojan, Hysteria2</td>
+                        <td class="protocols">Reality, Trojan, Hysteria2, XHTTP</td>
+                    </tr>
+                    <tr>
+                        <td><a href="https://play.google.com/store/apps/details?id=com.happproxy" target="_blank">Happ</a></td>
+                        <td class="protocols">Reality, Trojan, XHTTP, XDNS, Hysteria2</td>
                     </tr>
                     <tr>
                         <td><a href="https://github.com/hiddify/hiddify-app/releases" target="_blank">Hiddify</a></td>
-                        <td class="protocols">Reality, Trojan, Hysteria2</td>
+                        <td class="protocols">Reality, Trojan, Hysteria2, XHTTP</td>
                     </tr>
                     <tr>
                         <td><a href="https://play.google.com/store/apps/details?id=com.wireguard.android" target="_blank">WireGuard</a></td>
@@ -1353,13 +1281,17 @@
                         <td class="protocols">Tor</td>
                     </tr>
                     <tr>
-                        <td rowspan="6"><span class="platform-icon">🪟</span>Windows</td>
+                        <td rowspan="7"><span class="platform-icon">🪟</span>Windows / macOS / Linux</td>
+                        <td><a href="https://github.com/Happ-proxy/happ-desktop/releases" target="_blank">Happ Desktop</a></td>
+                        <td class="protocols">Reality, Trojan, XHTTP, XDNS, Hysteria2</td>
+                    </tr>
+                    <tr>
                         <td><a href="https://github.com/2dust/v2rayN/releases" target="_blank">v2rayN</a></td>
-                        <td class="protocols">Reality, Trojan, Hysteria2</td>
+                        <td class="protocols">Reality, Trojan, Hysteria2, XHTTP</td>
                     </tr>
                     <tr>
                         <td><a href="https://github.com/hiddify/hiddify-app/releases" target="_blank">Hiddify</a></td>
-                        <td class="protocols">Reality, Trojan, Hysteria2</td>
+                        <td class="protocols">Reality, Trojan, Hysteria2, XHTTP</td>
                     </tr>
                     <tr>
                         <td><a href="https://www.wireguard.com/install/" target="_blank">WireGuard</a></td>
@@ -1380,15 +1312,15 @@
                     <tr>
                         <td rowspan="7"><span class="platform-icon">🍎</span>macOS</td>
                         <td><a href="https://apps.apple.com/us/app/streisand/id6450534064" target="_blank">Streisand</a> (Free)</td>
-                        <td class="protocols">Reality, Trojan, Hysteria2, WireGuard</td>
+                        <td class="protocols">Reality, Trojan, Hysteria2, XHTTP, WireGuard</td>
                     </tr>
                     <tr>
                         <td><a href="https://github.com/hiddify/hiddify-app/releases" target="_blank">Hiddify</a></td>
-                        <td class="protocols">Reality, Trojan, Hysteria2</td>
+                        <td class="protocols">Reality, Trojan, Hysteria2, XHTTP</td>
                     </tr>
                     <tr>
                         <td><a href="https://github.com/clash-verge-rev/clash-verge-rev/releases" target="_blank">Clash Verge</a></td>
-                        <td class="protocols">Reality, Trojan, Hysteria2</td>
+                        <td class="protocols">Reality, Trojan, Hysteria2, XHTTP</td>
                     </tr>
                     <tr>
                         <td><a href="https://apps.apple.com/us/app/wireguard/id1451685025" target="_blank">WireGuard</a></td>
@@ -1409,7 +1341,7 @@
                     <tr>
                         <td rowspan="5"><span class="platform-icon">🐧</span>Linux</td>
                         <td><a href="https://github.com/hiddify/hiddify-app/releases" target="_blank">Hiddify</a></td>
-                        <td class="protocols">Reality, Trojan, Hysteria2</td>
+                        <td class="protocols">Reality, Trojan, Hysteria2, XHTTP</td>
                     </tr>
                     <tr>
                         <td><a href="https://www.wireguard.com/install/" target="_blank">WireGuard</a></td>
@@ -1604,14 +1536,6 @@
             <div class="protocol-content">
                 <p class="protocol-desc">زمانی استفاده کنید که IP سرور مسدود شده. ترافیک از طریق CDN کلودفلر عبور می‌کند.</p>
 
-                <div class="extra-section">
-                    <h4>چه زمانی از حالت CDN استفاده کنید</h4>
-                    <ul>
-                        <li>Reality/Hysteria2/Trojan ناگهان کار نمی‌کنند</li>
-                        <li>IP سرور توسط ISP مسدود شده</li>
-                        <li>اتصال مستقیم فیلتر می‌شود</li>
-                    </ul>
-                </div>
 
                 <div class="qr-section">
                     <div class="qr-code">
@@ -1655,23 +1579,9 @@
             <div class="protocol-content">
                 <p class="protocol-desc">VLESS روی XHTTP با Reality. ترافیک را به اتصالات HTTP جداگانه تقسیم می‌کند بدون اثر انگشت قابل تشخیص، که شناسایی توسط DPI را بسیار دشوار می‌کند. با Xray-core کار می‌کند.</p>
 
-                <div class="extra-section">
-                    <h4>چه زمانی از XHTTP استفاده کنید</h4>
-                    <ul>
-                        <li>VLESS+Reality استاندارد مسدود شده است</li>
-                        <li>شبکه شما از DPI پیشرفته استفاده می‌کند که اثر انگشت ALPN را شناسایی می‌کند</li>
-                        <li>به جایگزینی برای پروتکل‌های sing-box نیاز دارید</li>
-                    </ul>
-                </div>
 
                 <div class="extra-section">
-                    <h4>برنامه‌های سازگار</h4>
-                    <ul>
-                        <li><strong>iOS:</strong> <a href="https://apps.apple.com/app/streisand/id6450534064" target="_blank">Streisand</a>، <a href="https://apps.apple.com/app/v2box/id6446814690" target="_blank">V2Box</a></li>
-                        <li><strong>Android:</strong> <a href="https://play.google.com/store/apps/details?id=com.v2ray.ang" target="_blank">V2rayNG</a>، <a href="https://play.google.com/store/apps/details?id=app.hiddify.com" target="_blank">Hiddify</a></li>
-                        <li><strong>Windows:</strong> <a href="https://github.com/2dust/v2rayN/releases" target="_blank">V2rayN</a>، <a href="https://github.com/hiddify/hiddify-app/releases" target="_blank">Hiddify</a></li>
-                        <li><strong>macOS:</strong> <a href="https://github.com/yanue/V2rayU/releases" target="_blank">V2rayU</a>، <a href="https://github.com/hiddify/hiddify-app/releases" target="_blank">Hiddify</a></li>
-                    </ul>
+                    <p>برنامه‌های سازگار ← <a href="#apps-fa" onclick="scrollToSection('apps-fa')" style="color: var(--accent-primary);">اپلیکیشن‌های کلاینت در پایین صفحه</a></p>
                 </div>
 
                 <div class="extra-section">
@@ -1709,24 +1619,9 @@
             <div class="protocol-content">
                 <p class="protocol-desc">نسخه ضد فیلتر WireGuard. بسته‌های WireGuard را مبهم‌سازی می‌کند تا از بازرسی عمیق بسته‌ها عبور کند. همان عملکرد، نامرئی برای سانسورگرها.</p>
 
-                <div class="extra-section">
-                    <h4>چه زمانی از AmneziaWG استفاده کنید</h4>
-                    <ul>
-                        <li>WireGuard معمولی مسدود یا کند شده</li>
-                        <li>اپراتورهای موبایل ترافیک WireGuard را شناسایی می‌کنند</li>
-                        <li>به VPN کامل با دور زدن DPI نیاز دارید</li>
-                    </ul>
-                </div>
 
                 <div class="extra-section">
-                    <h4>دانلود کلاینت AmneziaWG</h4>
-                    <ul>
-                        <li><strong>iOS:</strong> <a href="https://apps.apple.com/app/amneziawg/id6478942365" target="_blank">AmneziaWG در App Store</a></li>
-                        <li><strong>Android:</strong> <a href="https://play.google.com/store/apps/details?id=org.amnezia.awg" target="_blank">AmneziaWG در Play Store</a></li>
-                        <li><strong>Windows:</strong> <a href="https://github.com/amnezia-vpn/amneziawg-windows-client/releases" target="_blank">کلاینت AmneziaWG</a></li>
-                        <li><strong>macOS:</strong> <a href="https://apps.apple.com/app/amneziawg/id6478942365" target="_blank">AmneziaWG در App Store</a> یا <code>awg-quick</code> CLI</li>
-                        <li><strong>Linux:</strong> ابزار <code>awg-quick</code> CLI (موجود در awg-tools)</li>
-                    </ul>
+                    <p>دانلود کلاینت AmneziaWG ← <a href="#apps-fa" onclick="scrollToSection('apps-fa')" style="color: var(--accent-primary);">اپلیکیشن‌های کلاینت در پایین صفحه</a></p>
                 </div>
 
                 <div class="qr-section">
@@ -1833,22 +1728,9 @@
             <div class="protocol-content">
                 <p class="protocol-desc">پروتکل VPN مدرن از AdGuard که شبیه ترافیک HTTPS معمولی به نظر می‌رسد. از HTTP/2 و HTTP/3 (QUIC) برای پنهان‌کاری استفاده می‌کند.</p>
 
-                <div class="extra-section">
-                    <h4>چه زمانی از TrustTunnel استفاده کنید</h4>
-                    <ul>
-                        <li>سایر پروتکل‌ها شناسایی و مسدود می‌شوند</li>
-                        <li>به VPN کامل نیاز دارید (همه ترافیک هدایت شود)</li>
-                        <li>شبکه شما فعالانه الگوهای ترافیک را بررسی می‌کند</li>
-                    </ul>
-                </div>
 
                 <div class="extra-section">
-                    <h4>دانلود کلاینت TrustTunnel</h4>
-                    <ul>
-                        <li><strong>iOS:</strong> <a href="https://apps.apple.com/app/trusttunnel/id6740670603" target="_blank">TrustTunnel در App Store</a></li>
-                        <li><strong>Android:</strong> <a href="https://play.google.com/store/apps/details?id=com.AnyVPN.trusttunnel" target="_blank">TrustTunnel در Play Store</a> یا <a href="https://github.com/TrustTunnel/TrustTunnel/releases" target="_blank">APK مستقیم</a></li>
-                        <li><strong>Windows/macOS/Linux:</strong> <a href="https://github.com/TrustTunnel/TrustTunnel/releases" target="_blank">GitHub Releases</a></li>
-                    </ul>
+                    <p>دانلود کلاینت TrustTunnel ← <a href="#apps-fa" onclick="scrollToSection('apps-fa')" style="color: var(--accent-primary);">اپلیکیشن‌های کلاینت در پایین صفحه</a></p>
                 </div>
 
                 <div class="extra-section">
@@ -1980,51 +1862,37 @@
                 <div class="protocol-title">
                     <h2>۸پ. XDNS</h2>
                     <span class="protocol-badge badge-fallback">تونل DNS با mKCP</span>
-                    <span class="protocol-port">53/udp</span>
                 </div>
-                <p class="protocol-desc">تونل DNS از طریق mKCP+FinalMask در Xray-core. ترافیک VPN رو داخل پکت‌های شبیه DNS رمزگذاری میکنه. تو قطعی‌های شدید اینترنت کار میکنه. <strong>فقط برای پروکسی تلگرام</strong> — برای وب‌گردی کنده.</p>
-
-                <div class="info-box" style="border-color: var(--accent-warn, #f59e0b);">
-                    <h4>مهم</h4>
-                    <p>XDNS نیاز به اپ کلاینت با پشتیبانی <strong>FinalMask</strong> داره. v2rayNG استاندارد فعلاً پشتیبانی نمیکنه. از <strong>Happ</strong> (اندروید بتا) یا <strong>Xray CLI</strong> استفاده کنید.</p>
-                </div>
+                <span class="protocol-port">پورت 53/udp</span>
             </div>
-
-            <div class="protocol-body">
-                <div class="extra-section">
-                    <h4>۱. اتصال با XDNS</h4>
-                    <p>دو فایل کانفیگ تو این بسته هست:</p>
-                    <table style="font-size: 12px; margin: 8px 0;">
-                        <tr><td><code>xdns-config.json</code></td><td>از طریق DNS resolver (مخفی‌تر، ممکنه هر چند دقیقه قطع و وصل بشه)</td></tr>
-                        <tr><td><code>xdns-direct-config.json</code></td><td>اتصال مستقیم به سرور (پایدارتر، کمتر مخفی)</td></tr>
-                    </table>
-                    <p>یکی رو تو اپ Xray وارد کنید و وصل شید.</p>
-                </div>
+            <div class="protocol-content">
+                <p class="protocol-desc">تونل DNS برای تلگرام از طریق Xray-core mKCP. ترافیک VPN رو داخل پکت‌های شبیه DNS رمزگذاری میکنه — تو قطعی‌های شدید اینترنت وقتی بقیه پروتکل‌ها بلاک شدن کار میکنه. کنده ولی قابل اعتماد، بهترین استفاده برای تلگرام و چت. نیاز به <a href="https://github.com/Happ-proxy" target="_blank"><strong>Happ</strong></a> داره (v2rayNG پشتیبانی نمیکنه).</p>
 
                 <div class="extra-section">
-                    <h4>۲. تنظیم تلگرام</h4>
-                    <p>بعد از اتصال XDNS، روی این لینک بزنید تا پروکسی به تلگرام اضافه بشه:</p>
-                    <p><a href="https://t.me/socks?server=127.0.0.1&port=7891" target="_blank" style="color: var(--accent-primary); font-size: 14px; font-weight: 600;">اضافه کردن پروکسی تلگرام (اینجا بزنید)</a></p>
-                    <p style="color: var(--text-muted); font-size: 11px;">یا دستی: تلگرام ← تنظیمات ← داده و ذخیره‌سازی ← پروکسی ← SOCKS5 ← 127.0.0.1 : 7891</p>
+                    <h4>راه‌اندازی</h4>
+                    <ol>
+                        <li>نصب <a href="https://github.com/Happ-proxy" target="_blank"><strong>Happ</strong></a> برای پلتفرمتون (iOS / Android / Desktop)</li>
+                        <li>یکی از کانفیگ‌های زیر رو تو Happ وارد کنید</li>
+                        <li>وصل شید، بعد <a href="https://t.me/socks?server=127.0.0.1&port=7891" target="_blank" style="color: var(--accent-primary); font-weight: 700; text-decoration: underline;">اینجا بزنید برای اضافه کردن پروکسی تلگرام</a> یا دستی اضافه کنید: <code>127.0.0.1:7891</code></li>
+                    </ol>
                 </div>
 
                 <div class="config-box">
-                    <h4>کانفیگ از طریق DNS Resolver (برای کپی کلیک کنید)</h4>
+                    <h4>کانفیگ DNS Resolver (مخفی‌تر)</h4>
                     <div class="config-value multiline" onclick="copyConfig(this)" style="font-size: 9px; max-height: 120px; overflow-y: auto;">{{CONFIG_XDNS}}</div>
                 </div>
 
                 <div class="config-box">
-                    <h4>کانفیگ اتصال مستقیم (برای کپی کلیک کنید)</h4>
+                    <h4>کانفیگ مستقیم (پایدارتر)</h4>
                     <div class="config-value multiline" onclick="copyConfig(this)" style="font-size: 9px; max-height: 120px; overflow-y: auto;">{{CONFIG_XDNS_DIRECT}}</div>
                 </div>
 
-                <div class="extra-section">
-                    <h4>نکات</h4>
-                    <ul style="font-size: 12px; margin: 4px 0;">
-                        <li>اول کانفیگ DNS resolver رو امتحان کنید — اگه قطع و وصل شد برید رو مستقیم</li>
-                        <li>DNS resolver های دیگه: <code>1.1.1.1</code>، DNS سرور ISP خودتون</li>
-                        <li>این <strong>فقط پروکسی تلگرام</strong> هست — برای وب‌گردی استفاده نکنید</li>
-                    </ul>
+                <div class="extra-section" style="margin-top: 16px;">
+                    <h4>DNS Resolver ها</h4>
+                    <p><strong>حالت DNS Resolver</strong> (پیش‌فرض، مخفی‌تر): از طریق DNS عمومی — ممکنه هر چند دقیقه قطع و وصل بشه</p>
+                    <p><strong>حالت مستقیم</strong> (پایدارتر): مستقیم به IP سرور — بدون DNS resolver</p>
+                    <p style="margin-top: 8px;">اگه DNS resolver قطع و وصل میشه، برید رو کانفیگ مستقیم یا resolver دیگه امتحان کنید. پیدا کردن DNS resolver: <a href="https://github.com/SamNet-dev/findns" target="_blank">findns</a> / <a href="https://gitlab.com/E-Gurl/dns-mns" target="_blank">dns-mns</a></p>
+                    <p style="color: var(--text-muted); font-size: 12px;"><strong>فقط تلگرام</strong> — این پروتکل برای وب‌گردی کنده.</p>
                 </div>
             </div>
         </div>
@@ -2128,17 +1996,21 @@
                 </thead>
                 <tbody>
                     <tr>
-                        <td rowspan="8"><span class="platform-icon">📱</span>iOS</td>
+                        <td rowspan="9"><span class="platform-icon">📱</span>iOS</td>
                         <td><a href="https://apps.apple.com/us/app/streisand/id6450534064" target="_blank">Streisand</a></td>
-                        <td class="protocols">Reality, Trojan, Hysteria2, WireGuard</td>
+                        <td class="protocols">Reality, Trojan, Hysteria2, XHTTP, WireGuard</td>
+                    </tr>
+                    <tr>
+                        <td><a href="https://apps.apple.com/us/app/happ-proxy-utility/id6504287215" target="_blank">Happ</a></td>
+                        <td class="protocols">Reality, Trojan, XHTTP, XDNS, Hysteria2</td>
                     </tr>
                     <tr>
                         <td><a href="https://apps.apple.com/us/app/v2box-v2ray-client/id6446814690" target="_blank">V2Box</a></td>
-                        <td class="protocols">Reality, Trojan, Hysteria2</td>
+                        <td class="protocols">Reality, Trojan, Hysteria2, XHTTP</td>
                     </tr>
                     <tr>
                         <td><a href="https://apps.apple.com/us/app/hiddify-proxy-vpn/id6596777532" target="_blank">Hiddify</a></td>
-                        <td class="protocols">Reality, Trojan, Hysteria2</td>
+                        <td class="protocols">Reality, Trojan, Hysteria2, XHTTP</td>
                     </tr>
                     <tr>
                         <td><a href="https://apps.apple.com/us/app/wireguard/id1441195209" target="_blank">WireGuard</a></td>
@@ -2158,16 +2030,20 @@
                     </tr>
                     <tr>
                         <td><a href="https://apps.apple.com/us/app/shadowrocket/id932747118" target="_blank">Shadowrocket</a></td>
-                        <td class="protocols">Reality, Trojan, Hysteria2, WireGuard</td>
+                        <td class="protocols">Reality, Trojan, Hysteria2, XHTTP, WireGuard</td>
                     </tr>
                     <tr>
-                        <td rowspan="6"><span class="platform-icon">🤖</span>Android</td>
+                        <td rowspan="7"><span class="platform-icon">🤖</span>Android</td>
+                        <td><a href="https://play.google.com/store/apps/details?id=com.happproxy" target="_blank">Happ</a></td>
+                        <td class="protocols">Reality, Trojan, XHTTP, XDNS, Hysteria2</td>
+                    </tr>
+                    <tr>
                         <td><a href="https://github.com/2dust/v2rayNG/releases" target="_blank">v2rayNG</a></td>
-                        <td class="protocols">Reality, Trojan, Hysteria2</td>
+                        <td class="protocols">Reality, Trojan, Hysteria2, XHTTP</td>
                     </tr>
                     <tr>
                         <td><a href="https://github.com/hiddify/hiddify-app/releases" target="_blank">Hiddify</a></td>
-                        <td class="protocols">Reality, Trojan, Hysteria2</td>
+                        <td class="protocols">Reality, Trojan, Hysteria2, XHTTP</td>
                     </tr>
                     <tr>
                         <td><a href="https://play.google.com/store/apps/details?id=com.wireguard.android" target="_blank">WireGuard</a></td>
@@ -2186,9 +2062,13 @@
                         <td class="protocols">Tor</td>
                     </tr>
                     <tr>
-                        <td rowspan="5"><span class="platform-icon">🪟</span>Windows</td>
+                        <td rowspan="6"><span class="platform-icon">🪟</span>Windows / macOS / Linux</td>
+                        <td><a href="https://github.com/Happ-proxy/happ-desktop/releases" target="_blank">Happ Desktop</a></td>
+                        <td class="protocols">Reality, Trojan, XHTTP, XDNS, Hysteria2</td>
+                    </tr>
+                    <tr>
                         <td><a href="https://github.com/2dust/v2rayN/releases" target="_blank">v2rayN</a></td>
-                        <td class="protocols">Reality, Trojan, Hysteria2</td>
+                        <td class="protocols">Reality, Trojan, Hysteria2, XHTTP</td>
                     </tr>
                     <tr>
                         <td><a href="https://www.wireguard.com/install/" target="_blank">WireGuard</a></td>
@@ -2209,11 +2089,11 @@
                     <tr>
                         <td rowspan="6"><span class="platform-icon">🍎</span>macOS</td>
                         <td><a href="https://github.com/hiddify/hiddify-app/releases" target="_blank">Hiddify</a></td>
-                        <td class="protocols">Reality, Trojan, Hysteria2</td>
+                        <td class="protocols">Reality, Trojan, Hysteria2, XHTTP</td>
                     </tr>
                     <tr>
                         <td><a href="https://apps.apple.com/us/app/streisand/id6450534064" target="_blank">Streisand</a></td>
-                        <td class="protocols">Reality, Trojan, Hysteria2, WireGuard</td>
+                        <td class="protocols">Reality, Trojan, Hysteria2, XHTTP, WireGuard</td>
                     </tr>
                     <tr>
                         <td><a href="https://apps.apple.com/us/app/wireguard/id1451685025" target="_blank">WireGuard</a></td>
@@ -2253,23 +2133,45 @@
         }
 
         function copyConfig(el) {
-            if (el.classList.contains('multiline')) return;
-            var text = el.textContent;
-            if (navigator.clipboard) {
+            var text = el.textContent.trim();
+            var copied = false;
+
+            // Try modern clipboard API first
+            if (navigator.clipboard && window.isSecureContext) {
                 navigator.clipboard.writeText(text).then(function() {
-                    el.classList.add('copied');
-                    setTimeout(function() { el.classList.remove('copied'); }, 1500);
+                    showCopied(el);
+                }).catch(function() {
+                    fallbackCopy(el, text);
                 });
-            } else {
-                var ta = document.createElement('textarea');
-                ta.value = text;
-                document.body.appendChild(ta);
-                ta.select();
-                document.execCommand('copy');
-                document.body.removeChild(ta);
-                el.classList.add('copied');
-                setTimeout(function() { el.classList.remove('copied'); }, 1500);
+                return;
             }
+
+            fallbackCopy(el, text);
+        }
+
+        function fallbackCopy(el, text) {
+            var ta = document.createElement('textarea');
+            ta.value = text;
+            ta.style.position = 'fixed';
+            ta.style.left = '-9999px';
+            document.body.appendChild(ta);
+            ta.select();
+            try {
+                document.execCommand('copy');
+                showCopied(el);
+            } catch(e) {
+                // Select text for manual copy
+                var range = document.createRange();
+                range.selectNodeContents(el);
+                window.getSelection().removeAllRanges();
+                window.getSelection().addRange(range);
+            }
+            document.body.removeChild(ta);
+        }
+
+        function showCopied(el) {
+            el.classList.add('copied');
+            setTimeout(function() { el.classList.remove('copied'); }, 1500);
         }
 
         // On load: check URL hash or saved preference

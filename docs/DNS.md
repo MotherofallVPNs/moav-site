@@ -48,6 +48,7 @@ This guide explains how to configure DNS records for MoaV.
 | CDN (VLESS+WebSocket) | **Yes** (Cloudflare) or **No** (CloudFront) | 2082/tcp |
 | dnstt (DNS tunnel) | **Yes** (NS records) | 53/udp |
 | Slipstream (QUIC-over-DNS) | **Yes** (NS records) | 53/udp |
+| XDNS (mKCP DNS tunnel) | **Yes** (NS records) | 53/udp |
 
 **Domain-dependent protocols** need a valid TLS certificate (via Let's Encrypt) or NS delegation, which both require a domain.
 
@@ -151,6 +152,19 @@ TTL: 300
 
 Same concept as dnstt, but for the Slipstream QUIC-over-DNS tunnel. Slipstream is 1.5-5x faster than dnstt. Only needed if `ENABLE_SLIPSTREAM=true`.
 
+#### Step 5: NS Delegation for XDNS (Recommended)
+
+```
+Type: NS
+Name: x
+Value: dns.yourdomain.com
+TTL: 300
+```
+
+XDNS is the recommended DNS tunnel protocol (enabled by default since v1.7.2). It uses Xray-core's FinalMask technology to encode VLESS traffic in DNS-like packets via mKCP transport. While dnstt and Slipstream are mature alternatives, XDNS uses the latest Xray-core protocols that are currently working in the most restrictive network environments. Best for Telegram and lightweight messaging.
+
+> **Note**: XDNS, dnstt, and Slipstream all use port 53. Only one group can be active at a time. XDNS is enabled by default (`PORT_XDNS=53`), and dnstt/Slipstream are set to `PORT_DNS=5353` to avoid conflicts. To switch to dnstt/Slipstream instead, set `ENABLE_XDNS=false`, `ENABLE_DNSTT=true`, `PORT_DNS=53`, and `PORT_XDNS=5353` in `.env`.
+
 #### Optional: IPv6 Support
 
 If your server has IPv6, you can also add an AAAA record for the nameserver:
@@ -169,9 +183,10 @@ TTL: 300
 | Record | Name | Value | Proxy | Purpose | Required? |
 |--------|------|-------|-------|---------|-----------|
 | A | `@` | Server IP | DNS only | Main domain (Trojan, Hysteria2, Reality) | Yes |
-| A | `dns` | Server IP | DNS only | Nameserver for DNS tunnels | Only for dnstt/Slipstream |
+| A | `dns` | Server IP | DNS only | Nameserver for DNS tunnels | Only for dnstt/Slipstream/XDNS/XDNS |
 | NS | `t` | `dns.domain.com` | — | dnstt tunnel subdomain | Only for dnstt |
 | NS | `s` | `dns.domain.com` | — | Slipstream tunnel subdomain | Only for Slipstream |
+| NS | `x` | `dns.domain.com` | — | XDNS tunnel subdomain | Only for XDNS |
 | A | `cdn` | Server IP | **Proxied** | CDN-fronted VLESS | Only for CDN mode |
 | A | `www` | Server IP | **Proxied** | CDN stealth connect address | Optional (CDN stealth) |
 | A | `grafana` | Server IP | **Proxied** | Grafana via CDN | Optional (monitoring) |
@@ -521,7 +536,7 @@ Configure your router to forward the ports you need to your MoaV server's local 
 | 8443/tcp | TCP | Trojan |
 | 4443/tcp | TCP | TrustTunnel (HTTP/2) |
 | 4443/udp | UDP | TrustTunnel (HTTP/3 / QUIC) |
-| 53/udp | UDP | DNS tunnels (dnstt + Slipstream) |
+| 53/udp | UDP | DNS tunnels (dnstt / Slipstream / XDNS) |
 
 **Optional**:
 
@@ -595,7 +610,7 @@ DOMAIN=yourname.duckdns.org
 
 Then run bootstrap as normal.
 
-> **Note:** DuckDNS subdomains don't support NS delegation, so DNS tunnels (dnstt, Slipstream) won't work with DuckDNS. All other domain-based protocols work fine.
+> **Note:** DuckDNS subdomains don't support NS delegation, so DNS tunnels (dnstt, Slipstream, XDNS) won't work with DuckDNS. All other domain-based protocols work fine.
 
 ### Cloudflare DDNS (Own Domain)
 
