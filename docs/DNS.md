@@ -152,6 +152,19 @@ TTL: 300
 
 Same concept as dnstt, but for the Slipstream QUIC-over-DNS tunnel. Slipstream is 1.5-5x faster than dnstt. Only needed if `ENABLE_SLIPSTREAM=true`.
 
+#### Step 5: NS Delegation for XDNS (Recommended)
+
+```
+Type: NS
+Name: x
+Value: dns.yourdomain.com
+TTL: 300
+```
+
+XDNS is the recommended DNS tunnel protocol (enabled by default since v1.7.2). It uses Xray-core's FinalMask technology to encode VLESS traffic in DNS-like packets via mKCP transport. While dnstt and Slipstream are mature alternatives, XDNS uses the latest Xray-core protocols that are currently working in the most restrictive network environments. Best for Telegram and lightweight messaging.
+
+> **Note**: XDNS, dnstt, and Slipstream all use port 53. Only one group can be active at a time. XDNS is enabled by default (`PORT_XDNS=53`), and dnstt/Slipstream are set to `PORT_DNS=5353` to avoid conflicts. To switch to dnstt/Slipstream instead, set `ENABLE_XDNS=false`, `ENABLE_DNSTT=true`, `PORT_DNS=53`, and `PORT_XDNS=5353` in `.env`.
+
 #### Optional: IPv6 Support
 
 If your server has IPv6, you can also add an AAAA record for the nameserver:
