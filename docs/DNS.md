@@ -362,6 +362,26 @@ aws cloudfront create-distribution --distribution-config '{
 }'
 ```
 
+##### Fix Existing Distribution (Missing Policies)
+
+If you already created a distribution without the correct policies (common cause of `bad "Sec-WebSocket-Key" header` errors), fix it with:
+
+```bash
+# Download current config
+aws cloudfront get-distribution-config --id YOUR_DISTRIBUTION_ID > /tmp/cf-config.json
+
+# Add AllViewer origin request policy + CachingDisabled cache policy
+jq '.DistributionConfig.DefaultCacheBehavior.OriginRequestPolicyId = "216adef6-5c7f-47e4-b989-5492eafa07d3" | .DistributionConfig.DefaultCacheBehavior.CachePolicyId = "4135ea2d-6df8-44a3-9df3-4b5a84be39ad" | .DistributionConfig' /tmp/cf-config.json > /tmp/cf-update.json
+
+# Apply update (ETag is required for optimistic locking)
+ETAG=$(jq -r '.ETag' /tmp/cf-config.json)
+aws cloudfront update-distribution --id YOUR_DISTRIBUTION_ID --if-match "$ETAG" --distribution-config file:///tmp/cf-update.json
+```
+
+Wait 5-10 minutes for deployment. The key policies:
+- **`AllViewer`** (`216adef6-...`) — forwards all client headers including WebSocket upgrade headers to your origin
+- **`CachingDisabled`** (`4135ea2d-...`) — prevents caching, which breaks WebSocket connections
+
 > **Example:** For server IP `139.59.22.221`, use `"DomainName": "139.59.22.221.sslip.io"`
 
 The `PriceClass` controls which edge locations (regions) are used:
@@ -400,8 +420,10 @@ CDN_SUBDOMAIN=           # Leave empty (not using Cloudflare subdomain)
 CDN_DOMAIN=d1234abcd.cloudfront.net
 CDN_ADDRESS=d1234abcd.cloudfront.net
 CDN_SNI=d1234abcd.cloudfront.net
-CDN_TRANSPORT=ws         # Use 'ws' for widest CDN compatibility
+CDN_TRANSPORT=ws         # IMPORTANT: must be 'ws' for CloudFront (not 'httpupgrade')
 ```
+
+> **Important:** CloudFront requires `CDN_TRANSPORT=ws` (standard WebSocket). The default `httpupgrade` is a sing-box-specific protocol that works with Cloudflare but fails on CloudFront with `bad "Sec-WebSocket-Key" header` errors. If you switch from Cloudflare to CloudFront, change this setting and re-bootstrap.
 
 Then re-bootstrap to regenerate configs:
 ```bash
