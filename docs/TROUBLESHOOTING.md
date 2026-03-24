@@ -50,6 +50,7 @@ If `moav doctor` identifies the issue, follow its hints. If not, continue below.
   - [TrustTunnel not connecting](#trusttunnel-not-connecting)
   - [AmneziaWG not connecting](#amneziawg-not-connecting)
   - [CDN VLESS+WS not working](#cdn-vlessws-not-working)
+  - [CloudFront CDN: bad Sec-WebSocket-Key header](#cloudfront-cdn-bad-sec-websocket-key-header)
   - [XHTTP not connecting](#xhttp-not-connecting)
   - [DNS tunnel not working](#dns-tunnel-not-working)
 - [Registry/Build Issues](#registrybuild-issues)
@@ -668,6 +669,53 @@ This means Cloudflare is trying HTTPS to your origin, but MoaV's CDN inbound on 
 1. Set SSL/TLS mode to **Flexible** in Cloudflare dashboard (see 525 section above)
 2. Verify sing-box container is running
 3. Check sing-box config has `vless-ws-in` inbound on port 2082
+
+### CloudFront CDN: `bad "Sec-WebSocket-Key" header`
+
+```
+inbound/vless[vless-ws-in]: process connection from 15.158.x.x: upgrade websocket connection: handshake error: bad "Sec-WebSocket-Key" header
+```
+
+CloudFront is stripping WebSocket upgrade headers before forwarding to your server. Two things to fix:
+
+**1. CDN_TRANSPORT must be `ws`** (not `httpupgrade`):
+
+```bash
+# Check current sing-box config
+docker exec moav-sing-box cat /etc/sing-box/config.json | jq '.inbounds[] | select(.tag == "vless-ws-in") | .transport.type'
+# Must return "ws". If it returns "httpupgrade", fix .env and re-bootstrap:
+# Set CDN_TRANSPORT=ws in .env, then: moav bootstrap && moav restart sing-box
+```
+
+**2. CloudFront must have `AllViewer` Origin Request Policy:**
+
+```bash
+# Check current policies
+aws cloudfront get-distribution --id YOUR_DIST_ID \
+  --query 'Distribution.DistributionConfig.DefaultCacheBehavior.{Cache: CachePolicyId, OriginRequest: OriginRequestPolicyId}' \
+  --output table
+```
+
+Expected:
+- CachePolicyId: `4135ea2d-6df8-44a3-9df3-4b5a84be39ad` (CachingDisabled)
+- OriginRequestPolicyId: `216adef6-5c7f-47e4-b989-5492eafa07d3` (AllViewer)
+
+If `OriginRequestPolicy` is `None`, CloudFront drops the `Sec-WebSocket-Key`, `Upgrade`, and `Connection` headers. Fix:
+
+```bash
+aws cloudfront get-distribution-config --id YOUR_DIST_ID > /tmp/cf-config.json
+
+jq '.DistributionConfig.DefaultCacheBehavior.OriginRequestPolicyId = "216adef6-5c7f-47e4-b989-5492eafa07d3" | .DistributionConfig.DefaultCacheBehavior.CachePolicyId = "4135ea2d-6df8-44a3-9df3-4b5a84be39ad" | .DistributionConfig' /tmp/cf-config.json > /tmp/cf-update.json
+
+ETAG=$(jq -r '.ETag' /tmp/cf-config.json)
+aws cloudfront update-distribution --id YOUR_DIST_ID --if-match "$ETAG" --distribution-config file:///tmp/cf-update.json
+```
+
+Wait 5-10 minutes for CloudFront deployment, then test:
+```bash
+curl -s -o /dev/null -w "%{http_code}" https://d1234abcd.cloudfront.net/test
+# Should return 400 (sing-box responding to non-WebSocket request)
+```
 
 ### XHTTP not connecting
 

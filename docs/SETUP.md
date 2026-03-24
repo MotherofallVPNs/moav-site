@@ -515,12 +515,13 @@ If you don't have a domain, you can use AWS CloudFront instead of Cloudflare. Cl
 Client --HTTPS:443--> CloudFront CDN --HTTP:2082--> Your Server
 ```
 
-1. Create a CloudFront distribution with your server as origin (HTTP, port 2082)
-2. Set viewer protocol to HTTPS only, cache policy to CachingDisabled
-3. Configure MoaV:
+1. Create a CloudFront distribution:
+   - **Origin**: your server IP via sslip.io (e.g. `1.2.3.4.sslip.io`), protocol **HTTP only**, port **2082**
+   - **Viewer**: protocol **HTTPS only**, cache **CachingDisabled**, request policy **AllViewer**
+2. Configure MoaV:
 
 ```bash
-# In .env
+# In .env — IMPORTANT: CDN_TRANSPORT must be 'ws' for CloudFront
 CDN_SUBDOMAIN=
 CDN_DOMAIN=d1234abcd.cloudfront.net
 CDN_ADDRESS=d1234abcd.cloudfront.net
@@ -528,7 +529,7 @@ CDN_SNI=d1234abcd.cloudfront.net
 CDN_TRANSPORT=ws
 ```
 
-4. Run `moav bootstrap` to regenerate configs
+3. Run `moav bootstrap` to regenerate configs
 
 See [DNS Configuration — AWS CloudFront](DNS.md#aws-cloudfront-alternative-cdn) for detailed setup instructions.
 
