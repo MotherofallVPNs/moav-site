@@ -106,6 +106,7 @@ Telegram-specific proxy with Fake-TLS V2. Emulates real TLS connections, includi
 telemt has 17+ configurable settings for hostile network environments. All configurable in `.env`:
 
 **Traffic Disguise (anti-DPI):**
+
 | Setting | Default | Purpose |
 |---------|---------|---------|
 | `TELEMT_KEEPALIVE_RANDOM` | `true` | Randomize keepalive payload to break DPI pattern-matching |
@@ -114,6 +115,7 @@ telemt has 17+ configurable settings for hostile network environments. All confi
 | `TELEMT_WARMUP_JITTER` | `200` | Randomize connection establishment timing (ms) |
 
 **Connection Pool Resilience:**
+
 | Setting | Default | Purpose |
 |---------|---------|---------|
 | `TELEMT_POOL_SIZE` | `12` | Number of persistent connections to Telegram DCs |
@@ -123,6 +125,7 @@ telemt has 17+ configurable settings for hostile network environments. All confi
 | `TELEMT_HARDSWAP_DELAY_MAX` | `1200` | Max delay between new connections during swap (ms) |
 
 **Fast Reconnect:**
+
 | Setting | Default | Purpose |
 |---------|---------|---------|
 | `TELEMT_FAST_RETRIES` | `10` | Quick retries before exponential backoff |
@@ -130,6 +133,7 @@ telemt has 17+ configurable settings for hostile network environments. All confi
 | `TELEMT_BACKOFF_CAP` | `10000` | Maximum backoff interval (ms) |
 
 **Config Stability:**
+
 | Setting | Default | Purpose |
 |---------|---------|---------|
 | `TELEMT_STABLE_SNAPSHOTS` | `3` | Require N consistent config snapshots before applying changes |

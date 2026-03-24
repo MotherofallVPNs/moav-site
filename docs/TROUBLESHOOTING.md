@@ -1127,6 +1127,7 @@ MahsaNet API returned 404: {"detail":"No Config matches the given query."}
 **MahsaNet API reference:** [https://www.mahsaserver.com/backend/api/schema/redoc/](https://www.mahsaserver.com/backend/api/schema/redoc/)
 
 Key endpoints:
+
 | Method | Endpoint | Description |
 |--------|----------|-------------|
 | GET | `/backend/api/v1/config/` | List configs (supports `?hash=`, `?alias=`, `?is_active=` filters) |

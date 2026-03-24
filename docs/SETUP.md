@@ -382,6 +382,7 @@ Users open `README.html` in their browser for instructions and QR codes.
 Don't have a domain? MoaV can run with limited but useful services.
 
 **Available without domain:**
+
 | Service | Port | Description |
 |---------|------|-------------|
 | Reality (VLESS) | 443/tcp | Uses dl.google.com for TLS camouflage — no domain needed |
@@ -573,6 +574,7 @@ Instead, choose a domain that:
 3. **Isn't commonly used as a proxy target** — novel targets are harder to fingerprint
 
 **Examples for Iran:**
+
 | Domain | Why |
 |--------|-----|
 | `blubank.com` | Major fintech app, high traffic, can't be easily blocked |
@@ -580,6 +582,7 @@ Instead, choose a domain that:
 | `snapp.ir` | Ride-hailing app (like Uber) |
 
 **Generic (less optimal but widely compatible):**
+
 | Domain | Notes |
 |--------|-------|
 | `dl.google.com` | Default, works everywhere but well-known |
