@@ -6,9 +6,12 @@ Security recommendations for running and using MoaV safely.
 
 - [For Server Operators](#for-server-operators)
   - [Server Security](#server-security)
+  - [Firewall & Docker](#firewall--docker)
+  - [Admin & Monitoring Access Control](#admin--monitoring-access-control)
   - [Domain Security](#domain-security)
   - [Credential Management](#credential-management)
   - [Monitoring](#monitoring)
+  - [Docker Security Hardening](#docker-security-hardening)
   - [If Server is Blocked](#if-server-is-blocked)
 - [For Users](#for-users)
   - [Device Security](#device-security)
@@ -42,38 +45,14 @@ Security recommendations for running and using MoaV safely.
    PermitRootLogin prohibit-password
    ```
 
-3. **Enable firewall:**
-   ```bash
-   ufw allow 22/tcp      # SSH (IMPORTANT: always allow SSH first!)
-   ufw allow 443/tcp     # Reality (VLESS)
-   ufw allow 443/udp     # Hysteria2
-   ufw allow 8443/tcp    # Trojan
-   ufw allow 51820/udp   # WireGuard
-   ufw allow 51821/udp   # AmneziaWG
-   ufw allow 8080/tcp    # wstunnel (WireGuard over WebSocket)
-   ufw allow 4443/tcp    # TrustTunnel (HTTP/2)
-   ufw allow 4443/udp    # TrustTunnel (HTTP/3 QUIC)
-   ufw allow 993/tcp     # Telegram MTProxy (telemt)
-   ufw allow 2096/tcp    # XHTTP (VLESS+XHTTP+Reality)
-   ufw allow 53/udp      # DNS tunnels (dnstt + Slipstream)
-   ufw allow 2082/tcp    # CDN WebSocket (VLESS+WS via Cloudflare)
-   ufw allow 9443/tcp    # Admin dashboard
-   ufw allow 9444/tcp    # Grafana monitoring (if enabled)
-   ufw allow 80/tcp      # Let's Encrypt certificate renewal
-   ufw enable
-   ```
-   Only open ports for protocols you've enabled. At minimum: SSH (22) + your active protocols.
-
-   > **Warning:** If you change your SSH port (see below), add a rule for the new port **before** running `ufw enable`, or you will lock yourself out.
-
-4. **Change SSH port** (optional):
+3. **Change SSH port** (optional but recommended):
    ```bash
    # 1. Add firewall rule for new port FIRST
    ufw allow 2222/tcp
 
    # 2. Then change SSH config
    # In /etc/ssh/sshd_config:
-   Port 2222  # or another port
+   Port 2222
 
    # 3. Restart SSH
    systemctl restart sshd
@@ -82,58 +61,199 @@ Security recommendations for running and using MoaV safely.
    ufw delete allow 22/tcp
    ```
 
+### Firewall & Docker
+
+> **Important: Docker bypasses UFW/iptables.** Docker publishes ports by inserting iptables rules *before* UFW's chains. This means `ufw deny 9443` does NOT block access to port 9443 if Docker is publishing it. Ports listed in `docker-compose.yml` under `ports:` are publicly accessible regardless of UFW rules.
+>
+> Ports listed under `expose:` (without `ports:`) are Docker-internal only and NOT affected.
+>
+> See: [Docker packet filtering docs](https://docs.docker.com/engine/network/packet-filtering-firewalls/)
+
+**Basic UFW setup** (for non-Docker ports like SSH):
+
+```bash
+ufw allow 22/tcp      # SSH (IMPORTANT: always allow SSH first!)
+ufw enable
+```
+
+> **Warning:** UFW rules only effectively control non-Docker services (SSH, system services). For Docker-published ports, use the methods below.
+
+**Protocol ports** (published by Docker — UFW rules are informational only):
+
+| Port | Service | Notes |
+|------|---------|-------|
+| 443/tcp | Reality (VLESS) | Required |
+| 443/udp | Hysteria2 | Required if enabled |
+| 8443/tcp | Trojan | Required if enabled |
+| 4443/tcp+udp | TrustTunnel | Required if enabled |
+| 2082/tcp | CDN WebSocket | Required if enabled |
+| 51820/udp | WireGuard | Required if enabled |
+| 51821/udp | AmneziaWG | Required if enabled |
+| 8080/tcp | wstunnel | Required if enabled |
+| 993/tcp | Telegram MTProxy | Required if enabled |
+| 2096/tcp | XHTTP | Required if enabled |
+| 53/udp | XDNS (default) or dnstt/Slipstream | Required if DNS tunnels enabled |
+| 5353/udp | dnstt/Slipstream (when XDNS uses 53) | Only if dnstt/Slipstream enabled alongside XDNS |
+| 80/tcp | Let's Encrypt | Required during cert renewal |
+| 9443/tcp | Admin dashboard | See access control below |
+| 9444/tcp | Grafana | See access control below |
+| 2083/tcp | Grafana CDN proxy | See access control below |
+
+Protocol ports (Reality, Hysteria2, etc.) are designed to be public — they require authentication. The concern is admin/monitoring ports.
+
+#### Option 1: Use `ADMIN_IP_WHITELIST` (Recommended)
+
+MoaV's admin dashboard has built-in IP whitelisting. Set in `.env`:
+
+```bash
+# Allow only your IP (comma-separated for multiple)
+ADMIN_IP_WHITELIST=YOUR_HOME_IP,YOUR_OFFICE_IP
+
+# Then restart admin
+moav restart admin
+```
+
+This blocks all other IPs at the application level, regardless of Docker/UFW.
+
+#### Option 2: Bind to localhost + SSH tunnel
+
+For maximum security, bind admin/monitoring to `127.0.0.1` so they're only accessible via SSH tunnel:
+
+```bash
+# In .env — bind to localhost only
+PORT_ADMIN=127.0.0.1:9443
+PORT_GRAFANA=127.0.0.1:9444
+```
+
+Then access via SSH tunnel:
+```bash
+# From your local machine
+ssh -L 9443:127.0.0.1:9443 -L 9444:127.0.0.1:9444 root@YOUR_SERVER
+# Then open https://localhost:9443 in your browser
+```
+
+#### Option 3: ufw-docker (Advanced)
+
+[ufw-docker](https://github.com/chaifeng/ufw-docker) patches UFW to work with Docker by adding rules to the `DOCKER-USER` iptables chain. This makes `ufw` commands effective for Docker ports.
+
+```bash
+# Install
+sudo wget -O /usr/local/bin/ufw-docker https://github.com/chaifeng/ufw-docker/raw/master/ufw-docker
+sudo chmod +x /usr/local/bin/ufw-docker
+sudo ufw-docker install
+sudo systemctl restart ufw
+
+# Allow specific ports from any IP
+sudo ufw-docker allow moav-sing-box 443/tcp
+sudo ufw-docker allow moav-sing-box 443/udp
+
+# Allow admin only from your IP
+sudo ufw-docker allow moav-admin 8443/tcp from YOUR_IP
+```
+
+> **Trade-offs:** Requires modifying UFW config files (`/etc/ufw/after.rules`). Rules use `ufw route` syntax. Needs reload after container restarts. Works well but adds complexity. For most users, `ADMIN_IP_WHITELIST` is simpler.
+
+### Admin & Monitoring Access Control
+
+**Admin dashboard** (`https://server:9443`):
+- Username: `admin`
+- Password: set during install (in `.env` as `ADMIN_PASSWORD`)
+- Reset: `moav admin password`
+- IP whitelist: `ADMIN_IP_WHITELIST` in `.env`
+
+**Grafana** (`https://server:9444`):
+- Username: `admin`
+- Password: same as `ADMIN_PASSWORD`
+- Accessible from any IP by default (password-protected)
+
+**Internal services** (not publicly accessible):
+- Prometheus (9091) — `expose:` only, Docker-internal
+- All exporters — `expose:` only, Docker-internal
+- cAdvisor — `expose:` only, Docker-internal
+- Docker socket proxy — `expose:` only, Docker-internal
+
 ### Domain Security
 
-1. **Use WHOIS privacy** - Hide your personal information
-2. **Use a neutral registrar** - Avoid country-specific registrars
-3. **Keep registration info generic** - Don't use real name if possible
-4. **Pay anonymously** - Use crypto if available
+1. **Use WHOIS privacy** — hide personal information in domain registration
+2. **Use a neutral registrar** — avoid country-specific registrars
+3. **Keep registration info generic** — don't use real name if possible
+4. **Pay anonymously** — use crypto if available
+5. **Separate domain from identity** — don't use a domain linked to your name
 
 ### Credential Management
 
-1. **Never share master credentials** - Each user gets unique creds
+1. **Never share master credentials** — each user gets unique credentials
 2. **Revoke compromised users immediately:**
    ```bash
-   ./scripts/user-revoke.sh compromised_user
+   moav user revoke compromised_user
    ```
-3. **Rotate server keys periodically** - Re-bootstrap if concerned
-4. **Keep backups of state:**
+3. **Rotate server keys periodically** — re-bootstrap if concerned
+4. **Keep backups:**
    ```bash
-   tar czf moav-backup-$(date +%Y%m%d).tar.gz \
-     configs/ outputs/ .env
+   moav export    # Creates moav-backup-TIMESTAMP.tar.gz
    ```
+5. **Use strong admin password** — at least 16 characters, generated randomly
 
 ### Monitoring
 
-1. **Watch for unusual patterns:**
-   - Sudden traffic spikes
-   - Connections from unexpected IPs
-   - Failed authentication attempts
+1. **Use `moav doctor`** to check for configuration issues:
+   ```bash
+   moav doctor         # All checks
+   moav doctor dns     # DNS only
+   moav doctor ports   # Port conflicts
+   ```
 
 2. **Check logs regularly:**
    ```bash
-   docker compose logs --tail=100 sing-box | grep -i error
+   moav logs sing-box    # Proxy logs
+   moav logs admin       # Admin dashboard logs
    ```
 
-3. **Set up alerts** (optional):
-   - Use Uptime Kuma or similar for monitoring
-   - Alert on service down or high resource usage
+3. **Inspect connections** to see who's connecting and what they're accessing:
+   ```bash
+   ./scripts/inspect-connections.sh          # All connections (last 6h)
+   ./scripts/inspect-connections.sh IR 24h   # Filter by country
+   ./scripts/inspect-connections.sh --csv    # CSV export
+   ```
+
+4. **Grafana dashboards** (if monitoring enabled):
+   - Per-user traffic and connections
+   - GeoIP country distribution
+   - Protocol breakdown
+   - System health (CPU, RAM, disk)
+
+5. **Watch for unusual patterns:**
+   - Sudden traffic spikes from unexpected countries
+   - Single IPs with very high error counts (scanning/probing)
+   - Connections to suspicious destinations
+
+### Docker Security Hardening
+
+MoaV applies these hardening measures to all containers (since v1.7.2):
+
+- `cap_drop: ALL` — drops all Linux capabilities, adds back only what's needed
+- `read_only: true` — read-only root filesystem with targeted `tmpfs` mounts
+- `no-new-privileges: true` — prevents privilege escalation
+- `mem_limit` and `cpus` — resource limits per container
+- Non-root users — containers run as unprivileged `moav` user where possible
+- Docker socket proxy — admin uses `tecnativa/docker-socket-proxy` instead of mounting the raw Docker socket
 
 ### If Server is Blocked
 
-1. **Don't panic** - Have a backup plan ready
-2. **Try different protocols first** - Reality target change, Hysteria2
-3. **If IP is blocked:**
-   - Get a new VPS with fresh IP
-   - Or use floating IP if provider supports
-4. **Migrate:**
+1. **Try different protocols first** — switch from Reality to Hysteria2, XHTTP, or CDN mode
+2. **CDN mode** — routes through Cloudflare/CloudFront, works when server IP is blocked
+3. **DNS tunnels** — XDNS/dnstt/Slipstream work when most traffic is blocked
+4. **If IP is burned:**
    ```bash
-   # On old server
-   tar czf moav-state.tar.gz configs/ outputs/ -v moav_state/_data/
+   # On old server: export
+   moav export
 
-   # On new server
-   # Set up fresh, then restore user data
+   # On new server: import and update IP
+   moav import moav-backup-*.tar.gz
+   moav migrate-ip NEW_IP
+   moav start
    ```
+5. **Donate bandwidth** — even if your server is blocked for your users, it can still serve millions through Psiphon Conduit, Tor Snowflake, and MahsaNet
 
 ---
 
@@ -142,9 +262,9 @@ Security recommendations for running and using MoaV safely.
 ### Device Security
 
 1. **Use a separate profile/user** for circumvention apps on shared devices
-2. **Don't screenshot QR codes** - Or delete immediately after import
+2. **Don't screenshot QR codes** — or delete immediately after import
 3. **Delete bundle files** after importing to your apps
-4. **Use device encryption** - Enable full disk encryption
+4. **Use device encryption** — enable full disk encryption
 5. **Set strong device PIN/password**
 
 ### Connection Security
@@ -163,19 +283,17 @@ Security recommendations for running and using MoaV safely.
 
 ### App Security
 
-1. **Keep apps updated** - Updates often fix detection bypasses
+1. **Keep apps updated** — updates often fix detection bypasses
 2. **Download from official sources:**
-   - iOS: App Store
-   - Android: GitHub releases or F-Droid
+   - iOS: App Store (Happ, Streisand, Hiddify)
+   - Android: GitHub releases (Happ, v2rayNG, Hiddify)
    - Avoid random APK sites
 
-3. **Backup your configs:**
-   - Export configs from apps
-   - Store securely (encrypted)
+3. **Backup your configs** — export from apps, store securely
 
 ### Behavior Security
 
-1. **Don't share your credentials** - Each person should have their own
+1. **Don't share your credentials** — each person should have their own
 2. **Don't share screenshots** showing server addresses or QR codes
 3. **Don't mention specific servers** in public forums
 4. **Use secure messaging** to receive configs (Signal, encrypted email)
@@ -195,8 +313,8 @@ Security recommendations for running and using MoaV safely.
 
 **DO:**
 - Use end-to-end encrypted messaging (Signal, Telegram secret chat)
-- Share in person when possible
-- Use encrypted file sharing (OnionShare, Keybase)
+- Share in person when possible (scan QR code directly)
+- Use encrypted file sharing (OnionShare)
 - Delete messages after recipient confirms receipt
 
 **DON'T:**
@@ -207,22 +325,10 @@ Security recommendations for running and using MoaV safely.
 
 ### Recommended Distribution Methods
 
-1. **In Person:**
-   - Safest method
-   - Scan QR code directly from your screen
-
-2. **Signal:**
-   - Send configs as files
-   - Enable disappearing messages
-   - Verify recipient's safety number
-
-3. **Telegram (Secret Chat only):**
-   - NOT regular chats
-   - Use self-destruct timer
-
-4. **Encrypted Email:**
-   - PGP/GPG encrypted
-   - Or use ProtonMail-to-ProtonMail
+1. **In Person** — safest, scan QR code directly
+2. **Signal** — send configs as files, enable disappearing messages
+3. **Telegram (Secret Chat only)** — NOT regular chats, use self-destruct timer
+4. **Admin Dashboard** — share download links directly (HTTPS, password-protected)
 
 ---
 
@@ -230,29 +336,19 @@ Security recommendations for running and using MoaV safely.
 
 **Disclaimer:** This is not legal advice.
 
-### Know Your Jurisdiction
-
-- Laws vary by country
-- Running circumvention tools may be illegal in some places
-- Using them may also carry risks
+- Laws vary by country — running or using circumvention tools may carry legal risks
 - Assess your personal risk level
-
-### Plausible Deniability
-
-The decoy website helps:
-- Server looks like a normal HTTPS site
-- No obvious "VPN" or "proxy" indicators
-- Valid TLS certificate
-- Generic content
+- The decoy website provides plausible deniability (server looks like a normal HTTPS site)
 
 ### Data Retention
 
 MoaV is configured for minimal logging:
 - No URLs logged
 - No request content
-- Basic connection stats only (for admin)
+- Basic connection stats only (for admin dashboard)
+- IP addresses are in memory only (not persisted to disk)
 
-To disable all logging:
+To minimize logging further:
 ```bash
 # In .env
 LOG_LEVEL=error
@@ -270,22 +366,22 @@ LOG_LEVEL=error
 4. Consider using a different device
 5. Assess whether to continue using service
 
-### If Server is Raided/Seized
+### If Server is Seized
 
 User data exposure is limited:
-- Passwords are stored hashed
 - No content is logged
 - IP addresses are in memory only
+- User identifiers are usernames (not real names)
 
 But assume:
 - Server IP is known
-- User identifiers (not real names) are known
+- User identifiers are known
 - Active connections at time of seizure are known
 
 ### If User is Compromised
 
 As admin:
-1. Revoke user immediately: `./scripts/user-revoke.sh username`
+1. Revoke user immediately: `moav user revoke username`
 2. Monitor for unusual activity
 3. Consider rotating server if credentials were extracted
 4. Do NOT contact compromised user through normal channels
@@ -297,11 +393,15 @@ As admin:
 ### Server Operator
 
 - [ ] SSH keys only, no password auth
-- [ ] Firewall configured
+- [ ] SSH port changed from default 22
 - [ ] System auto-updates enabled
+- [ ] Admin IP whitelist configured (`ADMIN_IP_WHITELIST`)
+- [ ] Strong admin password (16+ characters)
 - [ ] Unique user credentials for everyone
-- [ ] Backup plan if blocked (new IP ready)
+- [ ] `moav doctor` passes all checks
+- [ ] Backup plan if blocked (new IP or migration ready)
 - [ ] Secure distribution channel established
+- [ ] Monitoring enabled (Grafana) or logs checked regularly
 
 ### User
 
