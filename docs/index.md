@@ -34,5 +34,4 @@ Read about [why MoaV exists and the mission behind it](philosophy.md).
 
 ## Developer
 
-- **[Protocol Integration Checklist](devdocs/PROTOCOL-INTEGRATION-CHECKLIST.md)** — How to add a new protocol
-- **[Version Bump Checklist](devdocs/VERSION-BUMP-CHECKLIST.md)** — Release process
+- **[Development & Testing](development.md)** — repo layout, test/e2e coverage, self-hosted runner setup, and the contributor/agent checklists

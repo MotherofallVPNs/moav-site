@@ -49,8 +49,7 @@ nav:
     - Supported Protocols: protocols.md
     - Architecture: architecture.md
   - Developer:
-    - Protocol Integration: devdocs/PROTOCOL-INTEGRATION-CHECKLIST.md
-    - Version Bump Checklist: devdocs/VERSION-BUMP-CHECKLIST.md
+    - Development & Testing: development.md
 
 markdown_extensions:
   - tables
