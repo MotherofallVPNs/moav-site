@@ -4,11 +4,14 @@ Get MoaV running on a VPS in 5 steps. MoaV deploys [16+ anti-censorship protocol
 
 ## Requirements
 
-- A VPS with Debian 12 or Ubuntu 22.04/24.04 (1 vCPU, 1GB RAM minimum)
+- A VPS **or a home server** — Debian 12 / Ubuntu 22.04/24.04, or a **Raspberry Pi 4+** (2 GB+ RAM, ARM64). 1 vCPU / 1 GB RAM minimum.
 - A domain name (optional — see [Domainless Mode](SETUP.md#domainless-mode))
 
 !!! tip "Need a VPS?"
     See [VPS Deployment](DEPLOY.md) for provider-by-provider steps starting at ~$5/month.
+
+!!! tip "Raspberry Pi or home server?"
+    MoaV runs great at home in **domainless mode** — no domain required. Since a home server sits behind a router, forward the protocol ports to it first: see [Home Servers & Raspberry Pi → Port Forwarding](DNS.md#port-forwarding). Check for CGNAT before you start — some ISPs block inbound connections entirely.
 
 ## Step 1: Install
 
@@ -76,6 +79,22 @@ ufw allow 993/tcp     # Telegram MTProxy
 ufw allow 9443/tcp    # Admin dashboard
 ```
 
+## Explore Your Server
+
+With services up and ports open, your server is more than the CLI shows at a glance:
+
+- **Admin dashboard** — `https://your-server:9443` (login with your admin password). Manage users, download bundles, and see service status from the browser.
+- **Grafana monitoring** — `https://your-server:9444` (login `admin` / your admin password), if you started the `monitoring` profile. Live traffic, per-protocol usage, and system health. See [Monitoring](MONITORING.md).
+
+And two commands worth knowing right away:
+
+```bash
+moav status    # what's running, ports, and health at a glance
+moav help      # every command MoaV offers — there's a lot more here
+```
+
+`moav help` is the fastest way to discover the rest (users, certificates, diagnostics, donation, updates, network tuning, and more).
+
 ## Step 5: Share with Users
 
 MoaV automatically generates a **client bundle** for each user in `outputs/bundles/`. Bundles are designed for non-technical users — they contain everything needed to connect without any manual configuration:
@@ -102,22 +121,6 @@ Send users the bundle (or just `README.html`). They don't need to understand pro
 
 !!! tip "Secure distribution"
     Share bundles via Signal, encrypted email, or in person. Avoid unencrypted channels.
-
-## Explore Your Server
-
-Your server does more than the CLI shows at a glance:
-
-- **Admin dashboard** — `https://your-server:9443` (login with your admin password). Manage users, download bundles, and see service status from the browser.
-- **Grafana monitoring** — `https://your-server:9444` (login `admin` / your admin password), if you started the `monitoring` profile. Live traffic, per-protocol usage, and system health. See [Monitoring](MONITORING.md).
-
-And two commands worth knowing right away:
-
-```bash
-moav status    # what's running, ports, and health at a glance
-moav help      # every command MoaV offers — there's a lot more here
-```
-
-`moav help` is the fastest way to discover the rest (users, certificates, diagnostics, donation, updates, network tuning, and more).
 
 ## Next Steps
 
