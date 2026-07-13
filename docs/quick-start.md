@@ -8,7 +8,7 @@ Get MoaV running on a VPS in 5 steps. MoaV deploys [16+ anti-censorship protocol
 - A domain name (optional — see [Domainless Mode](SETUP.md#domainless-mode))
 
 !!! tip "Need a VPS?"
-    See [VPS Deployment](DEPLOY.md) for one-click deploy options starting at ~$5/month.
+    See [VPS Deployment](DEPLOY.md) for provider-by-provider steps starting at ~$5/month.
 
 ## Step 1: Install
 
@@ -102,6 +102,22 @@ Send users the bundle (or just `README.html`). They don't need to understand pro
 
 !!! tip "Secure distribution"
     Share bundles via Signal, encrypted email, or in person. Avoid unencrypted channels.
+
+## Explore Your Server
+
+Your server does more than the CLI shows at a glance:
+
+- **Admin dashboard** — `https://your-server:9443` (login with your admin password). Manage users, download bundles, and see service status from the browser.
+- **Grafana monitoring** — `https://your-server:9444` (login `admin` / your admin password), if you started the `monitoring` profile. Live traffic, per-protocol usage, and system health. See [Monitoring](MONITORING.md).
+
+And two commands worth knowing right away:
+
+```bash
+moav status    # what's running, ports, and health at a glance
+moav help      # every command MoaV offers — there's a lot more here
+```
+
+`moav help` is the fastest way to discover the rest (users, certificates, diagnostics, donation, updates, network tuning, and more).
 
 ## Next Steps
 

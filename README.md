@@ -12,7 +12,7 @@ server release.
 
 | Path | What |
 |------|------|
-| `site/` | The landing page (`index.html`, `style.css`, `script.js`), the `install.sh` one-liner, `cloud-init.sh`, demos, and `CNAME` (`moav.sh`). |
+| `site/` | The landing page (`index.html`, `style.css`, `script.js`), the `install.sh` one-liner (refreshed from the server's latest release at deploy — see the deploy workflow), demos, and `CNAME` (`moav.sh`). |
 | `docs/` | The MkDocs (Material) documentation source — setup, DNS, clients, protocols, OPSEC, troubleshooting, etc. |
 | `mkdocs.yml` | MkDocs config. `repo_url` points here (moav-site) so the docs' "edit" links land on the doc source. |
 | `.github/workflows/deploy-site.yml` | Builds the docs and publishes `site/` (with `docs/` built into `site/docs/`) to GitHub Pages. |
