@@ -35,6 +35,22 @@ jobs:
           pip install mkdocs-material
           mkdocs build -d site/docs
 
+      - name: Publish latest install.sh
+        # install.sh is server code — its source of truth lives in
+        # MotherofallVPNs/moav. We serve it from moav.sh (reachable in censored
+        # networks) instead of redirecting users to a GitHub host. Best-effort:
+        # pull the latest release asset; if none exists yet, keep the copy
+        # committed here so the site never serves a 404.
+        run: |
+          URL="https://github.com/MotherofallVPNs/moav/releases/latest/download/install.sh"
+          if curl -fsSL "$URL" -o site/install.sh.new && [ -s site/install.sh.new ]; then
+            mv site/install.sh.new site/install.sh
+            echo "Published install.sh from the latest release asset."
+          else
+            rm -f site/install.sh.new
+            echo "No release asset yet — keeping the committed fallback site/install.sh."
+          fi
+
       - name: Setup Pages
         uses: actions/configure-pages@v4
 

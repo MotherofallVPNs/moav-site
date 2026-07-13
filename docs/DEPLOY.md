@@ -1,28 +1,18 @@
-# One-Click VPS Deployment
+# VPS Deployment
 
-Deploy MoaV on your favorite VPS provider in minutes. Each provider offers a slightly different process, but they all support cloud-init for automatic setup.
+Deploy MoaV on any VPS in minutes. The flow is the same everywhere: create an Ubuntu server, SSH in, and run the one-line installer.
 
 ## How It Works
 
-1. **Click the button** for your preferred provider below
-2. **Create a VPS** with the recommended specs (1 vCPU, 1GB RAM minimum)
-3. **Paste the cloud-init script** in the "User Data" or "Cloud-Init" field
-4. **SSH into your server** after it boots (usually 2-3 minutes)
-5. **Run `moav`** to complete the interactive setup
+1. **Create a VPS** with the recommended specs (1 vCPU, 2 GB RAM recommended) and an Ubuntu 22.04 image
+2. **SSH into your server** once it boots (usually 1-2 minutes): `ssh root@YOUR_IP`
+3. **Run the installer:**
+   ```bash
+   curl -fsSL moav.sh/install.sh | bash
+   ```
+   It installs Docker + prerequisites, clones MoaV to `/opt/moav`, installs the global `moav` command, and launches the interactive setup wizard.
 
-## Cloud-Init Script
-
-Copy this script and paste it into your VPS provider's "User Data" or "Cloud-Init" field when creating the server:
-
-```bash
-#!/bin/bash
-curl -fsSL https://moav.sh/cloud-init.sh | bash
-```
-
-Or use the full URL directly:
-```
-https://moav.sh/cloud-init.sh
-```
+The installer is safe to re-run and prompts for everything it needs. On low-RAM hosts it offers to add a swapfile so image builds don't get OOM-killed.
 
 ---
 
@@ -37,22 +27,16 @@ Hetzner offers excellent value with servers starting at €3.79/month in Europea
 3. Choose:
    - **Location**: Choose closest to your users
    - **Image**: Ubuntu 22.04
-   - **Type**: CX22 (2 vCPU, 4GB RAM) recommended, or CX11 (1 vCPU, 2GB) minimum
+   - **Type**: CX22 (2 vCPU, 4 GB RAM) recommended, or CX11 (1 vCPU, 2 GB) minimum
    - **Networking**: Enable IPv4 and IPv6
-4. Expand **"Cloud config"** section
-5. Paste the cloud-init script:
-   ```bash
-   #!/bin/bash
-   curl -fsSL https://moav.sh/cloud-init.sh | bash
-   ```
-6. Add your SSH key
-7. Click **"Create & Buy now"**
-8. Wait 2-3 minutes, then SSH in: `ssh root@YOUR_IP`
-9. You'll be greeted with the MoaV setup wizard
+4. Add your SSH key
+5. Click **"Create & Buy now"**
+6. Wait 1-2 minutes, then SSH in: `ssh root@YOUR_IP`
+7. Run `curl -fsSL moav.sh/install.sh | bash` and follow the setup wizard
 
 ### Recommended Specs
-- **Minimum**: CX11 (1 vCPU, 2GB RAM) - €3.79/month
-- **Recommended**: CX22 (2 vCPU, 4GB RAM) - €5.39/month
+- **Minimum**: CX11 (1 vCPU, 2 GB RAM) - €3.79/month
+- **Recommended**: CX22 (2 vCPU, 4 GB RAM) - €5.39/month
 
 ---
 
@@ -67,21 +51,15 @@ Linode (now Akamai) offers reliable servers with good global coverage.
 3. Choose:
    - **Image**: Ubuntu 22.04 LTS
    - **Region**: Choose closest to your users
-   - **Linode Plan**: Shared CPU - Nanode 1GB ($5/mo) or Linode 2GB ($12/mo)
-4. Scroll to **"Add User Data"** (under "Add-ons")
-5. Check the box and paste:
-   ```bash
-   #!/bin/bash
-   curl -fsSL https://moav.sh/cloud-init.sh | bash
-   ```
-6. Set your root password and add SSH key
-7. Click **"Create Linode"**
-8. Wait 2-3 minutes, then SSH in: `ssh root@YOUR_IP`
-9. You'll be greeted with the MoaV setup wizard
+   - **Linode Plan**: Shared CPU - Nanode 1 GB ($5/mo) or Linode 2 GB ($12/mo)
+4. Set your root password and add your SSH key
+5. Click **"Create Linode"**
+6. Wait 1-2 minutes, then SSH in: `ssh root@YOUR_IP`
+7. Run `curl -fsSL moav.sh/install.sh | bash` and follow the setup wizard
 
 ### Recommended Specs
-- **Minimum**: Nanode 1GB (1 vCPU, 1GB RAM) - $5/month
-- **Recommended**: Linode 2GB (1 vCPU, 2GB RAM) - $12/month
+- **Minimum**: Nanode 1 GB (1 vCPU, 1 GB RAM) - $5/month
+- **Recommended**: Linode 2 GB (1 vCPU, 2 GB RAM) - $12/month
 
 ---
 
@@ -98,20 +76,14 @@ Vultr offers competitive pricing with many global locations.
    - **Server Location**: Choose closest to your users
    - **Server Image**: Ubuntu 22.04 LTS x64
    - **Server Size**: 25 GB SSD ($5/mo) minimum
-4. Expand **"Add User Data"** (under Additional Features)
-5. Paste the cloud-init script:
-   ```bash
-   #!/bin/bash
-   curl -fsSL https://moav.sh/cloud-init.sh | bash
-   ```
-6. Add your SSH key
-7. Click **"Deploy Now"**
-8. Wait 2-3 minutes, then SSH in: `ssh root@YOUR_IP`
-9. You'll be greeted with the MoaV setup wizard
+4. Add your SSH key
+5. Click **"Deploy Now"**
+6. Wait 1-2 minutes, then SSH in: `ssh root@YOUR_IP`
+7. Run `curl -fsSL moav.sh/install.sh | bash` and follow the setup wizard
 
 ### Recommended Specs
-- **Minimum**: 25 GB SSD (1 vCPU, 1GB RAM) - $5/month
-- **Recommended**: 55 GB SSD (1 vCPU, 2GB RAM) - $10/month
+- **Minimum**: 25 GB SSD (1 vCPU, 1 GB RAM) - $5/month
+- **Recommended**: 55 GB SSD (1 vCPU, 2 GB RAM) - $10/month
 
 ---
 
@@ -126,45 +98,29 @@ DigitalOcean is popular and beginner-friendly with excellent documentation.
 3. Choose:
    - **Region**: Choose closest to your users
    - **Image**: Ubuntu 22.04 (LTS) x64
-   - **Size**: Basic → Regular → $6/mo (1GB RAM) or $12/mo (2GB RAM)
+   - **Size**: Basic → Regular → $6/mo (1 GB RAM) or $12/mo (2 GB RAM)
    - **Authentication**: SSH Key (recommended)
-4. Expand **"Advanced Options"**
-5. Check **"Add User Data"** and paste:
-   ```bash
-   #!/bin/bash
-   curl -fsSL https://moav.sh/cloud-init.sh | bash
-   ```
-6. Click **"Create Droplet"**
-7. Wait 2-3 minutes, then SSH in: `ssh root@YOUR_IP`
-8. You'll be greeted with the MoaV setup wizard
+4. Click **"Create Droplet"**
+5. Wait 1-2 minutes, then SSH in: `ssh root@YOUR_IP`
+6. Run `curl -fsSL moav.sh/install.sh | bash` and follow the setup wizard
 
 ### Recommended Specs
-- **Minimum**: Basic (1 vCPU, 1GB RAM) - $6/month
-- **Recommended**: Basic (1 vCPU, 2GB RAM) - $12/month
+- **Minimum**: Basic (1 vCPU, 1 GB RAM) - $6/month
+- **Recommended**: Basic (1 vCPU, 2 GB RAM) - $12/month
 
 ---
 
-## After Deployment
-
-Once you SSH into your server, you'll see the MoaV welcome screen:
-
-```
-███╗   ███╗ ██████╗  █████╗ ██╗   ██╗
-████╗ ████║██╔═══██╗██╔══██╗██║   ██║
-██╔████╔██║██║   ██║███████║██║   ██║
-██║╚██╔╝██║██║   ██║██╔══██║╚██╗ ██╔╝
-██║ ╚═╝ ██║╚██████╔╝██║  ██║ ╚████╔╝
-╚═╝     ╚═╝ ╚═════╝ ╚═╝  ╚═╝  ╚═══╝
-
-  Welcome to your MoaV Server!
-```
+## After Installation
 
 The setup wizard will guide you through:
+
 1. Entering your domain name
 2. Providing email for TLS certificates
-3. Setting admin dashboard password
+3. Setting the admin dashboard password
 4. Selecting which protocols to enable
 5. Creating initial users
+
+Once it finishes, `moav status` shows the running services and `moav help` lists everything else.
 
 ### Prerequisites Before Setup
 
@@ -184,14 +140,9 @@ Before running the setup, make sure:
 
 ## Troubleshooting
 
-### Cloud-init didn't run
+### Installer failed partway
 
-Check the log:
-```bash
-cat /var/log/moav-cloud-init.log
-```
-
-If MoaV wasn't installed, run manually:
+The installer is idempotent — just re-run it:
 ```bash
 curl -fsSL moav.sh/install.sh | bash
 ```
@@ -214,12 +165,4 @@ Should return your server's IP address.
 
 ---
 
-## Alternative: Manual Installation
-
-If you prefer not to use cloud-init, you can always SSH into any fresh Ubuntu server and run:
-
-```bash
-curl -fsSL moav.sh/install.sh | bash
-```
-
-See [SETUP.md](SETUP.md) for detailed manual installation instructions.
+See [SETUP.md](SETUP.md) for detailed manual installation and configuration instructions.
