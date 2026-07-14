@@ -1,19 +1,19 @@
 # Quick Start
 
-Get MoaV running on a VPS in 5 steps. MoaV deploys [16+ anti-censorship protocols](protocols.md) and generates client bundles that make it easy for anyone to connect — no technical knowledge needed. For the full story, see [why MoaV exists](philosophy.md). For detailed setup options, see the full [Setup Guide](SETUP.md).
+Get MoaV running in **two steps** — install, then explore. It deploys [16+ anti-censorship protocols](protocols.md) and turns each user into a share-ready **client bundle** (configs + QR codes + plain-language instructions) that anyone can open and connect with — no deep networking knowledge required. Curious why MoaV exists? Read [the mission](philosophy.md).
 
 ## Requirements
 
 - A VPS **or a home server** — Debian 12 / Ubuntu 22.04/24.04, or a **Raspberry Pi 4+** (2 GB+ RAM, ARM64). 1 vCPU / 1 GB RAM minimum.
-- A domain name (optional — see [Domainless Mode](SETUP.md#domainless-mode))
+- A domain name — optional; [domainless mode](SETUP.md#domainless-mode) works without one.
 
 !!! tip "Need a VPS?"
     See [VPS Deployment](DEPLOY.md) for provider-by-provider steps starting at ~$5/month.
 
 !!! tip "Raspberry Pi or home server?"
-    MoaV runs great at home in **domainless mode** — no domain required. Since a home server sits behind a router, forward the protocol ports to it first: see [Home Servers & Raspberry Pi → Port Forwarding](DNS.md#port-forwarding). Check for CGNAT before you start — some ISPs block inbound connections entirely.
+    MoaV runs great at home in **domainless mode** — no domain required. A home server sits behind a router, so forward the protocol ports to it first: see [Home Servers & Raspberry Pi → Port Forwarding](DNS.md#port-forwarding). (Check for CGNAT before you start — some ISPs block inbound connections entirely.)
 
-## Step 1: Install
+## Step 1 — Install
 
 SSH into your server and run:
 
@@ -21,111 +21,73 @@ SSH into your server and run:
 curl -fsSL moav.sh/install.sh | bash
 ```
 
-This installs Docker, clones MoaV, and launches the interactive setup.
+This installs Docker, clones MoaV, and walks you through first-time setup, asking for:
 
-## Step 2: Configure
+- **Domain** — pointed at this server (or leave blank for domainless mode)
+- **Email** — for your Let's Encrypt TLS certificates
+- **Admin password** — for the web dashboard
 
-The installer prompts you for:
+When it finishes, it prints the exact **DNS records** to add at your registrar — an `A` record for your domain, plus the `NS` records that delegate the DNS-tunnel subdomains to your server.
 
-- **Domain** — Your domain pointed at this server (or leave empty for domainless mode)
-- **Email** — For Let's Encrypt TLS certificates (required if using a domain)
-- **Admin password** — For the web dashboard
+!!! tip "Point your DNS first (recommended)"
+    Certificate issuance needs your domain already resolving to this server, so it's smoothest to add the DNS records **before** you install. Find the exact records for your setup in [DNS Configuration](DNS.md), set them up, then run the installer.
 
-!!! warning "DNS first"
-    If using a domain, point your DNS **before** running setup. The installer needs to verify domain ownership. See [DNS Configuration](DNS.md).
+Finally, open your firewall for the protocols you enabled — the [full port list is here](DNS.md#port-forwarding). Most cloud VPS providers leave all ports open by default, so you may not need to.
 
-## Step 3: Start Services
+## Step 2 — Explore your MoaV server
 
-```bash
-moav start
-```
-
-Choose which profiles to run:
-
-| Profile | Protocols |
-|---------|-----------|
-| `proxy` | Reality, Trojan, Hysteria2, CDN |
-| `wireguard` | WireGuard + wstunnel |
-| `amneziawg` | AmneziaWG (obfuscated WireGuard) |
-| `trusttunnel` | TrustTunnel |
-| `telegram` | Telegram MTProxy |
-| `dnstunnel` | dnstt + Slipstream |
-| `admin` | Web dashboard |
-| `conduit` | Psiphon bandwidth donation |
-| `snowflake` | Tor bandwidth donation |
-| `monitoring` | Grafana + Prometheus |
-| `all` | Everything |
+Everything after install lives in one friendly place. Just run:
 
 ```bash
-moav start proxy admin wireguard   # Start specific profiles
-moav start all                     # Start everything
+moav
 ```
 
-## Step 4: Open Firewall
+to open the interactive menu:
 
-Open the ports for your enabled protocols:
+```
+  Services
+  1) Start services
+  2) Stop services
+  3) Restart services
+  4) View status
+  5) View logs
+
+  Users & donations
+  6) User management
+  7) Donate configs (MahsaNet, Psiphon, Snowflake)
+
+  System
+  8)  Doctor — diagnose problems
+  9)  Admin password reset
+  10) Update MoaV
+  11) Build/rebuild services
+  12) Export/Import (migration)
+
+  0)  Exit
+```
+
+From here you **start services**, **add users**, run **diagnostics**, and more — nothing to memorize. The header shows what's running plus your **admin dashboard** (`https://your-server:9443`) and **Grafana** (`https://your-server:9444`, if monitoring is on). Every item maps to a `moav` command — the **[CLI Reference](CLI.md)** walks through the full menu and each one.
+
+Two commands worth knowing right away:
 
 ```bash
-# Core protocols
-ufw allow 443/tcp     # Reality
-ufw allow 443/udp     # Hysteria2
-ufw allow 8443/tcp    # Trojan
-ufw allow 51820/udp   # WireGuard
-ufw allow 51821/udp   # AmneziaWG
-ufw allow 8080/tcp    # wstunnel
-ufw allow 4443/tcp    # TrustTunnel
-ufw allow 4443/udp    # TrustTunnel (QUIC)
-ufw allow 993/tcp     # Telegram MTProxy
-ufw allow 9443/tcp    # Admin dashboard
+moav status   # what's running, ports, and health at a glance
+moav help     # every command MoaV offers
 ```
 
-## Explore Your Server
+### Share with your users
 
-With services up and ports open, your server is more than the CLI shows at a glance:
+Add a user — menu → **User management**, or `moav user add alice` (`--batch 10` for many) — and MoaV generates a **client bundle** in `outputs/bundles/`:
 
-- **Admin dashboard** — `https://your-server:9443` (login with your admin password). Manage users, download bundles, and see service status from the browser.
-- **Grafana monitoring** — `https://your-server:9444` (login `admin` / your admin password), if you started the `monitoring` profile. Live traffic, per-protocol usage, and system health. See [Monitoring](MONITORING.md).
+- **`README.html`** — step-by-step instructions (English + Farsi) with QR codes. Users open it in a browser, pick their platform, scan a code, and they're connected — no configuration.
+- Config files and share links for every enabled protocol, plus a one-paste **V2Ray subscription** for MahsaNG / v2rayNG / Hiddify.
 
-And two commands worth knowing right away:
-
-```bash
-moav status    # what's running, ports, and health at a glance
-moav help      # every command MoaV offers — there's a lot more here
-```
-
-`moav help` is the fastest way to discover the rest (users, certificates, diagnostics, donation, updates, network tuning, and more).
-
-## Step 5: Share with Users
-
-MoaV automatically generates a **client bundle** for each user in `outputs/bundles/`. Bundles are designed for non-technical users — they contain everything needed to connect without any manual configuration:
-
-- `README.html` — Step-by-step instructions (English + Farsi) with QR codes. Users open this in their browser, pick their platform, scan a QR code, and they're connected.
-- Config files for every enabled protocol (Reality, Trojan, Hysteria2, WireGuard, etc.)
-- QR codes for one-tap mobile import
-- Share links compatible with popular VPN apps
-
-**Download bundles:**
-
-- **Web dashboard** — Open `https://your-server:9443`, login, and click Download
-- **SCP** — `scp root@SERVER:/opt/moav/outputs/bundles/user01.zip ./`
-- **Package** — `moav user package user01` creates a zip
-
-**Add more users:**
-
-```bash
-moav user add alice           # Add single user
-moav user add --batch 10      # Batch create user01..user10
-```
-
-Send users the bundle (or just `README.html`). They don't need to understand protocols — the instructions guide them through installing an app and scanning a QR code. See [Client Apps](CLIENTS.md) for platform-specific details.
-
-!!! tip "Secure distribution"
-    Share bundles via Signal, encrypted email, or in person. Avoid unencrypted channels.
+Send them the bundle (or just `README.html`) over a secure channel — Signal, encrypted email, or in person. Grab it from the **admin dashboard** (login → Download), by `scp`, or `moav user package alice`. See [Client Apps](CLIENTS.md) for platform-specific details.
 
 ## Next Steps
 
 - [Client Apps](CLIENTS.md) — Platform-specific connection instructions
-- [CLI Reference](CLI.md) — All `moav` commands
+- [CLI Reference](CLI.md) — The full menu and every `moav` command
 - [CDN Mode](SETUP.md#cdn-fronted-mode-cloudflare) — Route through Cloudflare when your IP is blocked
-- [Monitoring](MONITORING.md) — Add Grafana dashboards
+- [Monitoring](MONITORING.md) — Grafana dashboards
 - [Troubleshooting](TROUBLESHOOTING.md) — Common issues and fixes

@@ -64,11 +64,35 @@ moav donate               # Donate configs to MahsaNet
 ### General
 
 #### `moav` (no command)
-Launch the interactive menu for guided setup and management.
+Launch the interactive menu (TUI) — the guided way to run everything, nothing to memorize. It shows your current status (running services, and the admin + Grafana URLs when they're up) and these options:
 
 ```bash
 moav
 ```
+
+```
+  Services
+  1) Start services        # moav start  — pick profiles, or "all"
+  2) Stop services         # moav stop
+  3) Restart services      # moav restart
+  4) View status           # moav status
+  5) View logs             # moav logs
+
+  Users & donations
+  6) User management       # add / list / revoke / package users → client bundles
+  7) Donate configs        # share configs to MahsaNet / Psiphon / Snowflake
+
+  System
+  8)  Doctor               # moav doctor — diagnose DNS, ports, certs, services
+  9)  Admin password reset # moav admin password
+  10) Update MoaV          # moav update
+  11) Build/rebuild        # moav build
+  12) Export / Import      # back up, or migrate to another server
+
+  0)  Exit
+```
+
+Every item maps to a `moav` subcommand documented below — the menu is just a friendlier front door.
 
 #### `moav help`
 Display help message with all available commands.
