@@ -5,7 +5,7 @@
 ![moav-client dashboard walkthrough](assets/moav-client-dashboard.gif)
 
 !!! note "How this differs from a connect-and-go app"
-    Phone/desktop apps like [Hiddify, NekoBox, sing-box, or Shadowrocket](CLIENTS.md#client-apps) are the simplest way to connect a single device. **moav-client** is for when you want an always-on local proxy that automatically **picks the best live endpoint**, **fails over** when one dies, and gives you a **dashboard + routing rules** — e.g. on a home server or Linux desktop that other devices route through. It's also documented (in a simpler CLI form) under [MoaV Client Container](CLIENTS.md#moav-client-container-linuxdocker).
+    Phone/desktop apps like [Hiddify, NekoBox, sing-box, or Shadowrocket](CLIENTS.md#client-apps) are the simplest way to connect a single device. **moav-client** is for when you want an always-on local proxy that automatically **picks the best live endpoint**, **fails over** when one dies, and gives you a **dashboard + routing rules** — e.g. on a home server or Linux desktop that other devices route through. To simply **test** whether a server's protocols work — on the server itself or in CI — use the lightweight [MoaV Client Container](CLIENTS.md#moav-client-container-linuxdocker) instead.
 
 ## Install
 
