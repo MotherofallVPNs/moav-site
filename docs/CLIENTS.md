@@ -169,6 +169,9 @@ MoaV includes a built-in multi-protocol client container. This is useful for:
 - Automated testing in CI/CD pipelines
 - Connecting through your MoaV server from a Docker environment
 
+!!! tip "Looking for the full client with a dashboard?"
+    The commands below cover the lightweight built-in tester/connector. For a standalone client with a **web dashboard**, **load-balancing**, **automatic failover**, and **live routing rules**, see the dedicated **[MoaV Client](client.md)** page.
+
 ### Testing Connectivity
 
 Test all protocols for a user to verify server is working:
