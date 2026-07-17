@@ -12,7 +12,7 @@
 One command installs Docker (if missing), clones the repo, lets you pick which sidecars to build, seeds config, and brings the stack up:
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/MotherofallVPNs/moav-client/main/install.sh | bash
+curl -fsSL moav.sh/client-install.sh | bash
 ```
 
 It works interactively — even piped through `bash` — or fully headless, and installs a global `moavc` command.
