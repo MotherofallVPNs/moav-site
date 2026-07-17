@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>MoaV v2 — prototype</title>
+<title>MoaV v2 (prototype)</title>
 <style>
 /* ============ self-hosted fonts (no third-party requests) ============ */
 @font-face{font-family:'Inter';src:url('assets/fonts/Inter-var.woff2') format('woff2');font-weight:400 800;font-display:swap;font-style:normal}
@@ -47,14 +47,25 @@ section{position:relative;padding:clamp(80px,12vh,160px) var(--pad-x)}
 
 /* ---------------- HERO ---------------- */
 .hero{min-height:100svh;display:flex;flex-direction:column;justify-content:center;
-  background:radial-gradient(ellipse 130% 90% at 50% -10%,#16264a 0%,#0c1426 40%,var(--ink-900) 75%)}
+  background:radial-gradient(ellipse 130% 90% at 50% -10%,#1a2f5c 0%,#0c1426 42%,var(--ink-900) 78%)}
+/* dreamy ambient bloom */
+.aura{position:absolute;inset:0;overflow:hidden;pointer-events:none}
+.hero>.aura{z-index:0}
+.blob{position:absolute;border-radius:50%;filter:blur(100px);mix-blend-mode:screen;will-change:transform}
+.blob.c{width:62vw;height:62vw;left:-12vw;top:-18vw;opacity:.55;background:radial-gradient(circle,rgba(0,212,255,.6),transparent 68%);animation:drift1 20s ease-in-out infinite alternate}
+.blob.p{width:56vw;height:56vw;right:-16vw;top:-8vw;opacity:.5;background:radial-gradient(circle,rgba(123,92,255,.55),transparent 68%);animation:drift2 26s ease-in-out infinite alternate}
+.blob.t{width:44vw;height:44vw;left:34vw;bottom:-26vw;opacity:.4;background:radial-gradient(circle,rgba(0,229,208,.5),transparent 68%);animation:drift1 30s ease-in-out infinite alternate}
+@keyframes drift1{to{transform:translate(6%,7%) scale(1.12)}}
+@keyframes drift2{to{transform:translate(-7%,5%) scale(1.08)}}
 .hero::after{content:"";position:absolute;inset:0;z-index:1;pointer-events:none;
   background:repeating-linear-gradient(to bottom,rgba(0,0,0,0) 0 2px,rgba(0,0,0,.13) 2px 3px);
   animation:flick 5.5s steps(60) infinite;mask-image:linear-gradient(to bottom,transparent,#000 25% 75%,transparent)}
 @keyframes flick{0%,97%,100%{opacity:1}98%{opacity:.82}99%{opacity:.93}}
 .hero>*{position:relative;z-index:3}
-.wordmark{font-weight:800;font-size:var(--display-hero);line-height:.9;letter-spacing:-.04em;margin:18px 0 0;
-  background:var(--grad-ice);-webkit-background-clip:text;background-clip:text;color:transparent;filter:drop-shadow(0 0 30px rgba(0,212,255,.25))}
+.wordmark{position:relative;font-weight:800;font-size:var(--display-hero);line-height:.9;letter-spacing:-.04em;margin:18px 0 0;width:max-content;
+  background:var(--grad-ice);-webkit-background-clip:text;background-clip:text;color:transparent;
+  filter:drop-shadow(0 0 28px rgba(0,212,255,.5)) drop-shadow(0 0 70px rgba(123,92,255,.35))}
+.wordmark::after{content:"MoaV";position:absolute;inset:0;z-index:-1;background:var(--grad-ice);-webkit-background-clip:text;background-clip:text;color:transparent;filter:blur(38px) brightness(1.5);opacity:.7}
 .promise{font-weight:800;font-size:clamp(24px,3.6vw,44px);letter-spacing:-.02em;margin:22px 0 0;max-width:20ch;line-height:1.08}
 .hero-sub{color:var(--text-2);font-size:clamp(15px,1.8vw,20px);margin-top:18px;max-width:60ch}
 .term{background:#06060a;border:1px solid var(--border-strong);border-radius:var(--radius-md);font-family:var(--font-mono);
@@ -117,16 +128,17 @@ section{position:relative;padding:clamp(80px,12vh,160px) var(--pad-x)}
 
 <!-- ===================== HERO ===================== -->
 <section class="hero grain">
+  <div class="aura"><span class="blob c"></span><span class="blob p"></span><span class="blob t"></span></div>
   <span class="tag">Multi-protocol circumvention stack</span>
   <h1 class="wordmark">MoaV</h1>
-  <p class="promise">Turn a <span class="ac">$10 VPS</span> into an arsenal of VPN protocols.</p>
-  <p class="hero-sub">One command. 16+ anti-censorship protocols behind a single stack — auto-probed, load-balanced, and instantly revocable. Software, not a service: you run it, no one operates it for you.</p>
+  <p class="promise">Turn <span class="ac">any VPS</span> into an arsenal of VPN protocols.</p>
+  <p class="hero-sub">One command stands up 16+ anti-censorship protocols behind a single stack. Endpoints are probed and load balanced for you, and any user can be revoked in seconds. You run it yourself, so no one else holds the keys. A small, cheap box is all it needs.</p>
   <div class="term" aria-label="install command">
     <div class="term-bar"><i></i><i></i><i></i></div>
     <div class="term-body"><span class="p">$</span><span class="c">curl -fsSL moav.sh/install.sh | bash</span><span class="cur"></span></div>
   </div>
   <div class="cta-row">
-    <a class="btn primary" href="/docs/quick-start/">▸ Deploy in 2 steps</a>
+    <a class="btn primary" href="/docs/quick-start/">▸ Install in one command</a>
     <a class="btn" href="/docs/">Read the docs</a>
     <a class="btn" href="https://github.com/MotherofallVPNs/moav">GitHub ↗</a>
   </div>
@@ -138,7 +150,7 @@ section{position:relative;padding:clamp(80px,12vh,160px) var(--pad-x)}
   <div class="reveal">
     <span class="tag">One stack, three surfaces</span>
     <h2 class="section-title">Deploy it, <span class="ac">operate</span> it, connect to it.</h2>
-    <p class="section-sub">The server, the operator console, and the local client — one brand, one command apart. Hover a surface to bring it forward.</p>
+    <p class="section-sub">The server you deploy, the console you run it from, and the client you connect through. Hover any surface to bring it forward.</p>
   </div>
   <div class="stack reveal" aria-label="product surfaces">
     <a class="surf s1" href="/docs/CLI/"><img src="assets/v2/tui.png" alt="MoaV terminal menu (TUI)" loading="lazy"><span class="cap"><b>Terminal</b> · the moav TUI</span></a>
@@ -149,7 +161,7 @@ section{position:relative;padding:clamp(80px,12vh,160px) var(--pad-x)}
 </section>
 
 <footer class="foot">
-  <span>MoaV — Mother of all VPNs · prototype</span>
+  <span>MoaV · Mother of all VPNs</span>
   <span><a href="https://t.me/motherofallvpns">Telegram</a> · <a href="https://github.com/MotherofallVPNs/moav">GitHub</a></span>
 </footer>
 
