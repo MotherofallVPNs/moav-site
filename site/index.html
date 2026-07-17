@@ -227,158 +227,6 @@
         </div>
     </section>
 
-    <!-- Protocols Section -->
-    <section class="protocols" id="protocols">
-        <div class="container">
-            <h2 class="section-title">Multi-Protocol Arsenal</h2>
-            <p class="section-subtitle">Multiple protocols, one stack. If one is blocked, others take over.</p>
-
-            <div class="protocol-grid">
-                <div class="protocol-card">
-                    <div class="protocol-icon">
-                        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-                            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
-                            <path d="M12 8v4M12 16h.01"/>
-                        </svg>
-                    </div>
-                    <h3>Stealth Proxies</h3>
-                    <p>Reality (VLESS), Hysteria2, Trojan, AnyTLS, Shadowsocks-2022. Look like normal HTTPS or random bytes — active-probing resistant. CDN mode routes through Cloudflare when IP is blocked.</p>
-                    <span class="protocol-port">443/tcp · 443/udp · 8443/tcp · 8388/tcp+udp · CDN</span>
-                </div>
-
-                <div class="protocol-card">
-                    <div class="protocol-icon">
-                        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-                            <path d="M4 4h16v4H4zM4 10h16v4H4zM4 16h16v4H4z" opacity="0.3"/>
-                            <path d="M2 4h20M2 10h20M2 16h20"/>
-                            <path d="M12 2v20"/>
-                        </svg>
-                    </div>
-                    <h3>XHTTP (Xray)</h3>
-                    <p>Multiplexed HTTP requests with Reality TLS camouflage. Traffic looks like regular web browsing. No domain needed.</p>
-                    <span class="protocol-port">2096/tcp · Xray-core</span>
-                </div>
-
-                <div class="protocol-card">
-                    <div class="protocol-icon">
-                        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-                            <path d="M12 2a10 10 0 1 0 10 10H12V2z"/>
-                            <path d="M20 12a8 8 0 0 0-8-8"/>
-                        </svg>
-                    </div>
-                    <h3>WireGuard VPN</h3>
-                    <p>Full VPN mode. Direct UDP or tunneled over WebSocket (wstunnel) when UDP is blocked.</p>
-                    <span class="protocol-port">51820/udp · 8080/tcp</span>
-                </div>
-
-                <div class="protocol-card">
-                    <div class="protocol-icon">
-                        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-                            <path d="M12 2a10 10 0 1 0 10 10H12V2z"/>
-                            <path d="M20 12a8 8 0 0 0-8-8"/>
-                            <path d="M8 12h8M12 8v8" stroke-width="1" opacity="0.5"/>
-                        </svg>
-                    </div>
-                    <h3>AmneziaWG</h3>
-                    <p>Obfuscated WireGuard that defeats deep packet inspection. Same speed, invisible to DPI filters.</p>
-                    <span class="protocol-port">51821/udp</span>
-                </div>
-
-                <div class="protocol-card">
-                    <div class="protocol-icon">
-                        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-                            <circle cx="12" cy="12" r="10"/>
-                            <line x1="2" y1="12" x2="22" y2="12"/>
-                            <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
-                        </svg>
-                    </div>
-                    <h3>DNS Tunnels</h3>
-                    <p>Last resort when everything else is blocked. Four tunnels — dnstt, Slipstream (QUIC-over-DNS), MasterDNS (ARQ, MahsaNG v16), and XDNS (FinalMask) — run at once on port 53, fanned out by subdomain via dns-router.</p>
-                    <span class="protocol-port">53/udp · dns-router</span>
-                </div>
-
-                <div class="protocol-card">
-                    <div class="protocol-icon">
-                        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-                            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
-                            <path d="M8 10h8M8 14h4"/>
-                        </svg>
-                    </div>
-                    <h3>Telegram MTProxy</h3>
-                    <p>Fake-TLS V2 proxy for direct Telegram access. Mimics IMAPS traffic, works without a domain.</p>
-                    <span class="protocol-port">993/tcp</span>
-                </div>
-
-                <div class="protocol-card">
-                    <div class="protocol-icon">
-                        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-                            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
-                            <circle cx="9" cy="7" r="4"/>
-                            <path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/>
-                        </svg>
-                    </div>
-                    <h3>Psiphon Conduit</h3>
-                    <p>Donate bandwidth to help others bypass censorship. Support the global anti-censorship network.</p>
-                    <span class="protocol-port">Psiphon Network</span>
-                </div>
-
-                <div class="protocol-card">
-                    <div class="protocol-icon">
-                        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-                            <circle cx="12" cy="12" r="3"/>
-                            <path d="M12 1v6M12 17v6M4.22 4.22l4.24 4.24M15.54 15.54l4.24 4.24M1 12h6M17 12h6M4.22 19.78l4.24-4.24M15.54 8.46l4.24-4.24"/>
-                        </svg>
-                    </div>
-                    <h3>Tor Snowflake</h3>
-                    <p>Donate bandwidth to the Tor network. Help Tor users bypass censorship worldwide.</p>
-                    <span class="protocol-port">Tor Network</span>
-                </div>
-
-                <div class="protocol-card">
-                    <div class="protocol-icon">
-                        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-                            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
-                            <path d="M9 12l2 2 4-4"/>
-                        </svg>
-                    </div>
-                    <h3>TrustTunnel</h3>
-                    <p>HTTP/2 and QUIC tunneling. Looks exactly like normal HTTPS traffic to deep packet inspection.</p>
-                    <span class="protocol-port">4443/tcp+udp</span>
-                </div>
-
-                <div class="protocol-card">
-                    <div class="protocol-icon">
-                        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-                            <circle cx="12" cy="12" r="10"/>
-                            <path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
-                        </svg>
-                    </div>
-                    <h3>GooseRelay</h3>
-                    <p>SOCKS5 tunneled through a Google Apps Script you deploy in your own account, fronted as google.com. Survives when the server IP is blocked but Google is reachable. MahsaNG v16. Opt-in.</p>
-                    <span class="protocol-port">via Google · MahsaNG v16</span>
-                </div>
-
-                <div class="protocol-card protocol-card-cta">
-                    <div class="protocol-icon">
-                        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-                            <circle cx="12" cy="12" r="10"/>
-                            <line x1="12" y1="8" x2="12" y2="16"/>
-                            <line x1="8" y1="12" x2="16" y2="12"/>
-                        </svg>
-                    </div>
-                    <h3>Your Protocol?</h3>
-                    <p>Easy to add new protocols! Know one that should be here? Let us know.</p>
-                    <div class="protocol-cta-buttons">
-                        <a href="https://github.com/MotherofallVPNs/moav/issues/new?template=feature_request.md&title=[Protocol]+" class="btn-small" target="_blank" rel="noopener">Request</a>
-                        <a href="https://github.com/MotherofallVPNs/moav/pulls" class="btn-small btn-outline" target="_blank" rel="noopener">Send PR</a>
-                    </div>
-                </div>
-            </div>
-
-            <p class="protocols-link">See <a href="#clients">client apps</a> to connect with these protocols.</p>
-        </div>
-    </section>
-
     <!-- Why MoaV Section -->
     <section class="why" id="why">
         <div class="container">
@@ -839,6 +687,7 @@ moav update            # Update MoaV</pre>
                     <div class="step-content">
                         <h3>Download Configs & Connect</h3>
                         <p>Download user bundles from the <strong>admin dashboard</strong> at <code>https://your-server:9443</code>, or scan QR codes directly from the terminal. Each bundle contains configs for all protocols.</p>
+                        <p class="client-note">Prefer an always-on local proxy with a dashboard, load-balancing, and automatic failover? Run the self-hosted <a href="/docs/client/">MoaV Client</a>.</p>
                         <div class="client-table">
                             <div class="client-row">
                                 <div class="client-platform"><span class="platform-icon">📱</span> iOS</div>
@@ -906,6 +755,159 @@ moav update            # Update MoaV</pre>
         </div>
     </section>
 
+    <!-- Protocols Section -->
+    <section class="protocols" id="protocols">
+        <div class="container">
+            <h2 class="section-title">Multi-Protocol Arsenal</h2>
+            <p class="section-subtitle">Multiple protocols, one stack. If one is blocked, others take over.</p>
+
+            <div class="protocol-grid">
+                <div class="protocol-card">
+                    <div class="protocol-icon">
+                        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                            <path d="M12 8v4M12 16h.01"/>
+                        </svg>
+                    </div>
+                    <h3>Stealth Proxies</h3>
+                    <p>Reality (VLESS), Hysteria2, Trojan, AnyTLS, Shadowsocks-2022. Look like normal HTTPS or random bytes — active-probing resistant. CDN mode routes through Cloudflare when IP is blocked.</p>
+                    <span class="protocol-port">443/tcp · 443/udp · 8443/tcp · 8388/tcp+udp · CDN</span>
+                </div>
+
+                <div class="protocol-card">
+                    <div class="protocol-icon">
+                        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                            <path d="M4 4h16v4H4zM4 10h16v4H4zM4 16h16v4H4z" opacity="0.3"/>
+                            <path d="M2 4h20M2 10h20M2 16h20"/>
+                            <path d="M12 2v20"/>
+                        </svg>
+                    </div>
+                    <h3>XHTTP (Xray)</h3>
+                    <p>Multiplexed HTTP requests with Reality TLS camouflage. Traffic looks like regular web browsing. No domain needed.</p>
+                    <span class="protocol-port">2096/tcp · Xray-core</span>
+                </div>
+
+                <div class="protocol-card">
+                    <div class="protocol-icon">
+                        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                            <path d="M12 2a10 10 0 1 0 10 10H12V2z"/>
+                            <path d="M20 12a8 8 0 0 0-8-8"/>
+                        </svg>
+                    </div>
+                    <h3>WireGuard VPN</h3>
+                    <p>Full VPN mode. Direct UDP or tunneled over WebSocket (wstunnel) when UDP is blocked.</p>
+                    <span class="protocol-port">51820/udp · 8080/tcp</span>
+                </div>
+
+                <div class="protocol-card">
+                    <div class="protocol-icon">
+                        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                            <path d="M12 2a10 10 0 1 0 10 10H12V2z"/>
+                            <path d="M20 12a8 8 0 0 0-8-8"/>
+                            <path d="M8 12h8M12 8v8" stroke-width="1" opacity="0.5"/>
+                        </svg>
+                    </div>
+                    <h3>AmneziaWG</h3>
+                    <p>Obfuscated WireGuard that defeats deep packet inspection. Same speed, invisible to DPI filters.</p>
+                    <span class="protocol-port">51821/udp</span>
+                </div>
+
+                <div class="protocol-card">
+                    <div class="protocol-icon">
+                        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                            <circle cx="12" cy="12" r="10"/>
+                            <line x1="2" y1="12" x2="22" y2="12"/>
+                            <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
+                        </svg>
+                    </div>
+                    <h3>DNS Tunnels</h3>
+                    <p>Last resort when everything else is blocked. Four tunnels — dnstt, Slipstream (QUIC-over-DNS), MasterDNS (ARQ, MahsaNG v16), and XDNS (FinalMask) — run at once on port 53, fanned out by subdomain via dns-router.</p>
+                    <span class="protocol-port">53/udp · dns-router</span>
+                </div>
+
+                <div class="protocol-card">
+                    <div class="protocol-icon">
+                        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+                            <path d="M8 10h8M8 14h4"/>
+                        </svg>
+                    </div>
+                    <h3>Telegram MTProxy</h3>
+                    <p>Fake-TLS V2 proxy for direct Telegram access. Mimics IMAPS traffic, works without a domain.</p>
+                    <span class="protocol-port">993/tcp</span>
+                </div>
+
+                <div class="protocol-card">
+                    <div class="protocol-icon">
+                        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+                            <circle cx="9" cy="7" r="4"/>
+                            <path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/>
+                        </svg>
+                    </div>
+                    <h3>Psiphon Conduit</h3>
+                    <p>Donate bandwidth to help others bypass censorship. Support the global anti-censorship network.</p>
+                    <span class="protocol-port">Psiphon Network</span>
+                </div>
+
+                <div class="protocol-card">
+                    <div class="protocol-icon">
+                        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                            <circle cx="12" cy="12" r="3"/>
+                            <path d="M12 1v6M12 17v6M4.22 4.22l4.24 4.24M15.54 15.54l4.24 4.24M1 12h6M17 12h6M4.22 19.78l4.24-4.24M15.54 8.46l4.24-4.24"/>
+                        </svg>
+                    </div>
+                    <h3>Tor Snowflake</h3>
+                    <p>Donate bandwidth to the Tor network. Help Tor users bypass censorship worldwide.</p>
+                    <span class="protocol-port">Tor Network</span>
+                </div>
+
+                <div class="protocol-card">
+                    <div class="protocol-icon">
+                        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                            <path d="M9 12l2 2 4-4"/>
+                        </svg>
+                    </div>
+                    <h3>TrustTunnel</h3>
+                    <p>HTTP/2 and QUIC tunneling. Looks exactly like normal HTTPS traffic to deep packet inspection.</p>
+                    <span class="protocol-port">4443/tcp+udp</span>
+                </div>
+
+                <div class="protocol-card">
+                    <div class="protocol-icon">
+                        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                            <circle cx="12" cy="12" r="10"/>
+                            <path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
+                        </svg>
+                    </div>
+                    <h3>GooseRelay</h3>
+                    <p>SOCKS5 tunneled through a Google Apps Script you deploy in your own account, fronted as google.com. Survives when the server IP is blocked but Google is reachable. MahsaNG v16. Opt-in.</p>
+                    <span class="protocol-port">via Google · MahsaNG v16</span>
+                </div>
+
+                <div class="protocol-card protocol-card-cta">
+                    <div class="protocol-icon">
+                        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                            <circle cx="12" cy="12" r="10"/>
+                            <line x1="12" y1="8" x2="12" y2="16"/>
+                            <line x1="8" y1="12" x2="16" y2="12"/>
+                        </svg>
+                    </div>
+                    <h3>Your Protocol?</h3>
+                    <p>Easy to add new protocols! Know one that should be here? Let us know.</p>
+                    <div class="protocol-cta-buttons">
+                        <a href="https://github.com/MotherofallVPNs/moav/issues/new?template=feature_request.md&title=[Protocol]+" class="btn-small" target="_blank" rel="noopener">Request</a>
+                        <a href="https://github.com/MotherofallVPNs/moav/pulls" class="btn-small btn-outline" target="_blank" rel="noopener">Send PR</a>
+                    </div>
+                </div>
+            </div>
+
+            <p class="protocols-link">See <a href="#clients">client apps</a> to connect with these protocols.</p>
+        </div>
+    </section>
+
+
     <!-- Support Section -->
     <section class="support" id="support">
         <div class="container">
@@ -955,13 +957,14 @@ moav update            # Update MoaV</pre>
 
             <!-- Donation options -->
             <div class="donate-section">
-                <p class="donate-intro">If you'd like to donate:</p>
+                <h3 class="donate-title">💜 Fund the Project</h3>
+                <p class="donate-intro">MoaV is free and community-funded. If it helps you stay connected, please consider chipping in — every bit keeps the network free and open.</p>
                 <div class="donate-options">
-                    <a href="https://github.com/sponsors/shayanb" class="donate-btn" target="_blank" rel="noopener">
+                    <a href="https://github.com/sponsors/shayanb" class="donate-btn primary" target="_blank" rel="noopener">
                         <span class="donate-icon">💖</span>
                         <span>GitHub Sponsors</span>
                     </a>
-                    <a href="https://buymeacoffee.com/pangana" class="donate-btn" target="_blank" rel="noopener">
+                    <a href="https://buymeacoffee.com/pangana" class="donate-btn primary" target="_blank" rel="noopener">
                         <span class="donate-icon">☕</span>
                         <span>Buy Me a Coffee</span>
                     </a>
@@ -1010,6 +1013,7 @@ moav update            # Update MoaV</pre>
                 <div class="footer-links">
                     <a href="https://github.com/MotherofallVPNs/moav">GitHub</a>
                     <a href="https://github.com/MotherofallVPNs/moav#documentation">Docs</a>
+                    <a href="https://t.me/motherofallvpns" target="_blank" rel="noopener">Telegram</a>
                     <a href="https://github.com/MotherofallVPNs/moav/blob/main/CHANGELOG.md">Changelog</a>
                     <a href="https://github.com/MotherofallVPNs/moav/blob/main/LICENSE">License</a>
                 </div>
