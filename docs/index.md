@@ -22,6 +22,7 @@ Read about [why MoaV exists and the mission behind it](philosophy.md).
 ## Using MoaV
 
 - **[Client Apps](CLIENTS.md)** — Connect from iOS, Android, macOS, Windows, Linux
+- **[MoaV Client](client.md)** — Self-hosted client with a dashboard, load-balancing, and automatic failover
 - **[CLI Reference](CLI.md)** — All `moav` commands and options
 - **[Monitoring](MONITORING.md)** — Grafana + Prometheus dashboards
 - **[Troubleshooting](TROUBLESHOOTING.md)** — Common issues and fixes

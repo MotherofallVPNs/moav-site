@@ -51,6 +51,21 @@ jobs:
             echo "No release asset yet — keeping the committed fallback site/install.sh."
           fi
 
+      - name: Publish latest client-install.sh
+        # Same pattern as install.sh, but for the standalone client. Source of
+        # truth lives in MotherofallVPNs/moav-client, published as the
+        # `client-install.sh` release asset. Best-effort: pull the latest asset;
+        # if none exists yet, keep the committed fallback so we never 404.
+        run: |
+          URL="https://github.com/MotherofallVPNs/moav-client/releases/latest/download/client-install.sh"
+          if curl -fsSL "$URL" -o site/client-install.sh.new && [ -s site/client-install.sh.new ]; then
+            mv site/client-install.sh.new site/client-install.sh
+            echo "Published client-install.sh from the latest release asset."
+          else
+            rm -f site/client-install.sh.new
+            echo "No release asset yet — keeping the committed fallback site/client-install.sh."
+          fi
+
       - name: Setup Pages
         uses: actions/configure-pages@v4
 

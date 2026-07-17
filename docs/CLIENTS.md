@@ -163,11 +163,14 @@ Try these in order. If one doesn't work, try the next:
 
 ## MoaV Client Container (Linux/Docker)
 
-MoaV includes a built-in multi-protocol client container. This is useful for:
-- Testing server connectivity from another machine
-- Running MoaV as a client on Linux servers/desktops
-- Automated testing in CI/CD pipelines
-- Connecting through your MoaV server from a Docker environment
+MoaV ships a built-in multi-protocol **client container**, used mainly to **verify a server's protocols actually work** — run straight from the server itself or in CI, without touching a phone or desktop. Typical uses:
+
+- **Connectivity testing** — run `moav test <user>` on the server to check every protocol in a user's bundle
+- **CI / automated testing** — the same container backs MoaV's end-to-end test suite (`tests/client-test.sh`)
+- **Ad-hoc connections** — `moav client connect <user>` brings up a local SOCKS5/HTTP proxy for a quick check
+
+!!! tip "Want a full client for everyday use?"
+    This container is optimized for testing. For a standalone client with a **web dashboard**, **load-balancing across all healthy endpoints**, **automatic failover**, and **live routing rules** — the kind you'd leave running on a home server or Linux desktop — see the dedicated **[MoaV Client](client.md)** page.
 
 ### Testing Connectivity
 
