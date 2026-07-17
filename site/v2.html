@@ -37,7 +37,7 @@ a{color:inherit;text-decoration:none}
 .ac{color:var(--ac)}
 
 /* film grain — always subtle; hero adds scanlines */
-.grain::before{content:"";position:absolute;inset:0;z-index:2;pointer-events:none;opacity:.06;mix-blend-mode:screen;
+.grain::before{content:"";position:absolute;inset:0;z-index:2;pointer-events:none;opacity:.09;mix-blend-mode:screen;
   background-image:url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20width='240'%20height='240'%3E%3Cfilter%20id='n'%3E%3CfeTurbulence%20type='fractalNoise'%20baseFrequency='0.9'%20numOctaves='2'%20stitchTiles='stitch'/%3E%3CfeColorMatrix%20type='saturate'%20values='0'/%3E%3C/filter%3E%3Crect%20width='240'%20height='240'%20filter='url(%23n)'/%3E%3C/svg%3E")}
 
 section{position:relative;padding:clamp(80px,12vh,160px) var(--pad-x)}
@@ -47,25 +47,37 @@ section{position:relative;padding:clamp(80px,12vh,160px) var(--pad-x)}
 
 /* ---------------- HERO ---------------- */
 .hero{min-height:100svh;display:flex;flex-direction:column;justify-content:center;
-  background:radial-gradient(ellipse 130% 90% at 50% -10%,#1a2f5c 0%,#0c1426 42%,var(--ink-900) 78%)}
-/* dreamy ambient bloom */
+  background:radial-gradient(ellipse 120% 85% at 50% -8%,#132444 0%,#0a0e1a 46%,#05070d 82%)}
+/* cypherpunk atmosphere: blueprint grid + neon light-leaks */
 .aura{position:absolute;inset:0;overflow:hidden;pointer-events:none}
-.hero>.aura{z-index:0}
-.blob{position:absolute;border-radius:50%;filter:blur(100px);mix-blend-mode:screen;will-change:transform}
-.blob.c{width:62vw;height:62vw;left:-12vw;top:-18vw;opacity:.55;background:radial-gradient(circle,rgba(0,212,255,.6),transparent 68%);animation:drift1 20s ease-in-out infinite alternate}
-.blob.p{width:56vw;height:56vw;right:-16vw;top:-8vw;opacity:.5;background:radial-gradient(circle,rgba(123,92,255,.55),transparent 68%);animation:drift2 26s ease-in-out infinite alternate}
-.blob.t{width:44vw;height:44vw;left:34vw;bottom:-26vw;opacity:.4;background:radial-gradient(circle,rgba(0,229,208,.5),transparent 68%);animation:drift1 30s ease-in-out infinite alternate}
-@keyframes drift1{to{transform:translate(6%,7%) scale(1.12)}}
-@keyframes drift2{to{transform:translate(-7%,5%) scale(1.08)}}
+.hero>.aura,.hero>.grid{z-index:0}
+.grid{position:absolute;inset:0;pointer-events:none;opacity:.55;
+  background-image:linear-gradient(rgba(0,212,255,.09) 1px,transparent 1px),linear-gradient(90deg,rgba(0,212,255,.09) 1px,transparent 1px);
+  background-size:46px 46px;
+  -webkit-mask-image:radial-gradient(ellipse 85% 65% at 50% 42%,#000 22%,transparent 78%);
+          mask-image:radial-gradient(ellipse 85% 65% at 50% 42%,#000 22%,transparent 78%)}
+.blob{position:absolute;border-radius:50%;filter:blur(64px);mix-blend-mode:screen;will-change:transform}
+.blob.c{width:48vw;height:48vw;left:-8vw;top:-14vw;opacity:.5;background:radial-gradient(circle,rgba(0,212,255,.7),transparent 64%);animation:drift1 22s ease-in-out infinite alternate}
+.blob.m{width:40vw;height:40vw;right:-10vw;top:2vw;opacity:.42;background:radial-gradient(circle,rgba(255,46,151,.6),transparent 64%);animation:drift2 27s ease-in-out infinite alternate}
+.blob.g{width:34vw;height:34vw;left:42vw;bottom:-22vw;opacity:.3;background:radial-gradient(circle,rgba(0,255,136,.5),transparent 64%);animation:drift1 31s ease-in-out infinite alternate}
+@keyframes drift1{to{transform:translate(5%,6%) scale(1.1)}}
+@keyframes drift2{to{transform:translate(-6%,4%) scale(1.06)}}
 .hero::after{content:"";position:absolute;inset:0;z-index:1;pointer-events:none;
-  background:repeating-linear-gradient(to bottom,rgba(0,0,0,0) 0 2px,rgba(0,0,0,.13) 2px 3px);
-  animation:flick 5.5s steps(60) infinite;mask-image:linear-gradient(to bottom,transparent,#000 25% 75%,transparent)}
-@keyframes flick{0%,97%,100%{opacity:1}98%{opacity:.82}99%{opacity:.93}}
+  background:
+    repeating-linear-gradient(to bottom,rgba(0,0,0,0) 0 2px,rgba(0,0,0,.20) 2px 3px),
+    radial-gradient(ellipse 92% 78% at 50% 45%,transparent 50%,rgba(0,0,0,.62) 100%);
+  animation:flick 4.5s steps(60) infinite}
+@keyframes flick{0%,94%,100%{opacity:1}95%{opacity:.78}96%{opacity:.95}97%{opacity:.72}98%{opacity:.9}}
 .hero>*{position:relative;z-index:3}
 .wordmark{position:relative;font-weight:800;font-size:var(--display-hero);line-height:.9;letter-spacing:-.04em;margin:18px 0 0;width:max-content;
   background:var(--grad-ice);-webkit-background-clip:text;background-clip:text;color:transparent;
-  filter:drop-shadow(0 0 28px rgba(0,212,255,.5)) drop-shadow(0 0 70px rgba(123,92,255,.35))}
-.wordmark::after{content:"MoaV";position:absolute;inset:0;z-index:-1;background:var(--grad-ice);-webkit-background-clip:text;background-clip:text;color:transparent;filter:blur(38px) brightness(1.5);opacity:.7}
+  filter:drop-shadow(0 0 24px rgba(0,212,255,.55)) drop-shadow(0 0 62px rgba(123,92,255,.4));
+  animation:glitch 7s infinite}
+/* RGB-split chromatic-aberration copies peeking from behind */
+.wordmark::before,.wordmark::after{content:"MoaV";position:absolute;left:0;top:0;z-index:-1;background:none;-webkit-background-clip:border-box;background-clip:border-box;opacity:.85}
+.wordmark::before{-webkit-text-fill-color:#ff2e97;color:#ff2e97;transform:translate(-3px,1px)}
+.wordmark::after{-webkit-text-fill-color:#00f0ff;color:#00f0ff;transform:translate(3px,-1px)}
+@keyframes glitch{0%,93%,100%{transform:none}94%{transform:translate(3px,-1px) skewX(-1.5deg)}95%{transform:translate(-3px,1px)}96%{transform:translate(2px,0) skewX(1deg)}97%{transform:none}}
 .promise{font-weight:800;font-size:clamp(24px,3.6vw,44px);letter-spacing:-.02em;margin:22px 0 0;max-width:20ch;line-height:1.08}
 .hero-sub{color:var(--text-2);font-size:clamp(15px,1.8vw,20px);margin-top:18px;max-width:60ch}
 .term{background:#06060a;border:1px solid var(--border-strong);border-radius:var(--radius-md);font-family:var(--font-mono);
@@ -128,7 +140,8 @@ section{position:relative;padding:clamp(80px,12vh,160px) var(--pad-x)}
 
 <!-- ===================== HERO ===================== -->
 <section class="hero grain">
-  <div class="aura"><span class="blob c"></span><span class="blob p"></span><span class="blob t"></span></div>
+  <div class="grid"></div>
+  <div class="aura"><span class="blob c"></span><span class="blob m"></span><span class="blob g"></span></div>
   <span class="tag">Multi-protocol circumvention stack</span>
   <h1 class="wordmark">MoaV</h1>
   <p class="promise">Turn <span class="ac">any VPS</span> into an arsenal of VPN protocols.</p>
