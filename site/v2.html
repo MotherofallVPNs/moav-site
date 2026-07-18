@@ -128,7 +128,12 @@ a{color:inherit;text-decoration:none}
 @media(max-width:760px){.callouts{grid-template-columns:1fr}}
 
 /* architecture flow */
-.arch{display:flex;flex-wrap:wrap;align-items:stretch;margin-top:44px;border:1px solid var(--line);background:linear-gradient(180deg,var(--panel),var(--void))}
+.arch{position:relative;overflow:hidden;display:flex;flex-wrap:wrap;align-items:stretch;margin-top:44px;border:1px solid var(--line);background:linear-gradient(180deg,var(--panel),var(--void))}
+.flow{position:absolute;inset:0;z-index:1;pointer-events:none}
+.zone,.wall{position:relative;z-index:2}
+.clogos{display:grid;grid-template-columns:repeat(4,1fr);gap:7px;margin-top:14px}
+.clogos .lg{aspect-ratio:1/1;display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,.03);border:1px solid var(--line);border-radius:6px;padding:9px}
+.clogos .lg img{max-width:100%;max-height:100%;object-fit:contain;opacity:.92}
 .zone{flex:1 1 190px;padding:20px 22px 24px;border-right:1px solid var(--line)}
 .zone:last-child{border-right:0}
 .zone.routes{flex:2.6 1 360px}
@@ -254,10 +259,20 @@ a{color:inherit;text-decoration:none}
     <p class="sec-sub">Your bundle imports into any app. MoaV runs every protocol at once and gets you through the wall by whatever still works, out onto the open internet. <b>Each route links to the project behind it.</b></p>
   </div>
   <div class="arch reveal">
+    <canvas class="flow" aria-hidden="true"></canvas>
     <div class="zone">
       <div class="zlabel">behind the wall</div>
       <div class="ztitle">Your clients</div>
-      <div class="zchips">Hiddify · v2rayNG · NekoBox · sing-box · Streisand · Clash · Happ · WireGuard</div>
+      <div class="clogos">
+        <span class="lg"><img src="assets/v2/clients/hiddify.png" alt="Hiddify" loading="lazy"></span>
+        <span class="lg"><img src="assets/v2/clients/v2rayng.png" alt="v2rayNG" loading="lazy"></span>
+        <span class="lg"><img src="assets/v2/clients/nekobox.png" alt="NekoBox" loading="lazy"></span>
+        <span class="lg"><img src="assets/v2/clients/singbox.png" alt="sing-box" loading="lazy"></span>
+        <span class="lg"><img src="assets/v2/clients/streisand.webp" alt="Streisand" loading="lazy"></span>
+        <span class="lg"><img src="assets/v2/clients/clash.png" alt="Clash" loading="lazy"></span>
+        <span class="lg"><img src="assets/v2/clients/wireguard.png" alt="WireGuard" loading="lazy"></span>
+        <span class="lg"><img src="assets/v2/clients/amneziawg.png" alt="AmneziaWG" loading="lazy"></span>
+      </div>
       <div class="znote">one bundle imports into every app</div>
     </div>
     <div class="wall"><b>RESTRICTED&nbsp;INTERNET</b></div>
@@ -312,6 +327,59 @@ a{color:inherit;text-decoration:none}
 })();
 var io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target);}});},{threshold:.15});
 document.querySelectorAll('.reveal').forEach(function(el){io.observe(el);});
+
+// network flow: traffic leaves the client and crosses the DPI wall wearing a
+// protocol disguise. Most gets through; a minority is caught at the gate and
+// reroutes onto another path (failover). Lanes map to the real route groups.
+(function(){
+  var arch=document.querySelector('.arch'); if(!arch) return;
+  var cv=arch.querySelector('.flow'); if(!cv) return;
+  if(matchMedia('(prefers-reduced-motion:reduce)').matches) return;
+  var ctx=cv.getContext('2d'), W=0,H=0,dpr=1,wallX=0,lanes=[];
+  function measure(){
+    dpr=Math.min(window.devicePixelRatio||1,2);
+    var r=arch.getBoundingClientRect(); W=r.width; H=r.height;
+    cv.width=W*dpr; cv.height=H*dpr; cv.style.width=W+'px'; cv.style.height=H+'px';
+    ctx.setTransform(dpr,0,0,dpr,0,0);
+    var wr=arch.querySelector('.wall').getBoundingClientRect();
+    wallX=(wr.left+wr.right)/2-r.left;
+    lanes=[].slice.call(arch.querySelectorAll('.route')).map(function(el){
+      var b=el.getBoundingClientRect(); return b.top+b.height/2-r.top;
+    });
+    if(!lanes.length) lanes=[H*.3,H*.45,H*.6,H*.75];
+  }
+  var shapes=['dot','sq','dash'];
+  function mk(fresh){
+    var lane=(Math.random()*lanes.length)|0, donation=lane===lanes.length-1;
+    return {lane:lane, x:fresh?-(6+Math.random()*34):Math.random()*W,
+      y:lanes[lane]+(Math.random()*10-5), v:.35+Math.random()*1.7,
+      size:1.3+Math.random()*2.7, shape:shapes[(Math.random()*3)|0],
+      blocked:Math.random()<.18, hit:0,
+      col: donation?'124,240,180':(Math.random()<.22?'0,224,138':'0,212,255')};
+  }
+  var ps=[]; for(var i=0;i<72;i++) ps.push(mk(false));
+  function frame(){
+    ctx.clearRect(0,0,W,H);
+    for(var i=0;i<ps.length;i++){ var p=ps[i];
+      if(p.blocked && p.x>=wallX-3){
+        p.hit++; var af=Math.max(0,1-p.hit/20);
+        ctx.fillStyle='rgba(255,77,94,'+(af*.95)+')';
+        ctx.beginPath(); ctx.arc(wallX-3,p.y,p.size*(1+p.hit/8),0,7); ctx.fill();
+        if(p.hit>20) ps[i]=mk(true); continue;
+      }
+      p.x+=p.v;
+      var a=.9; if(p.x>W-90) a=Math.max(0,.9*(1-(p.x-(W-90))/90));
+      ctx.fillStyle='rgba('+p.col+','+a+')'; ctx.shadowBlur=7; ctx.shadowColor='rgba('+p.col+',.55)';
+      if(p.shape==='dot'){ ctx.beginPath(); ctx.arc(p.x,p.y,p.size,0,7); ctx.fill(); }
+      else if(p.shape==='sq'){ ctx.fillRect(p.x-p.size,p.y-p.size,p.size*2,p.size*2); }
+      else { ctx.fillRect(p.x-p.size*2.2,p.y-p.size*.4,p.size*4.4,p.size*.8); }
+      ctx.shadowBlur=0;
+      if(p.x>W+12) ps[i]=mk(true);
+    }
+    requestAnimationFrame(frame);
+  }
+  measure(); window.addEventListener('resize',measure); requestAnimationFrame(frame);
+})();
 </script>
 </body>
 </html>
