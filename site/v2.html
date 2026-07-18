@@ -36,11 +36,14 @@ a{color:inherit;text-decoration:none}
 .statusbar .right a{color:var(--dim)}
 .statusbar .right a:hover{color:var(--cyan)}
 
-/* ---- hero: the console ---- */
-.hero{min-height:calc(100svh - 43px);display:grid;grid-template-columns:1.15fr .85fr;gap:clamp(28px,5vw,80px);
-  align-items:center;padding:clamp(40px,7vh,96px) var(--pad)}
+/* ---- hero: minimal ---- */
+.hero{min-height:calc(100svh - 43px);display:flex;flex-direction:column;justify-content:center;align-items:flex-start;
+  padding:clamp(40px,7vh,96px) var(--pad);position:relative}
+.hero-inner{max-width:720px}
+.scrollcue{position:absolute;bottom:28px;left:var(--pad);color:var(--dim);font-size:11px;letter-spacing:.22em;text-transform:uppercase;animation:bob 2.2s ease-in-out infinite}
+.scrollcue:hover{color:var(--cyan)}
+@keyframes bob{50%{transform:translateY(5px)}}
 /* corner registration ticks */
-.hero{position:relative}
 .hero::before,.hero::after{content:"";position:absolute;width:14px;height:14px;border:1px solid var(--line-2);pointer-events:none}
 .hero::before{left:calc(var(--pad) - 22px);top:36px;border-right:0;border-bottom:0}
 .hero::after{right:calc(var(--pad) - 22px);bottom:36px;border-left:0;border-top:0}
@@ -111,6 +114,20 @@ a{color:inherit;text-decoration:none}
 .logrow .sev{font-size:11px;letter-spacing:.08em;justify-self:end}
 .sev.warn{color:var(--amber)}.sev.crit{color:var(--alert)}.sev.info{color:var(--dim)}
 
+/* why this exists — narrow centered manifesto */
+.why{text-align:center}
+.why-inner{max-width:min(40vw,500px);margin:0 auto}
+.why .sec-index{display:block}
+.why-title{font-family:var(--display);font-weight:700;font-size:clamp(28px,3.4vw,44px);letter-spacing:-.02em;line-height:1.1;margin:16px 0 0}
+.why-body{font-family:var(--display);font-weight:400;color:var(--dim);font-size:clamp(16px,1.5vw,18px);line-height:1.75;margin-top:22px}
+.why-log{margin-top:40px;text-align:left}
+.wl{display:grid;grid-template-columns:46px 1fr 8px;gap:14px;align-items:center;padding:12px 0;border-top:1px solid var(--line);font-size:12.5px;color:var(--ink)}
+.wl:last-child{border-bottom:1px solid var(--line)}
+.wl .wy{color:var(--dim)}
+.wl i{width:6px;height:6px;border-radius:50%;background:var(--faint)}
+.wl i.crit{background:var(--alert)}.wl i.warn{background:var(--amber)}
+@media(max-width:900px){.why-inner{max-width:90vw}}
+
 /* protocol arsenal grid */
 .grp{margin-top:34px}
 .grp-label{font-size:11.5px;letter-spacing:.16em;color:var(--dim);text-transform:uppercase}
@@ -153,19 +170,14 @@ a{color:inherit;text-decoration:none}
 .rlist .sep{color:var(--faint)}
 @media(max-width:820px){.wall{flex-basis:100%;padding:10px}.wall b{writing-mode:horizontal-tb;transform:none}.zone,.zone.routes{flex-basis:100%;border-right:0;border-top:1px solid var(--line)}}
 
-.stack{position:relative;margin:60px auto 0;max-width:940px;height:clamp(360px,52vw,560px)}
-.surf{position:absolute;top:0;left:50%;width:min(70%,640px);overflow:hidden;border:1px solid var(--line-2);background:var(--panel);
-  box-shadow:0 20px 50px rgba(0,0,0,.55);transition:transform .5s cubic-bezier(.16,1,.3,1),filter .35s,box-shadow .35s;cursor:pointer;transform-origin:bottom center}
-.surf img{display:block;width:100%;height:auto}
-.surf .cap{position:absolute;left:0;right:0;bottom:0;padding:22px 14px 11px;font-size:12.5px;letter-spacing:.03em;
-  background:linear-gradient(transparent,rgba(7,10,11,.95));color:var(--ink)}
-.surf .cap b{color:var(--cyan);font-weight:600}
-.surf.s1{transform:translateX(-50%) translateX(-250px) translateY(30px) rotate(-6deg) scale(.9);z-index:1;filter:brightness(.62) saturate(.85)}
-.surf.s2{transform:translateX(-50%) translateX(-86px) translateY(10px) rotate(-2.5deg) scale(.96);z-index:2;filter:brightness(.82)}
-.surf.s3{transform:translateX(-50%) translateX(86px) translateY(10px) rotate(2.5deg) scale(.96);z-index:2;filter:brightness(.82)}
-.surf.s4{transform:translateX(-50%) translateX(250px) translateY(30px) rotate(6deg) scale(.9);z-index:1;filter:brightness(.62) saturate(.85)}
-.stack:hover .surf{filter:brightness(.5)}
-.surf:hover{transform:translateX(-50%) translateY(-16px) rotate(0deg) scale(1.03)!important;z-index:9!important;filter:brightness(1.04)!important;border-color:var(--cyan);box-shadow:var(--glow),0 20px 50px rgba(0,0,0,.55)}
+.surfgrid{display:grid;grid-template-columns:repeat(2,1fr);gap:18px;margin-top:44px}
+.surfcard{border:1px solid var(--line-2);background:var(--panel);overflow:hidden}
+.surfgrid .surfcard{transition:opacity .6s cubic-bezier(.16,1,.3,1),transform .5s cubic-bezier(.16,1,.3,1),border-color .3s,box-shadow .3s}
+.surfcard img{display:block;width:100%;aspect-ratio:16/10;object-fit:cover;object-position:top center}
+.surfcard .scap{padding:12px 16px;border-top:1px solid var(--line);font-size:12.5px;letter-spacing:.02em;color:var(--dim)}
+.surfcard .scap b{color:var(--cyan);font-weight:600}
+.surfcard:hover{transform:translateY(-5px);border-color:var(--cyan);box-shadow:0 18px 44px rgba(0,0,0,.5)}
+@media(max-width:820px){.surfgrid{grid-template-columns:1fr}}
 
 .reveal{opacity:0;transform:translateY(22px);transition:opacity .7s cubic-bezier(.16,1,.3,1),transform .7s cubic-bezier(.16,1,.3,1)}
 .reveal.in{opacity:1;transform:none}
@@ -199,7 +211,7 @@ a{color:inherit;text-decoration:none}
 
 <!-- ============ HERO / CONSOLE ============ -->
 <section class="hero">
-  <div class="hero-left">
+  <div class="hero-inner">
     <div class="eyebrow">Multi-protocol circumvention stack</div>
 <pre class="banner" aria-label="MOAV">███╗   ███╗  ██████╗   █████╗  ██╗   ██╗
 ████╗ ████║ ██╔═══██╗ ██╔══██╗ ██║   ██║
@@ -216,38 +228,22 @@ a{color:inherit;text-decoration:none}
       <a class="act" href="#surfaces">See it running</a>
     </div>
   </div>
-
-  <aside class="arsenal" aria-label="live protocol arsenal">
-    <div class="ars-head"><span>ARSENAL</span><span class="live">live</span></div>
-    <div class="rows" id="rows">
-      <div class="row"           style="animation-delay:.15s"><span class="svc">reality / vless</span><span class="port">443/tcp</span><span class="st">up</span></div>
-      <div class="row"           style="animation-delay:.28s"><span class="svc">hysteria2</span><span class="port">443/udp</span><span class="st">up</span></div>
-      <div class="row"           style="animation-delay:.41s"><span class="svc">trojan</span><span class="port">8443/tcp</span><span class="st">up</span></div>
-      <div class="row"           style="animation-delay:.54s"><span class="svc">shadowsocks-2022</span><span class="port">8388</span><span class="st">up</span></div>
-      <div class="row"           style="animation-delay:.67s"><span class="svc">wireguard</span><span class="port">51820/udp</span><span class="st">up</span></div>
-      <div class="row"           style="animation-delay:.80s"><span class="svc">amneziawg</span><span class="port">51821/udp</span><span class="st">up</span></div>
-      <div class="row"           style="animation-delay:.93s"><span class="svc">trusttunnel</span><span class="port">4443</span><span class="st">up</span></div>
-      <div class="row xhttp"     style="animation-delay:1.06s"><span class="svc">vless / xhttp</span><span class="port">2096</span><span class="st">warm</span></div>
-      <div class="row"           style="animation-delay:1.19s"><span class="svc">dns tunnel ×4</span><span class="port">53/udp</span><span class="st">up</span></div>
-    </div>
-    <div class="ars-foot"><span class="up">↑ 57.6G</span><span class="dn">↓ 361G</span><span><b>143</b> users</span><span><b>187</b> conduit regions</span></div>
-  </aside>
+  <a class="scrollcue" href="#problem">scroll ↓</a>
 </section>
 
-<!-- ============ THE PROBLEM ============ -->
-<section class="sec">
-  <div class="reveal">
+<!-- ============ WHY THIS EXISTS ============ -->
+<section class="sec why" id="problem">
+  <div class="why-inner reveal">
     <div class="sec-index">// why this exists</div>
-    <h2 class="sec-title">Going dark is the <span class="amber">new normal</span>.</h2>
-    <p class="sec-sub">Iran has been going dark for over two decades: throttling, blackouts, whole protocols banned overnight. It is not alone. State shutdowns are now a routine lever of control, and this has been the worst year on record. <b>MoaV began as one person's answer to a filter that kept winning.</b></p>
-  </div>
-  <div class="panel reveal">
-    <div class="panel-head"><span>CENSORSHIP.LOG</span><span class="r">selected events</span></div>
-    <div class="logrow"><span class="yr">2009</span><span class="rg">IR</span><span class="ev">Post-election filtering and deep packet inspection take hold</span><span class="sev info">persistent</span></div>
-    <div class="logrow"><span class="yr">2019</span><span class="rg">IR</span><span class="ev">Nationwide blackout during protests, roughly a week fully dark</span><span class="sev crit">critical</span></div>
-    <div class="logrow"><span class="yr">2022</span><span class="rg">IR</span><span class="ev">Mobile throttling and app bans through the Mahsa Amini protests</span><span class="sev crit">critical</span></div>
-    <div class="logrow"><span class="yr">2024</span><span class="rg">··</span><span class="ev">Circumvention protocols fingerprinted and blocked at scale</span><span class="sev warn">escalating</span></div>
-    <div class="logrow"><span class="yr">2025</span><span class="rg">··</span><span class="ev">Most state-ordered shutdowns ever recorded, worldwide</span><span class="sev warn">global</span></div>
+    <h2 class="why-title">Going dark is the <span class="amber">new normal</span>.</h2>
+    <p class="why-body">Iran has been going dark for over two decades: throttling, blackouts, whole protocols banned overnight. It is not alone. State shutdowns are now a routine lever of control, and this has been the worst year on record. MoaV began as one person's answer to a filter that kept winning.</p>
+    <div class="why-log">
+      <div class="wl"><span class="wy">2009</span><span class="we">Iran begins filtering and deep packet inspection</span><i></i></div>
+      <div class="wl"><span class="wy">2019</span><span class="we">Nationwide blackout, roughly a week fully dark</span><i class="crit"></i></div>
+      <div class="wl"><span class="wy">2022</span><span class="we">Throttling and app bans through the Mahsa Amini protests</span><i class="crit"></i></div>
+      <div class="wl"><span class="wy">2024</span><span class="we">Circumvention protocols fingerprinted at scale</span><i class="warn"></i></div>
+      <div class="wl"><span class="wy">2025</span><span class="we">Most state shutdowns ever recorded, worldwide</span><i class="warn"></i></div>
+    </div>
   </div>
 </section>
 
@@ -301,13 +297,13 @@ a{color:inherit;text-decoration:none}
   <div class="reveal">
     <div class="sec-index">// one stack, three surfaces</div>
     <h2 class="sec-title">Deploy it, <span class="amber">operate</span> it, connect to it.</h2>
-    <p class="sec-sub">The server you deploy, the console you run it from, and the client you connect through. Hover any surface to bring it forward.</p>
+    <p class="sec-sub">The server you deploy, the console you run it from, and the client you connect through.</p>
   </div>
-  <div class="stack reveal">
-    <a class="surf s1" href="/docs/CLI/"><img src="assets/v2/tui.png" alt="MoaV terminal menu" loading="lazy"><span class="cap"><b>terminal</b> · the moav menu</span></a>
-    <a class="surf s2" href="/docs/MONITORING/"><img src="assets/v2/grafana.png" alt="MoaV Grafana dashboards" loading="lazy"><span class="cap"><b>grafana</b> · live traffic and users</span></a>
-    <a class="surf s3" href="/docs/SETUP/"><img src="assets/v2/admin.png" alt="MoaV admin dashboard" loading="lazy"><span class="cap"><b>admin</b> · server console :9443</span></a>
-    <a class="surf s4" href="/docs/client/"><img src="assets/v2/client.png" alt="MoaV client dashboard" loading="lazy"><span class="cap"><b>client</b> · local control panel :3001</span></a>
+  <div class="surfgrid">
+    <a class="surfcard reveal" style="transition-delay:.04s" href="/docs/SETUP/"><img src="assets/v2/admin.png" alt="MoaV admin dashboard" loading="lazy"><span class="scap"><b>admin</b> · server ops console :9443</span></a>
+    <a class="surfcard reveal" style="transition-delay:.12s" href="/docs/MONITORING/"><img src="assets/v2/grafana.png" alt="MoaV Grafana dashboards" loading="lazy"><span class="scap"><b>grafana</b> · live traffic and users</span></a>
+    <a class="surfcard reveal" style="transition-delay:.20s" href="/docs/client/"><img src="assets/v2/client.png" alt="MoaV client dashboard" loading="lazy"><span class="scap"><b>client</b> · local control panel :3001</span></a>
+    <a class="surfcard reveal" style="transition-delay:.28s" href="/docs/CLI/"><img src="assets/v2/tui.png" alt="MoaV terminal menu" loading="lazy"><span class="scap"><b>terminal</b> · the moav menu</span></a>
   </div>
 </section>
 
@@ -335,50 +331,50 @@ document.querySelectorAll('.reveal').forEach(function(el){io.observe(el);});
   var arch=document.querySelector('.arch'); if(!arch) return;
   var cv=arch.querySelector('.flow'); if(!cv) return;
   if(matchMedia('(prefers-reduced-motion:reduce)').matches) return;
-  var ctx=cv.getContext('2d'), W=0,H=0,dpr=1,wallX=0,lanes=[];
+  var ctx=cv.getContext('2d'), dpr=Math.min(window.devicePixelRatio||1,2);
+  var W=0,H=0,wallX=0,lanes=[],ps=[], shapes=['dot','sq','dash'];
   function measure(){
-    dpr=Math.min(window.devicePixelRatio||1,2);
-    var r=arch.getBoundingClientRect(); W=r.width; H=r.height;
+    var r=arch.getBoundingClientRect(); W=Math.round(r.width); H=Math.round(r.height);
+    if(W<1||H<1) return;
     cv.width=W*dpr; cv.height=H*dpr; cv.style.width=W+'px'; cv.style.height=H+'px';
     ctx.setTransform(dpr,0,0,dpr,0,0);
-    var wr=arch.querySelector('.wall').getBoundingClientRect();
-    wallX=(wr.left+wr.right)/2-r.left;
-    lanes=[].slice.call(arch.querySelectorAll('.route')).map(function(el){
-      var b=el.getBoundingClientRect(); return b.top+b.height/2-r.top;
-    });
-    if(!lanes.length) lanes=[H*.3,H*.45,H*.6,H*.75];
+    var w=arch.querySelector('.wall'); wallX = w ? (w.getBoundingClientRect().left - r.left + w.offsetWidth/2) : W*0.28;
+    var rows=arch.querySelectorAll('.route'); lanes=[];
+    for(var i=0;i<rows.length;i++){ var b=rows[i].getBoundingClientRect(); lanes.push(b.top+b.height/2-r.top); }
+    if(!lanes.length) lanes=[H*.25,H*.4,H*.55,H*.7,H*.85];
   }
-  var shapes=['dot','sq','dash'];
-  function mk(fresh){
-    var lane=(Math.random()*lanes.length)|0, donation=lane===lanes.length-1;
-    return {lane:lane, x:fresh?-(6+Math.random()*34):Math.random()*W,
-      y:lanes[lane]+(Math.random()*10-5), v:.35+Math.random()*1.7,
-      size:1.3+Math.random()*2.7, shape:shapes[(Math.random()*3)|0],
-      blocked:Math.random()<.18, hit:0,
-      col: donation?'124,240,180':(Math.random()<.22?'0,224,138':'0,212,255')};
-  }
-  var ps=[]; for(var i=0;i<72;i++) ps.push(mk(false));
+  function col(lane){ if(lane===lanes.length-1) return '124,240,180'; return Math.random()<.2 ? '0,224,138' : '0,212,255'; }
+  function spawn(fresh){ var lane=(Math.random()*lanes.length)|0;
+    return { x: fresh? -(6+Math.random()*30) : Math.random()*W, y: lanes[lane]+(Math.random()*10-5),
+      v:.4+Math.random()*1.7, size:2.4+Math.random()*3.4, shape:shapes[(Math.random()*3)|0],
+      blocked:Math.random()<.18, hit:0, c:col(lane) }; }
+  function seed(){ ps=[]; for(var i=0;i<90;i++) ps.push(spawn(false)); }
   function frame(){
+    requestAnimationFrame(frame);
+    if(W<1){ measure(); if(W<1) return; }
+    if(!ps.length) seed();
     ctx.clearRect(0,0,W,H);
     for(var i=0;i<ps.length;i++){ var p=ps[i];
       if(p.blocked && p.x>=wallX-3){
-        p.hit++; var af=Math.max(0,1-p.hit/20);
-        ctx.fillStyle='rgba(255,77,94,'+(af*.95)+')';
-        ctx.beginPath(); ctx.arc(wallX-3,p.y,p.size*(1+p.hit/8),0,7); ctx.fill();
-        if(p.hit>20) ps[i]=mk(true); continue;
+        p.hit++; var af=Math.max(0,1-p.hit/18);
+        ctx.shadowBlur=12; ctx.shadowColor='rgba(255,77,94,.7)'; ctx.fillStyle='rgba(255,77,94,'+(af*.95)+')';
+        ctx.beginPath(); ctx.arc(wallX-3,p.y,p.size*(1+p.hit/6),0,7); ctx.fill(); ctx.shadowBlur=0;
+        if(p.hit>18){ p.x=-(6+Math.random()*30); p.hit=0; p.blocked=Math.random()<.18; } continue;
       }
-      p.x+=p.v;
-      var a=.9; if(p.x>W-90) a=Math.max(0,.9*(1-(p.x-(W-90))/90));
-      ctx.fillStyle='rgba('+p.col+','+a+')'; ctx.shadowBlur=7; ctx.shadowColor='rgba('+p.col+',.55)';
-      if(p.shape==='dot'){ ctx.beginPath(); ctx.arc(p.x,p.y,p.size,0,7); ctx.fill(); }
-      else if(p.shape==='sq'){ ctx.fillRect(p.x-p.size,p.y-p.size,p.size*2,p.size*2); }
-      else { ctx.fillRect(p.x-p.size*2.2,p.y-p.size*.4,p.size*4.4,p.size*.8); }
+      p.x+=p.v; var a=1; if(p.x>W-100) a=Math.max(0,(W-p.x)/100);
+      var tl=p.size*8, g=ctx.createLinearGradient(p.x-tl,0,p.x,0);
+      g.addColorStop(0,'rgba('+p.c+',0)'); g.addColorStop(1,'rgba('+p.c+','+(a*.45)+')');
+      ctx.fillStyle=g; ctx.fillRect(p.x-tl,p.y-p.size*.45,tl,p.size*.9);
+      ctx.fillStyle='rgba('+p.c+','+a+')'; ctx.shadowBlur=11; ctx.shadowColor='rgba('+p.c+',.7)';
+      if(p.shape==='sq') ctx.fillRect(p.x-p.size,p.y-p.size,p.size*2,p.size*2);
+      else if(p.shape==='dash') ctx.fillRect(p.x-p.size*2,p.y-p.size*.5,p.size*4,p.size);
+      else { ctx.beginPath(); ctx.arc(p.x,p.y,p.size,0,7); ctx.fill(); }
       ctx.shadowBlur=0;
-      if(p.x>W+12) ps[i]=mk(true);
+      if(p.x>W+14){ p.x=-(6+Math.random()*30); p.blocked=Math.random()<.18; }
     }
-    requestAnimationFrame(frame);
   }
-  measure(); window.addEventListener('resize',measure); requestAnimationFrame(frame);
+  window.addEventListener('resize', measure);
+  measure(); seed(); requestAnimationFrame(frame);
 })();
 </script>
 </body>
