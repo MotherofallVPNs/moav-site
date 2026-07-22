@@ -1,8 +1,10 @@
 site_name: MoaV Docs
 site_url: https://moav.sh/docs/
-repo_url: https://github.com/MotherofallVPNs/moav-site
-repo_name: MotherofallVPNs/moav-site
-edit_uri: edit/main/docs/
+# Header repo link + star/fork counts point at the main MoaV project.
+repo_url: https://github.com/MotherofallVPNs/MoaV
+repo_name: MotherofallVPNs/MoaV
+# "Edit this page" still targets this repo, where the docs source lives.
+edit_uri_template: https://github.com/MotherofallVPNs/moav-site/edit/main/docs/{path}
 
 theme:
   name: material
