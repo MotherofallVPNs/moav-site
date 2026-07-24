@@ -4,7 +4,10 @@
 
 ## Why MoaV exists
 
-- [Mission & Philosophy](https://moav.sh/docs/philosophy/): the ideology — why MoaV exists, the multi-protocol thesis, Iran's shutdown history, why being infrastructure matters
+- [Mission](https://moav.sh/docs/mission/): concise project description, who MoaV is for, what it does and does not try to be, how it is governed and funded
+- [Impact](https://moav.sh/docs/impact/): theory of change, who benefits, what success looks like, outcomes the project tracks
+- [Threat Model](https://moav.sh/docs/threat-model/): adversaries assumed, what MoaV protects, what it explicitly does not protect, operator and user safety assumptions
+- [Mission & Philosophy](https://moav.sh/docs/philosophy/): the longer manifesto, the multi-protocol thesis, shutdown history, why being infrastructure matters
 
 ## Docs
 
@@ -20,9 +23,12 @@
 - [VPS Deployment](https://moav.sh/docs/DEPLOY/): provider-specific install paths (Hetzner, Linode, Vultr, DigitalOcean)
 - [Troubleshooting](https://moav.sh/docs/TROUBLESHOOTING/): common failure modes with diagnostic recipes
 - [OPSEC Guide](https://moav.sh/docs/OPSEC/): operator-side hardening and threat-model notes
+- [MoaV Client](https://moav.sh/docs/client/): the first-party client app, bundle import, connection behavior
+- [Development & Testing](https://moav.sh/docs/development/): local development setup, test suite, contributor workflow
 
 ## Optional
 
+- [Full documentation in one file](https://moav.sh/llms-full.txt): every docs page concatenated, for agents that want the whole corpus in one fetch
 - [GitHub repository](https://github.com/MotherofallVPNs/moav): source, issues, releases
 - [Changelog](https://github.com/MotherofallVPNs/moav/blob/main/CHANGELOG.md): release notes, behavior changes per version
 - [Protocol Integration Checklist](https://moav.sh/docs/devdocs/PROTOCOL-INTEGRATION-CHECKLIST/): contributor guide for adding a new protocol

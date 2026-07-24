@@ -35,6 +35,12 @@ jobs:
           pip install mkdocs-material
           mkdocs build -d site/docs
 
+      - name: Generate llms-full.txt
+        # site/llms.txt is the hand-maintained index; llms-full.txt is the whole
+        # docs corpus in one file, generated here so it can never drift from
+        # docs/. Not committed, same as the mkdocs output under site/docs.
+        run: ./scripts/build-llms-full.sh
+
       - name: Publish latest install.sh
         # install.sh is server code — its source of truth lives in
         # MotherofallVPNs/moav. We serve it from moav.sh (reachable in censored
