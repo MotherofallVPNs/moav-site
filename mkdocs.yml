@@ -34,6 +34,13 @@ theme:
 nav:
   - Home: index.md
   - Quick Start: quick-start.md
+  - About:
+    - Mission: mission.md
+    - Impact: impact.md
+    - Threat Model: threat-model.md
+    - Architecture: architecture.md
+    - Supported Protocols: protocols.md
+    - Philosophy: philosophy.md
   - Getting Started:
     - Setup Guide: SETUP.md
     - DNS Configuration: DNS.md
@@ -47,10 +54,6 @@ nav:
     - Troubleshooting: TROUBLESHOOTING.md
   - Security:
     - OPSEC Guide: OPSEC.md
-  - About:
-    - Mission & Philosophy: philosophy.md
-    - Supported Protocols: protocols.md
-    - Architecture: architecture.md
   - Developer:
     - Development & Testing: development.md
 
