@@ -40,6 +40,7 @@ nav:
     - Threat Model: threat-model.md
     - Architecture: architecture.md
     - Supported Protocols: protocols.md
+    - DNS Tunnels: dns-tunnels.md
     - Philosophy: philosophy.md
   - Getting Started:
     - Setup Guide: SETUP.md

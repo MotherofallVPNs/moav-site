@@ -173,30 +173,24 @@ Full tuning docs: [telemt TUNING.en.md](https://github.com/telemt/telemt/blob/ma
 
 ### dnstt
 
-DNS tunnel that encodes TCP traffic within DNS queries. Extremely hard to block without breaking DNS entirely. Very slow but works as a last resort when almost everything is blocked.
+TCP inside DNS queries (KCP + Noise). The slowest of the DNS tunnels and the most widely supported.
 
-- **Port:** 53/udp
-- **Engine:** [dnstt](https://www.bamsoftware.com/software/dnstt/)
-- **Requires:** Domain with NS delegation
+- **Port:** 53/udp *(subdomain `t`)* · **Engine:** [dnstt](https://www.bamsoftware.com/software/dnstt/) · Requires a domain + NS delegation
+- Full detail and a comparison of all four: **[DNS Tunnels](dns-tunnels.md)**
 
 ### Slipstream
 
-QUIC-over-DNS tunnel. Similar to dnstt but uses QUIC for better throughput — typically 1.5-5x faster than dnstt.
+The same idea over QUIC — typically 1.5–5× dnstt.
 
-- **Port:** 53/udp
-- **Engine:** [slipstream](https://github.com/Mygod/slipstream-rust) (Rust) / [pre-built binaries](https://github.com/net2share/slipstream-rust-build/releases)
-- **Requires:** Domain with NS delegation
+- **Port:** 53/udp *(subdomain `s`)* · **Engine:** [slipstream-rust](https://github.com/Mygod/slipstream-rust) · Requires a domain + NS delegation
+- See **[DNS Tunnels](dns-tunnels.md)**
 
 ### MasterDNS
 
-Advanced DNS tunnel optimised beyond dnstt/Slipstream: low-overhead ARQ, resolver load-balancing, and high stability under packet loss. This is the **MasterDNS** component bundled in MahsaNG v16, so the MahsaNG Android app can connect directly. Faster than dnstt and more resilient on lossy links, but still a DNS tunnel (slow vs. real proxies) — use when little else works.
+The most loss-resilient of the four (ARQ, packet duplication, resolver load-balancing), and the one **[MahsaNG v16](mahsanet.md)** imports natively.
 
-- **Port:** 53/udp (via `dns-router`, on its own subdomain — coexists with dnstt/Slipstream)
-- **Engine:** [MasterDnsVPN](https://github.com/masterking32/MasterDnsVPN) (Go)
-- **Clients:** MahsaNG v16+, or the standalone MasterDnsVPN client (Linux/Windows/macOS/Termux)
-- **Encryption:** AES-256-GCM (`DATA_ENCRYPTION_METHOD=5`); the shared key is in each user's `masterdns-instructions.txt`
-- **Requires:** Domain with NS delegation (`MASTERDNS_SUBDOMAIN`, default `m`)
-- **Note:** Enabled by default (set `ENABLE_MASTERDNS=false` in `.env` to opt out). Egress is routed through sing-box like dnstt/Slipstream. Shares port 53 with dnstt, Slipstream, and XDNS via `dns-router` — all four can run simultaneously, no `switch-dns` needed.
+- **Port:** 53/udp *(subdomain `m`)* · **Engine:** [MasterDnsVPN](https://github.com/masterking32/MasterDnsVPN) · Requires a domain + NS delegation
+- See **[DNS Tunnels](dns-tunnels.md)**
 
 ### GooseRelay
 
@@ -220,13 +214,10 @@ SOCKS5 tunnelled through a **Google Apps Script** web app that the user deploys 
 
 ### XDNS (VLESS+mKCP+DNS)
 
-**Experimental.** DNS tunnel using Xray-core's mKCP transport with FinalMask XDNS. Encodes VPN traffic inside DNS queries — works when almost everything except DNS is blocked. Slower than other protocols but extremely resilient during heavy internet shutdowns.
+**Experimental.** Xray-core mKCP + FinalMask, and the only DNS tunnel with per-user auth — at the cost of needing a FinalMask-aware client (Happ, Xray CLI).
 
-- **Port:** 53/udp (via `dns-router` on subdomain `x.<domain>`, same as dnstt/Slipstream/MasterDNS)
-- **Engine:** [Xray-core](https://github.com/XTLS/Xray-core) (built from main branch for FinalMask support)
-- **Clients:** Apps with FinalMask support (Happ beta, Xray CLI). Standard v2rayNG does not support FinalMask yet.
-- **Requires:** Domain + NS record for the `x` subdomain (see DNS Setup Step 5)
-- **Note:** XDNS now runs behind `dns-router` alongside dnstt, Slipstream, and MasterDNS — all four can be active simultaneously on port 53, routed by subdomain suffix. Enabled by default; set `ENABLE_XDNS=false` to opt out. Best for Telegram and lightweight chat apps — not fast enough for web browsing.
+- **Port:** 53/udp *(subdomain `x`)* · **Engine:** [Xray-core](https://github.com/XTLS/Xray-core) · Requires a domain + NS delegation
+- See **[DNS Tunnels](dns-tunnels.md)**
 
 <details>
 <summary><strong>XDNS Tuning</strong></summary>

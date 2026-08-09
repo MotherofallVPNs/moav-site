@@ -31,24 +31,35 @@ Add only the rows for the features you enable. This table is the whole story —
 |---|---|---|:-:|---|
 | A | `@` | server IP | DNS only | **Always** — Trojan, Hysteria2, Reality, TLS |
 | A | `dns` | server IP | DNS only | Any DNS tunnel (the nameserver for the delegations below) |
-| NS | `t` `s` `m` `x` | `dns.yourdomain.com` | — | One per DNS tunnel you expose (dnstt / Slipstream / MasterDNS / XDNS) |
-| A | `cdn` | server IP | **Proxied** | CDN-fronted VLESS |
-| A | `www` | server IP | **Proxied** | CDN stealth connect address (`CDN_ADDRESS=www.…`) |
+| NS | `t`, `s`, `m`, `x` | `dns.yourdomain.com` | — | One per [DNS tunnel](dns-tunnels.md) you expose |
+| A | `cdn` | server IP | **Proxied** | [CDN mode](#cdn-mode) |
+| A | `www` | server IP | **Proxied** | [CDN mode](#cdn-mode) stealth connect address (`CDN_ADDRESS=www.…`) |
 | A | `grafana` | server IP | **Proxied** | Faster Grafana over the CDN *(optional)* |
 
-**Minimum** (no DNS tunnels): just the `@` A record. That already enables Reality, Trojan, Hysteria2, TrustTunnel and CDN mode.
+**Minimum** (no DNS tunnels): just the `@` A record. That already enables Reality, Trojan, Hysteria2 and TrustTunnel.
 
-!!! note "DNS tunnels — the four `NS` records"
-    All four tunnels share port 53 through `dns-router`, which fans queries out by subdomain, so each needs its own NS delegation pointing at `dns.yourdomain.com`. They're all enabled by default; a disabled tunnel's container just stays down. Toggle with `ENABLE_DNSTT` / `ENABLE_SLIPSTREAM` / `ENABLE_MASTERDNS` / `ENABLE_XDNS`.
+Each `NS` row is a separate delegation handing that subdomain to your own server:
 
-    | Tunnel | Sub | Speed vs dnstt | Best for |
-    |---|---|---|---|
-    | **dnstt** | `t` | 1× | Widest client support (25+ platforms) |
-    | **Slipstream** | `s` | 1.5–5× | Faster general use |
-    | **MasterDNS** | `m` | up to 9× | Harsh shutdowns; **native [MahsaNG v16](mahsanet.md)** import |
-    | **XDNS** | `x` | ~1× | FinalMask clients (Happ, Xray CLI); per-user auth |
+```
+t.yourdomain.com    NS    dns.yourdomain.com      # dnstt
+s.yourdomain.com    NS    dns.yourdomain.com      # Slipstream
+m.yourdomain.com    NS    dns.yourdomain.com      # MasterDNS
+x.yourdomain.com    NS    dns.yourdomain.com      # XDNS
+```
 
-    All four depend on a public resolver the *client* can reach (`1.1.1.1`/`8.8.8.8` are often throttled during shutdowns) — see [Protocols → reachable resolvers](protocols.md#reachable-dns-resolvers). MasterDNS also supports a separate public delegation via `MASTERDNS_PUBLIC_SUBDOMAIN`. IPv6: add an `AAAA` on `dns` if your server has one.
+Add only the tunnels you want — see [DNS Tunnels](dns-tunnels.md) for what each one is and which to pick. Some registrars require a **trailing dot** on NS values (`dns.yourdomain.com.`); Cloudflare and most modern panels do not.
+
+!!! tip "MoaV writes the zone file for you"
+    `moav doctor dns` generates **`outputs/dns-records.txt`** — a BIND-style zone file containing exactly the records your configuration needs, with the enabled/disabled state of each tunnel noted in comments. In Cloudflare you can feed it straight to **DNS → Records → Import and Upload** instead of adding records by hand.
+
+## CDN mode
+
+CDN mode fronts VLESS+WebSocket behind a CDN, so the client appears to talk to Cloudflare/AWS rather than to your server. Two things are true of **any** CDN you put in front of MoaV:
+
+- **The origin port is `2082`.** MoaV's CDN listener does not bind 80 or 443, so the CDN must be told to reach your server on 2082.
+- **The CDN terminates TLS.** That inbound is plain HTTP by design — the encryption users get is VLESS's own, inside the WebSocket.
+
+How you express those two facts differs per provider, which is the next section. Verifying it works is the same everywhere: see [CDN returns 521 / 525](#troubleshooting).
 
 ## Provider setup
 
@@ -62,7 +73,7 @@ The records are the same everywhere; only the UI differs. Cloudflare additionall
     1. **Origin Rule** (Rules → Origin Rules): when hostname = `cdn.yourdomain.com`, rewrite **Destination Port → 2082**. MoaV's CDN listener doesn't bind 80/443.
     2. **SSL/TLS → Overview → Flexible**: MoaV's CDN inbound is plain HTTP; Cloudflare terminates TLS for the client. If other subdomains need Full (Strict), scope a **Configuration Rule** to `cdn.` only.
 
-    Verify: `curl -so /dev/null -w "%{http_code}" https://cdn.yourdomain.com/x` → `400`/`404` = working, `521` = Origin Rule missing, `525` = SSL mode wrong.
+    Verify both settings: `curl -so /dev/null -w "%{http_code}" https://cdn.yourdomain.com/x` — `400`/`404` means sing-box is answering and CDN mode works. Anything else is diagnosable: see [CDN returns 521 / 525](#troubleshooting).
 
 === "AWS CloudFront"
     An alternative CDN that **needs no domain** — you get a `*.cloudfront.net` name automatically. CloudFront rejects bare-IP origins, so use free wildcard DNS: `YOUR_IP.sslip.io` (pure DNS, no traffic passes through it).
@@ -95,27 +106,6 @@ The records are the same everywhere; only the UI differs. Cloudflare additionall
     ```
     `moav bootstrap`, then verify: `curl -so /dev/null -w "%{http_code}" https://d123.cloudfront.net/x` → `400`. AWS blocked domain fronting in 2018, so the SNI must be your distribution/CNAME. You can run Cloudflare **and** CloudFront together for redundancy.
 
-=== "Namecheap / Google / Hetzner / other"
-    Add the same records in the registrar's DNS panel. Two gotchas:
-
-    - Some registrars want a **trailing dot** on NS values: `dns.yourdomain.com.`
-    - "Automatic" / `300` TTL is fine everywhere.
-
-    Hetzner zone-file form:
-    ```
-    @   IN A  YOUR_IP
-    dns IN A  YOUR_IP
-    t   IN NS dns.yourdomain.com.
-    s   IN NS dns.yourdomain.com.
-    ```
-
-??? note "Home server / Raspberry Pi (dynamic IP)"
-    MoaV runs on a Pi 4+ (2 GB+) or any ARM64/x64 Linux box. Two extra concerns behind a home router:
-
-    **Port forwarding** — forward the ports for your enabled protocols to the server's LAN IP. Domainless needs `443/tcp 51820/udp 8080/tcp 51821/udp 993/tcp 9443/tcp`; a domain adds `80/tcp` (Let's Encrypt, during issuance only), `443/udp` (Hysteria2), `8443/tcp` (Trojan), `4443/tcp+udp` (TrustTunnel), `53/udp` (DNS tunnels). Check for CGNAT: `curl ifconfig.me` must equal your router's WAN IP, or no forwarding will work.
-
-    **Dynamic DNS** — if your IP changes, point the domain with a DDNS updater on a 5-minute cron: [DuckDNS](https://www.duckdns.org) (free subdomain, no domain needed) or a Cloudflare-token script against your own domain. After the IP moves, re-run `moav cert renew` if a certificate was issued for the old IP.
-
 ## Verify
 
 ```bash
@@ -130,11 +120,42 @@ Propagation is usually 5–30 min (rarely up to 48 h). Cross-check worldwide at 
 
 Leave `DOMAIN=` empty in `.env`. MoaV detects this and starts only the transports that work on a bare IP (Reality uses `REALITY_TARGET`, e.g. `dl.google.com`, for TLS camouflage instead of your domain). No DNS records, no certificates, no port 80.
 
-Forward these ports if you're behind a router:
+You can add a domain at any time — set `DOMAIN=` and run `moav bootstrap`. Existing users keep working and pick up the new protocols on their next bundle.
 
-`443/tcp` Reality · `2096/tcp` XHTTP · `51820/udp` WireGuard · `8080/tcp` wstunnel · `51821/udp` AmneziaWG · `993/tcp` MTProxy · `9443/tcp` admin
+### Ports to forward
 
-You can add a domain at any time — set `DOMAIN=` and run `moav bootstrap`; existing users keep working and gain the new protocols on their next bundle.
+Only needed if the server sits behind a router (home, office, NAT).
+
+| Port | Service | Needed when |
+|---|---|:-:|
+| `443/tcp` | Reality (VLESS) | always |
+| `2096/tcp` | XHTTP | always |
+| `51820/udp` | WireGuard | always |
+| `8080/tcp` | wstunnel *(WireGuard over WebSocket, for UDP-blocked networks)* | always |
+| `51821/udp` | AmneziaWG | always |
+| `993/tcp` | Telegram MTProxy | always |
+| `9443/tcp` | Admin dashboard | always |
+| `80/tcp` | Let's Encrypt (ACME) | **domain only**, during issuance/renewal |
+| `443/udp` | Hysteria2 | **domain only** |
+| `8443/tcp` | Trojan | **domain only** |
+| `4443/tcp` + `4443/udp` | TrustTunnel (HTTP/2 + QUIC) | **domain only** |
+| `53/udp` | [DNS tunnels](dns-tunnels.md) *(all four via `dns-router`)* | **domain only** |
+| `2082/tcp` | CDN origin | only if the CDN reaches your origin directly |
+
+### Home server / Raspberry Pi
+
+MoaV runs on a Pi 4+ (2 GB+ RAM) or any ARM64/x64 Linux box. Three things differ from a VPS:
+
+**Check for CGNAT first.** `curl ifconfig.me` must match your router's WAN IP. If it doesn't, your ISP is sharing that address and **no amount of port forwarding will work** — you need a VPS, an IPv6-only setup, or a tunnel from a host that does have a public IP.
+
+**Forward the ports above** to the server's LAN address, and give it a static DHCP lease so that address stops moving.
+
+**Dynamic IP?** If you're using a domain, a residential IP that changes will silently break every record pointing at it. Run a DDNS updater on a 5-minute cron:
+
+- **[DuckDNS](https://www.duckdns.org)** — free subdomain, works with no domain of your own
+- **Your own domain** — a small script against your DNS provider's API (Cloudflare tokens are the usual choice)
+
+After the IP moves, re-run `moav cert renew` if a certificate was issued against the old address, and remember that DNS-tunnel NS delegations point at `dns.yourdomain.com`, so that record needs the DDNS update too.
 
 ??? question "Troubleshooting"
     **Not propagated** — wait, and test other resolvers: `dig @8.8.8.8 yourdomain.com`, `dig @1.1.1.1 …`.
@@ -144,6 +165,18 @@ You can add a domain at any time — set `DOMAIN=` and run `moav bootstrap`; exi
     **Certificate acquisition failed** — check the `@` A record, ensure port 80 is open and free during ACME, and remember domainless mode issues no certs.
 
     **Can't connect from outside a home network** — verify port forwarding, rule out CGNAT (`curl ifconfig.me` vs router WAN IP), and test from mobile data rather than the same Wi-Fi.
+
+    **CDN returns 521 / 525** — probe it with
+    `curl -so /dev/null -w "%{http_code}" https://cdn.yourdomain.com/x`:
+
+    | Code | Meaning | Fix |
+    |---|---|---|
+    | `400` / `404` | sing-box is answering — CDN mode works | — |
+    | `521` | the CDN can't reach your origin on port 2082 | Cloudflare: the **Origin Rule** is missing or wrong. CloudFront: the origin's **HTTP port** isn't 2082 |
+    | `525` | TLS handshake to the origin failed | Cloudflare **SSL/TLS must be Flexible** — the CDN inbound is plain HTTP by design |
+    | `1016` / `NXDOMAIN` | the `cdn` A record is missing, or not **Proxied** | add it, orange cloud on |
+
+    **CDN connects but the client won't** — on CloudFront check `CDN_TRANSPORT=ws`; the default `httpupgrade` is sing-box-specific and fails there with `bad "Sec-WebSocket-Key" header`.
 
 ## Getting a domain
 
