@@ -4,24 +4,24 @@ What DNS records MoaV needs, and how to add them. Most setups need **one to six 
 
 ## Do I need a domain?
 
-**No — MoaV runs without one** in [domainless mode](#domainless-no-domain). A domain unlocks the TLS- and DNS-tunnel protocols; everything else works on a bare IP.
+**Not strictly — but get one.** MoaV runs fine on a bare IP, and if you can't register a domain, skip to [without a domain](#without-a-domain). But a domain roughly **doubles the transports you can offer**, and it is the only way to run the **DNS tunnels** — which are what keep working when almost everything else is blocked. A domain costs a few dollars a year; see [getting a domain](#getting-a-domain).
 
-| Works on a bare IP | Needs a domain |
-|---|---|
-| Reality, XHTTP | Trojan, Hysteria2, TrustTunnel |
-| WireGuard, AmneziaWG, wstunnel | CDN via Cloudflare *(CloudFront needs none)* |
-| Telegram MTProxy | dnstt, Slipstream, MasterDNS, XDNS *(DNS tunnels — need NS records)* |
-| Admin dashboard, Conduit, Snowflake | |
+| Protocol | Bare IP | With a domain |
+|---|:-:|:-:|
+| Reality (VLESS) | ✅ | ✅ |
+| XHTTP (VLESS+XHTTP+Reality) | ✅ | ✅ |
+| WireGuard *(direct + wstunnel)* | ✅ | ✅ |
+| AmneziaWG | ✅ | ✅ |
+| Telegram MTProxy | ✅ | ✅ |
+| CDN-fronted VLESS *(via AWS CloudFront)* | ✅ | ✅ |
+| Admin dashboard · Conduit · Snowflake | ✅ | ✅ |
+| **Trojan** | — | ✅ |
+| **Hysteria2** | — | ✅ |
+| **TrustTunnel** | — | ✅ |
+| **CDN-fronted VLESS** *(via Cloudflare)* | — | ✅ |
+| **dnstt · Slipstream · MasterDNS · XDNS** *(DNS tunnels)* | — | ✅ |
 
-The domain-only protocols need either a Let's Encrypt certificate or an NS delegation, and both require a real domain.
-
-## Domainless (no domain)
-
-Leave `DOMAIN=` empty in `.env`. MoaV detects this and starts only the IP-friendly protocols above (Reality uses `REALITY_TARGET`, e.g. `dl.google.com`, for its TLS camouflage instead of your domain). You can add a domain later with `DOMAIN=…` + `moav bootstrap`.
-
-On a home network, forward these ports (no port 80 — domainless mode never touches Let's Encrypt):
-
-`443/tcp` Reality · `2096/tcp` XHTTP · `51820/udp` WireGuard · `8080/tcp` wstunnel · `51821/udp` AmneziaWG · `993/tcp` MTProxy · `9443/tcp` admin
+The domain-only ones need either a Let's Encrypt certificate or an NS delegation, and both require a real domain. Nothing is lost by adding a domain later: set `DOMAIN=` and re-run `moav bootstrap`.
 
 ## With a domain: the records
 
@@ -125,6 +125,16 @@ dig NS t.yourdomain.com             # → dns.yourdomain.com in AUTHORITY
 ```
 
 Propagation is usually 5–30 min (rarely up to 48 h). Cross-check worldwide at [dnschecker.org](https://dnschecker.org).
+
+## Without a domain
+
+Leave `DOMAIN=` empty in `.env`. MoaV detects this and starts only the transports that work on a bare IP (Reality uses `REALITY_TARGET`, e.g. `dl.google.com`, for TLS camouflage instead of your domain). No DNS records, no certificates, no port 80.
+
+Forward these ports if you're behind a router:
+
+`443/tcp` Reality · `2096/tcp` XHTTP · `51820/udp` WireGuard · `8080/tcp` wstunnel · `51821/udp` AmneziaWG · `993/tcp` MTProxy · `9443/tcp` admin
+
+You can add a domain at any time — set `DOMAIN=` and run `moav bootstrap`; existing users keep working and gain the new protocols on their next bundle.
 
 ??? question "Troubleshooting"
     **Not propagated** — wait, and test other resolvers: `dig @8.8.8.8 yourdomain.com`, `dig @1.1.1.1 …`.
