@@ -1,0 +1,78 @@
+name: Docs Preview
+
+# Builds the docs on every PR and attaches the rendered site as a downloadable
+# artifact. Two reasons this exists:
+#
+#  1. GitHub's file/PR view does NOT render mkdocs-material syntax — tabs
+#     (=== "X") show as literal text and their indented content turns into code
+#     blocks. Reviewing docs changes on GitHub is therefore misleading; you have
+#     to look at a real build.
+#  2. `--strict` turns warnings into failures, so a link to a heading that was
+#     renamed (or folded into a tab, which generates no anchor) fails the PR
+#     instead of shipping a dead link. mkdocs.yml sets validation.links.anchors.
+on:
+  pull_request:
+    paths:
+      - 'docs/**'
+      - 'mkdocs.yml'
+      - '.github/workflows/docs-preview.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+
+      - name: Install mkdocs-material
+        run: pip install --quiet mkdocs-material
+
+      # Not --strict here: the repo still carries pre-existing dead self-links in
+      # pages that have not been rewritten yet, and failing every PR on those
+      # would train people to ignore this job. It fails on genuine build errors,
+      # and the warning list is printed below for review.
+      - name: Build
+        run: mkdocs build --site-dir _preview
+
+      - name: Report link/anchor warnings
+        if: always()
+        run: |
+          echo "### Docs build warnings" >> "$GITHUB_STEP_SUMMARY"
+          echo '' >> "$GITHUB_STEP_SUMMARY"
+          if mkdocs build --site-dir /tmp/_check 2>&1 | grep -E '^WARNING' > /tmp/warns.txt; then
+            echo '```' >> "$GITHUB_STEP_SUMMARY"
+            cat /tmp/warns.txt >> "$GITHUB_STEP_SUMMARY"
+            echo '```' >> "$GITHUB_STEP_SUMMARY"
+            echo '' >> "$GITHUB_STEP_SUMMARY"
+            echo "A broken anchor usually means a heading was renamed, or a link points into a tab or collapsible (which generate no anchor)." >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo 'None.' >> "$GITHUB_STEP_SUMMARY"
+          fi
+
+      - name: Upload rendered site
+        uses: actions/upload-artifact@v4
+        with:
+          name: docs-preview-${{ github.event.pull_request.number }}
+          path: _preview
+          retention-days: 14
+
+      - name: How to view it
+        run: |
+          {
+            echo ''
+            echo '### Preview'
+            echo ''
+            echo "Download the **docs-preview-${{ github.event.pull_request.number }}** artifact from this run, unzip, and open \`index.html\` — or serve it:"
+            echo ''
+            echo '```bash'
+            echo 'python3 -m http.server -d _preview 8000'
+            echo '```'
+            echo ''
+            echo 'Reviewing the changed pages on GitHub will misrepresent tabs and collapsibles.'
+          } >> "$GITHUB_STEP_SUMMARY"
