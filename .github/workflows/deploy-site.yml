@@ -5,6 +5,11 @@ on:
     branches:
       - main
   workflow_dispatch:
+  # Fired by MotherofallVPNs/moav's release workflow on a new (non-prerelease)
+  # tag, so moav.sh/install.sh and llms.txt go live within minutes of a release
+  # instead of waiting for a manual site deploy. See the moav repo's release.yml.
+  repository_dispatch:
+    types: [moav-release]
 
 permissions:
   contents: read
@@ -70,6 +75,23 @@ jobs:
           else
             rm -f site/client-install.sh.new
             echo "No release asset yet — keeping the committed fallback site/client-install.sh."
+          fi
+
+      - name: Publish latest llms.txt
+        # llms.txt (the concise AI index) is authored in MotherofallVPNs/moav and
+        # published as a release asset, same as install.sh — so the copy served at
+        # moav.sh/llms.txt tracks the release instead of drifting. Best-effort:
+        # if the release has no llms.txt asset yet (pre-first-upload), keep the
+        # hand-maintained fallback committed here. llms-full.txt is still
+        # generated from the docs in the step above and is unaffected.
+        run: |
+          URL="https://github.com/MotherofallVPNs/moav/releases/latest/download/llms.txt"
+          if curl -fsSL "$URL" -o site/llms.txt.new && [ -s site/llms.txt.new ]; then
+            mv site/llms.txt.new site/llms.txt
+            echo "Published llms.txt from the latest release asset."
+          else
+            rm -f site/llms.txt.new
+            echo "No llms.txt release asset yet — keeping the committed fallback site/llms.txt."
           fi
 
       - name: Setup Pages
