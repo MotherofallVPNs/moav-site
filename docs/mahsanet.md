@@ -121,14 +121,14 @@ MasterDNS tab**, and MoaV can run the matching MasterDNS server:
 
 1. MasterDNS is **enabled by default** (`ENABLE_MASTERDNS=true`) — just add
    the `m` NS record (see
-   [DNS.md → NS Delegations](DNS.md#steps-36-ns-delegations-for-the-four-dns-tunnels))
+   [DNS.md → NS Delegations](DNS.md#with-a-domain-the-records))
    and rebootstrap. (Set `ENABLE_MASTERDNS=false` only if you want to opt out.)
 2. The user's bundle gets `masterdns-instructions.txt` with the domain +
    encryption key. Enter those in MahsaNG's MasterDNS section.
 
 MasterDNS is faster and far more loss-tolerant than dnstt/Slipstream and was
 battle-tested through Iran's 2025 70-day blackout — see the
-[DNS-tunnel comparison](DNS.md#which-dns-tunnel-should-i-use). Keep a normal
+[DNS-tunnel comparison](protocols.md#which-one-should-i-use). Keep a normal
 proxy config (Reality/CDN) as the primary and MasterDNS as the emergency
 fallback.
 

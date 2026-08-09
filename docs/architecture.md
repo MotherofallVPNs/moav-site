@@ -70,7 +70,7 @@ All four DNS tunnels share **port 53** through a small Go service called `dns-ro
        x.*  ─────►  xray   (XDNS via FinalMask)
 ```
 
-Delegating a tunnel only requires adding its NS record (`t.` / `s.` / `m.` / `x.`); see [DNS → NS Delegations](DNS.md#steps-36-ns-delegations-for-the-four-dns-tunnels). Disabling a tunnel via `ENABLE_*=false` removes its container; `dns-router` simply has no backend to forward to.
+Delegating a tunnel only requires adding its NS record (`t.` / `s.` / `m.` / `x.`); see [DNS → NS Delegations](DNS.md#with-a-domain-the-records). Disabling a tunnel via `ENABLE_*=false` removes its container; `dns-router` simply has no backend to forward to.
 
 ## Bundle generation flow
 

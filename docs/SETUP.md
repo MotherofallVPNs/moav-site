@@ -103,7 +103,7 @@ Choose a VPS provider and create a server:
 - [Time4VPS](https://www.time4vps.com/?affid=8471): 1 vCPU، 1GB RAM، IPv4، 3.99€/ماه 
 
 
-**Home Server:** Raspberry Pi 4 (2GB+ RAM) or any ARM64/x64 Linux works. See [DNS.md](DNS.md#dynamic-dns-for-home-servers) for dynamic DNS setup.
+**Home Server:** Raspberry Pi 4 (2GB+ RAM) or any ARM64/x64 Linux works. See [DNS.md](DNS.md#home-server-raspberry-pi) for dynamic DNS setup.
 
 
 ### Step 2: Configure DNS
@@ -530,7 +530,7 @@ CDN_TRANSPORT=ws
 
 3. Run `moav bootstrap` to regenerate configs
 
-See [DNS Configuration — AWS CloudFront](DNS.md#aws-cloudfront-alternative-cdn) for detailed setup instructions.
+See [DNS Configuration — AWS CloudFront](DNS.md#provider-setup) for detailed setup instructions.
 
 ---
 

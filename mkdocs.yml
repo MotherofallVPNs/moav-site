@@ -40,7 +40,6 @@ nav:
     - Threat Model: threat-model.md
     - Architecture: architecture.md
     - Supported Protocols: protocols.md
-    - DNS Tunnels: dns-tunnels.md
     - Philosophy: philosophy.md
   - Getting Started:
     - Setup Guide: SETUP.md
@@ -57,6 +56,15 @@ nav:
     - OPSEC Guide: OPSEC.md
   - Developer:
     - Development & Testing: development.md
+
+# Fail loudly on links that point at a heading which no longer exists. The DNS
+# rewrite silently broke 9 inbound anchors (other pages linked to headings that
+# had been renamed or folded into tabs) and a normal build said nothing.
+validation:
+  links:
+    absolute_links: ignore
+    unrecognized_links: warn
+    anchors: warn
 
 markdown_extensions:
   - tables

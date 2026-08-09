@@ -13,9 +13,11 @@ What DNS records MoaV needs, and how to add them. Most setups need **one to six 
 | WireGuard *(direct + wstunnel)* | ✅ | ✅ |
 | AmneziaWG | ✅ | ✅ |
 | Telegram MTProxy | ✅ | ✅ |
+| Shadowsocks-2022 | ✅ | ✅ |
 | CDN-fronted VLESS *(via AWS CloudFront)* | ✅ | ✅ |
 | Admin dashboard · Conduit · Snowflake | ✅ | ✅ |
 | **Trojan** | — | ✅ |
+| **AnyTLS** | — | ✅ |
 | **Hysteria2** | — | ✅ |
 | **TrustTunnel** | — | ✅ |
 | **CDN-fronted VLESS** *(via Cloudflare)* | — | ✅ |
@@ -31,7 +33,7 @@ Add only the rows for the features you enable. This table is the whole story —
 |---|---|---|:-:|---|
 | A | `@` | server IP | DNS only | **Always** — Trojan, Hysteria2, Reality, TLS |
 | A | `dns` | server IP | DNS only | Any DNS tunnel (the nameserver for the delegations below) |
-| NS | `t`, `s`, `m`, `x` | `dns.yourdomain.com` | — | One per [DNS tunnel](dns-tunnels.md) you expose |
+| NS | `t`, `s`, `m`, `x` | `dns.yourdomain.com` | — | One per [DNS tunnel](protocols.md#dns-tunnels) you expose |
 | A | `cdn` | server IP | **Proxied** | [CDN mode](#cdn-mode) |
 | A | `www` | server IP | **Proxied** | [CDN mode](#cdn-mode) stealth connect address (`CDN_ADDRESS=www.…`) |
 | A | `grafana` | server IP | **Proxied** | Faster Grafana over the CDN *(optional)* |
@@ -47,7 +49,7 @@ m.yourdomain.com    NS    dns.yourdomain.com      # MasterDNS
 x.yourdomain.com    NS    dns.yourdomain.com      # XDNS
 ```
 
-Add only the tunnels you want — see [DNS Tunnels](dns-tunnels.md) for what each one is and which to pick. Some registrars require a **trailing dot** on NS values (`dns.yourdomain.com.`); Cloudflare and most modern panels do not.
+Add only the tunnels you want — see [DNS Tunnels](protocols.md#dns-tunnels) for what each one is and which to pick. Some registrars require a **trailing dot** on NS values (`dns.yourdomain.com.`); Cloudflare and most modern panels do not.
 
 !!! tip "MoaV writes the zone file for you"
     `moav doctor dns` generates **`outputs/dns-records.txt`** — a BIND-style zone file containing exactly the records your configuration needs, with the enabled/disabled state of each tunnel noted in comments. In Cloudflare you can feed it straight to **DNS → Records → Import and Upload** instead of adding records by hand.
@@ -139,7 +141,7 @@ Only needed if the server sits behind a router (home, office, NAT).
 | `443/udp` | Hysteria2 | **domain only** |
 | `8443/tcp` | Trojan | **domain only** |
 | `4443/tcp` + `4443/udp` | TrustTunnel (HTTP/2 + QUIC) | **domain only** |
-| `53/udp` | [DNS tunnels](dns-tunnels.md) *(all four via `dns-router`)* | **domain only** |
+| `53/udp` | [DNS tunnels](protocols.md#dns-tunnels) *(all four via `dns-router`)* | **domain only** |
 | `2082/tcp` | CDN origin | only if the CDN reaches your origin directly |
 
 ### Home server / Raspberry Pi
@@ -157,26 +159,27 @@ MoaV runs on a Pi 4+ (2 GB+ RAM) or any ARM64/x64 Linux box. Three things differ
 
 After the IP moves, re-run `moav cert renew` if a certificate was issued against the old address, and remember that DNS-tunnel NS delegations point at `dns.yourdomain.com`, so that record needs the DDNS update too.
 
-??? question "Troubleshooting"
-    **Not propagated** — wait, and test other resolvers: `dig @8.8.8.8 yourdomain.com`, `dig @1.1.1.1 …`.
+## Troubleshooting
 
-    **NS record not working** — confirm the `dns` A record exists, add a trailing dot if your registrar needs one, and give delegations longer to propagate.
+**Not propagated** — wait, and test other resolvers: `dig @8.8.8.8 yourdomain.com`, `dig @1.1.1.1 …`.
 
-    **Certificate acquisition failed** — check the `@` A record, ensure port 80 is open and free during ACME, and remember domainless mode issues no certs.
+**NS record not working** — confirm the `dns` A record exists, add a trailing dot if your registrar needs one, and give delegations longer to propagate.
 
-    **Can't connect from outside a home network** — verify port forwarding, rule out CGNAT (`curl ifconfig.me` vs router WAN IP), and test from mobile data rather than the same Wi-Fi.
+**Certificate acquisition failed** — check the `@` A record, ensure port 80 is open and free during ACME, and remember domainless mode issues no certs.
 
-    **CDN returns 521 / 525** — probe it with
-    `curl -so /dev/null -w "%{http_code}" https://cdn.yourdomain.com/x`:
+**Can't connect from outside a home network** — verify port forwarding, rule out CGNAT (`curl ifconfig.me` vs router WAN IP), and test from mobile data rather than the same Wi-Fi.
 
-    | Code | Meaning | Fix |
-    |---|---|---|
-    | `400` / `404` | sing-box is answering — CDN mode works | — |
-    | `521` | the CDN can't reach your origin on port 2082 | Cloudflare: the **Origin Rule** is missing or wrong. CloudFront: the origin's **HTTP port** isn't 2082 |
-    | `525` | TLS handshake to the origin failed | Cloudflare **SSL/TLS must be Flexible** — the CDN inbound is plain HTTP by design |
-    | `1016` / `NXDOMAIN` | the `cdn` A record is missing, or not **Proxied** | add it, orange cloud on |
+**CDN returns 521 / 525** — probe it with
+`curl -so /dev/null -w "%{http_code}" https://cdn.yourdomain.com/x`:
 
-    **CDN connects but the client won't** — on CloudFront check `CDN_TRANSPORT=ws`; the default `httpupgrade` is sing-box-specific and fails there with `bad "Sec-WebSocket-Key" header`.
+| Code | Meaning | Fix |
+|---|---|---|
+| `400` / `404` | sing-box is answering — CDN mode works | — |
+| `521` | the CDN can't reach your origin on port 2082 | Cloudflare: the **Origin Rule** is missing or wrong. CloudFront: the origin's **HTTP port** isn't 2082 |
+| `525` | TLS handshake to the origin failed | Cloudflare **SSL/TLS must be Flexible** — the CDN inbound is plain HTTP by design |
+| `1016` / `NXDOMAIN` | the `cdn` A record is missing, or not **Proxied** | add it, orange cloud on |
+
+**CDN connects but the client won't** — on CloudFront check `CDN_TRANSPORT=ws`; the default `httpupgrade` is sing-box-specific and fails there with `bad "Sec-WebSocket-Key" header`.
 
 ## Getting a domain
 

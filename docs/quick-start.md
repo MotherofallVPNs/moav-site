@@ -11,7 +11,7 @@ Get MoaV running in **two steps** — install, then explore. It deploys [16+ ant
     See [VPS Deployment](DEPLOY.md) for provider-by-provider steps starting at ~$5/month.
 
 !!! tip "Raspberry Pi or home server?"
-    MoaV runs great at home in **domainless mode** — no domain required. A home server sits behind a router, so forward the protocol ports to it first: see [Home Servers & Raspberry Pi → Port Forwarding](DNS.md#port-forwarding). (Check for CGNAT before you start — some ISPs block inbound connections entirely.)
+    MoaV runs great at home in **domainless mode** — no domain required. A home server sits behind a router, so forward the protocol ports to it first: see [Ports to forward](DNS.md#ports-to-forward). (Check for CGNAT before you start — some ISPs block inbound connections entirely.)
 
 ## Step 1 — Install
 
@@ -32,7 +32,7 @@ When it finishes, it prints the exact **DNS records** to add at your registrar �
 !!! tip "Point your DNS first (recommended)"
     Certificate issuance needs your domain already resolving to this server, so it's smoothest to add the DNS records **before** you install. Find the exact records for your setup in [DNS Configuration](DNS.md), set them up, then run the installer.
 
-Finally, open your firewall for the protocols you enabled — the [full port list is here](DNS.md#port-forwarding). Most cloud VPS providers leave all ports open by default, so you may not need to.
+Finally, open your firewall for the protocols you enabled — the [full port list is here](DNS.md#ports-to-forward). Most cloud VPS providers leave all ports open by default, so you may not need to.
 
 ## Step 2 — Explore your MoaV server
 

@@ -744,7 +744,7 @@ This usually means Cloudflare can't reach your origin on the correct port.
    - Go to Cloudflare → Rules → Origin Rules
    - You need a rule that redirects `cdn.yourdomain.com` to port 2082
    - Without this, Cloudflare connects to port 80 (wrong port)
-   - See [DNS.md Cloudflare section](DNS.md#cloudflare) for setup instructions
+   - See [DNS.md Cloudflare section](DNS.md#provider-setup) for setup instructions
 
 2. **Verify port 2082 is reachable:**
    ```bash
