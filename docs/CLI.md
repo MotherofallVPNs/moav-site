@@ -590,13 +590,6 @@ moav admin password          # Prompts for new password (or generates random)
 ### Config Donation
 
 #### `moav donate`
-Donate VPN configs to sharing platforms.
-
-```bash
-moav donate                  # Show available donation services
-```
-
-#### `moav donate`
 Donate VPN configs and bandwidth to help people bypass censorship. Supports three donation services:
 
 - **MahsaNet** — Donate VPN config links to Mahsa VPN (2M+ users in Iran)
