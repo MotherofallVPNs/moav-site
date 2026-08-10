@@ -116,7 +116,7 @@ mkdocs serve            # http://127.0.0.1:8000, live-reloads as you edit
 mkdocs build --strict   # what CI runs — warnings are failures
 ```
 
-**Always review from a build, never from the diff.** GitHub's file view doesn't render tabs (`=== "X"`) or collapsibles (`??? note"`) — they appear as literal text with their content turned into code blocks, so a correct page looks broken and a broken one can look fine.
+**Always review from a build, never from the diff.** GitHub's file view doesn't render tabs (`=== "X"`) or collapsibles (`??? note`) — they appear as literal text with their content turned into code blocks, so a correct page looks broken and a broken one can look fine.
 
 Two ways to see a real render:
 
