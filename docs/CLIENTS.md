@@ -2,6 +2,14 @@
 
 This guide explains how to connect to MoaV from various devices.
 
+Everything below arrives in the bundle you were sent. Opening its **`README.html`** is usually enough — it detects nothing, assumes nothing, and walks through one platform at a time in English and Farsi:
+
+<video class="moav-demo" controls preload="none" poster="https://moav.sh/demos/user-bundles.jpg">
+  <source src="https://moav.sh/demos/user-bundles.webm" type="video/webm">
+  <a href="https://moav.sh/demos/user-bundles.webm">Watch a walkthrough of a user bundle</a>
+</video>
+<span class="moav-demo-caption">A bundle from the inside: connection guide, per-protocol configs, QR codes — 14s, 948 KB.</span>
+
 ## Quick reference
 ### Protocol Support by Port
 

@@ -10,3 +10,24 @@
 /* No override for the drawer logo. Material reserves exactly 3rem of top
    padding in .md-nav__title for an absolutely-positioned 2.4rem mark; anything
    taller spills onto the "MoaV Docs" title underneath it. */
+
+/* Terminal demos. preload="none" means nothing is fetched until the reader
+   presses play, so a page carrying three of these costs what it did before --
+   these docs are read on connections where a 1.7 MB autoplay would be rude. */
+.moav-demo {
+  display: block;
+  width: 100%;
+  max-width: 40rem;
+  margin: 1em 0 0.3em;
+  border: 1px solid var(--md-default-fg-color--lightest);
+  border-radius: 0.2rem;
+  background: #0a0a0f; /* the terminalizer theme colour, so letterboxing blends */
+}
+
+/* Weight and size under each demo, so nobody on metered data is surprised. */
+.moav-demo-caption {
+  display: block;
+  margin: 0 0 1.4em;
+  font-size: 0.72rem;
+  color: var(--md-default-fg-color--light);
+}

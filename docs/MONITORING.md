@@ -2,9 +2,11 @@
 
 Real-time observability for your MoaV deployment with Grafana dashboards.
 
-![Grafana dashboards](assets/grafana-dashboard.jpg){ width="640" }
-
-[Watch the 30-second demo](https://moav.sh/demos/grafana-dashboards.webm)
+<video class="moav-demo" controls preload="none" poster="https://moav.sh/demos/grafana-dashboards.jpg">
+  <source src="https://moav.sh/demos/grafana-dashboards.webm" type="video/webm">
+  <a href="https://moav.sh/demos/grafana-dashboards.webm">Watch the Grafana demo</a>
+</video>
+<span class="moav-demo-caption">A tour of the ten dashboards — 22s, 668 KB.</span>
 
 ## Overview
 

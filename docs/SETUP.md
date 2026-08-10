@@ -207,6 +207,12 @@ This will:
 
 > The domain prompt accepts your domain in any form (`example.com`, `https://example.com/`, `example.com:443` — all work). If you stop mid-way, re-running `moav bootstrap` picks up where you left off.
 
+<video class="moav-demo" controls preload="none" poster="https://moav.sh/demos/setup.jpg">
+  <source src="https://moav.sh/demos/setup.webm" type="video/webm">
+  <a href="https://moav.sh/demos/setup.webm">Watch the bootstrap demo</a>
+</video>
+<span class="moav-demo-caption">Bootstrap: domain prompt, key generation, certificate issuance, first users — 24s, 1.7 MB.</span>
+
 **DNS Tunnel Preparation** (optional):
 
 If you want to use the DNS tunnel, free port 53 first:
@@ -221,9 +227,11 @@ echo -e "nameserver 1.1.1.1\nnameserver 8.8.8.8" > /etc/resolv.conf
 
 ### Step 6: Start Services
 
-![Service status](assets/service-management.jpg){ width="560" }
-
-[Watch the demo](https://moav.sh/demos/services.webm)
+<video class="moav-demo" controls preload="none" poster="https://moav.sh/demos/services.jpg">
+  <source src="https://moav.sh/demos/services.webm" type="video/webm">
+  <a href="https://moav.sh/demos/services.webm">Watch the service management demo</a>
+</video>
+<span class="moav-demo-caption">Starting services and reading the status table — 26s, 1.3 MB.</span>
 
 ```bash
 # Start all services
@@ -281,9 +289,11 @@ moav doctor              # Run all diagnostic checks
 
 ### Step 7: Download User Bundles
 
-![Admin dashboard](assets/admin-dashboard.jpg){ width="560" }
-
-[Watch the demo](https://moav.sh/demos/admin-dashboard.webm)
+<video class="moav-demo" controls preload="none" poster="https://moav.sh/demos/user-bundles.jpg">
+  <source src="https://moav.sh/demos/user-bundles.webm" type="video/webm">
+  <a href="https://moav.sh/demos/user-bundles.webm">Watch the user bundle demo</a>
+</video>
+<span class="moav-demo-caption">What a bundle contains: the connection guide, per-protocol configs and QR codes — 14s, 948 KB.</span>
 
 User bundles are ready in `outputs/bundles/`:
 
