@@ -2,55 +2,67 @@
 
 How MoaV is wired together. For protocol-level details see [protocols.md](protocols.md); for CLI behavior see [CLI.md](CLI.md); for DNS-tunnel mechanics see [DNS.md](DNS.md).
 
+## How traffic flows
+
+What a MoaV server looks like from the outside in: clients reach it by whichever protocol still works, everything egresses through the server, and two profiles additionally relay bandwidth for other people's networks.
+
+```
+                                                              ┌───────────────┐  ┌───────────────┐
+       ┌───────────────┐                                      │ Psiphon Users │  │   Tor Users   │
+       │  Your Clients │                                      │  (worldwide)  │  │  (worldwide)  │
+       │   (private)   │                                      └───────┬───────┘  └───────┬───────┘
+       └───────┬───────┘                                              │                  │
+               │                                                      │                  │
+               ├─────────────────┐                                    │                  │
+               │                 │ (when IP blocked)                  │                  │
+               │          ┌──────┴───────┐                            │                  │
+               │          │  CDN (VLESS) │                            │                  │
+               │          └──────┬───────┘                            │                  │
+┌──────────────╪─────────────────╪────────────────────────────────────╪──────────────────╪─────────┐
+│              │                 │          Restricted Internet       │                  │         │
+└──────────────╪─────────────────╪────────────────────────────────────╪──────────────────╪─────────┘
+╔══════════════╪═════════════════╪════════════════════════════════════╪══════════════════╪═════════╗
+║     ┌────────┼─────────────────┼───────┼──────┐                     │                  │         ║
+║     ▼        ▼                 ▼       ▼      ▼                     ▼                  ▼         ║
+║ ┌─────────┐┌─────────┐┌───────┐┌─────────┐┌────────┐          ┌───────────┐      ┌───────────┐   ║
+║ │ Reality ││WireGuard││ Trust ││   DNS   ││Telegram│          │  Conduit  │      │ Snowflake │   ║
+║ │ Trojan  ││AmneziaWG││Tunnel ││ tunnels ││MTProxy │          │  (donate  │      │  (donate  │   ║
+║ │Hysteria2││wstunnel ││       ││ (4, on  ││        │          │ bandwidth)│      │ bandwidth)│   ║
+║ │ AnyTLS  ││         ││       ││ port 53)││        │          │           │      │           │   ║
+║ │  SS2022 ││         ││       ││         ││        │          │           │      │           │   ║
+║ │ CDN WS  ││         ││       ││         ││        │          │           │      │           │   ║
+║ ├─────────┤└────┬────┘└───┬───┘└────┬────┘└───┬────┘          └─────┬─────┘      └─────┬─────┘   ║
+║ │ sing-box│     │         │         │         │  ┌────────────────┐ │                  │   MoaV  ║
+║ └────┬────┘     │         │         │         │  │ Grafana  :9444 │ │                  │  server ║
+║      │          │         │         │         │  │ Admin    :9443 │ │                  │         ║
+╚══════╪══════════╪═════════╪═════════╪═════════╪══╪════════════════╪═╪══════════════════╪═════════╝
+       │          │         │         │         │                     │                  │
+       ▼          ▼         ▼         ▼         ▼                     ▼                  ▼
+┌─────────────────────────────────────────────────────────────────────────────────────────────────┐
+│                                        Open Internet                                            │
+└─────────────────────────────────────────────────────────────────────────────────────────────────┘
+```
+
 ## Container topology
 
-Every protocol is one or more containers grouped into a docker-compose **profile**. `moav start` reads `ENABLE_*` flags from `.env` and only brings up the profiles whose flag is on (see [CLI → Disabled profiles](CLI.md#moav-start)).
+Every protocol is one or more containers grouped into a docker-compose **profile**. `moav start` reads the `ENABLE_*` flags from `.env` and brings up only the profiles whose flag is on (see [CLI → moav start](CLI.md#moav-start)).
 
-```
-        .env  (ENABLE_* flags)
-                │
-                ▼
-    Compose profile resolution
-                │
-                ▼  (only enabled profiles start)
+| Profile | Containers | Protocols it serves |
+|---|---|---|
+| `proxy` | `sing-box` | Reality (VLESS), Trojan, AnyTLS *(opt-in)*, Hysteria2, Shadowsocks-2022, CDN VLESS+WS |
+| `xhttp` | `xray` | VLESS + XHTTP + Reality |
+| `wireguard` | `wireguard`, `wstunnel` | WireGuard direct UDP, plus a `wss://` WebSocket fallback for UDP-blocked networks |
+| `amneziawg` | `amneziawg` | AmneziaWG (obfuscated WireGuard) |
+| `dnstunnel` | `dns-router`, `dnstt`, `slipstream`, `masterdns`, `xray` | All four [DNS tunnels](protocols.md#dns-tunnels), sharing port 53 |
+| `trusttunnel` | `trusttunnel` | TrustTunnel (HTTP/2 + QUIC over TLS) |
+| `telegram` | `telemt` | Telegram MTProxy (fake-TLS) |
+| `admin` | `admin`, `docker-proxy` | The dashboard on `:9443` |
+| `monitoring` | `grafana`, `prometheus`, exporters, `cadvisor` | Metrics and dashboards on `:9444` |
+| `conduit` | `psiphon-conduit` | Bandwidth donated to Psiphon |
+| `snowflake` | `snowflake` + exporter | Bandwidth donated to Tor |
+| `client` | `client` | Local testing (`moav test`) |
 
-
-  proxy        sing-box
-                 ├─ Reality (VLESS)
-                 ├─ Trojan
-                 ├─ AnyTLS         (opt-in; defeats TLS-in-TLS fingerprinting)
-                 ├─ Hysteria2
-                 ├─ Shadowsocks-2022
-                 └─ CDN VLESS+WS
-
-  xhttp        xray   (VLESS + XHTTP + Reality)
-
-  wireguard    wireguard + wstunnel
-                 (direct UDP + wss:// WebSocket fallback)
-
-  amneziawg    amneziawg   (obfuscated WireGuard)
-
-  dnstunnel    dns-router + dnstt + slipstream
-               + masterdns + xray (XDNS)
-                 (all four DNS tunnels share port 53)
-
-  trusttunnel  trusttunnel   (HTTP/2 + QUIC, TLS)
-
-  telegram     telemt   (MTProxy, fake-TLS)
-
-  admin        admin + docker-proxy
-                 (FastAPI dashboard, HTTP Basic auth)
-
-  conduit      psiphon-conduit       ─┐
-  snowflake    snowflake + exporter   ├─ bandwidth donations
-  gooserelay   gooserelay            ─┘
-
-  monitoring   prometheus + grafana
-               + per-protocol exporters
-
-  setup        bootstrap + geoip-updater   (one-shot lifecycle)
-  client       client                      (local testing)
-```
+AnyTLS is opt-in because it defeats TLS-in-TLS fingerprinting but has narrower client support. `all` starts every profile whose flag is on.
 
 ## DNS-router fan-out
 

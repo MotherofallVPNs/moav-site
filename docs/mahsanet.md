@@ -20,6 +20,7 @@ user connected.
   [MahsaNG releases page](https://github.com/GFW-knocker/MahsaNG/releases)
   and install it (allow "install from unknown sources"). It is not on Google
   Play; only use the official GitHub releases.
+
 - MahsaNG is Android-only. iOS/desktop users should use a standard V2Ray
   client (Streisand, Hiddify, v2rayN, NekoBox) with the same URIs — see
   [CLIENTS.md](CLIENTS.md).
@@ -63,8 +64,10 @@ Each bundle in `outputs/bundles/<user>/` contains:
 
 - **`subscription.txt`** — the base64 **V2Ray subscription body** (all
   compatible configs in one string).
+
 - **`README.html`** — opens with an **"Import everything at once"** card showing
   the same subscription as a click-to-copy block (EN + FA).
+
 - the individual config files (`reality.txt`, `trojan.txt`, `shadowsocks.txt`,
   …) and a PNG QR per config (`reality-qr.png`, …).
 
@@ -92,6 +95,7 @@ string. Two ways to use it:
   `subscription.txt`) and in MahsaNG tap **≡ → Subscription / Group → +** and
   paste it — MahsaNG, v2rayNG and Hiddify accept the base64 body directly. All
   configs appear at once.
+
 - **Host it as a URL:** put `subscription.txt` behind any HTTPS URL the user can
   reach (a static host, a gist, an object-storage bucket), then add that URL as
   a subscription in MahsaNG — configs refresh whenever you regenerate them
@@ -123,6 +127,7 @@ MasterDNS tab**, and MoaV can run the matching MasterDNS server:
    the `m` NS record (see
    [DNS.md → NS Delegations](DNS.md#with-a-domain-the-records))
    and rebootstrap. (Set `ENABLE_MASTERDNS=false` only if you want to opt out.)
+
 2. The user's bundle gets `masterdns-instructions.txt` with the domain +
    encryption key. Enter those in MahsaNG's MasterDNS section.
 
@@ -153,10 +158,13 @@ PORT_GOOSE=8444    # must be reachable from Google's servers
 Rerun bootstrap; the server generates a shared `tunnel_key` (AES-256-GCM).
 Each user bundle then contains three ready-made GooseRelay files (nothing to
 hand-edit except pasting in one ID):
+
 - **`gooserelay-AppsScript.gs`** — the v1.7.1 Apps Script forwarder with the
   `RELAY_URLS` array **already pointed at this server**. Paste as-is.
+
 - **`gooserelay-client_config.json`** — a complete client config (tunnel_key,
   SNI, tuning) with only the Deployment ID left to fill.
+
 - **`gooserelay-instructions.txt`** — the short walkthrough below.
 
 **User setup (one-time):**
@@ -164,11 +172,13 @@ hand-edit except pasting in one ID):
 1. Open <https://script.google.com> → New project
 2. Paste the **whole** of `gooserelay-AppsScript.gs` (no editing — the
    `RELAY_URLS` array is already filled in)
+
 3. Deploy → New deployment → Web app → Execute as: Me, Access: Anyone → copy the Deployment ID
 4. In `gooserelay-client_config.json`, replace `REPLACE_WITH_YOUR_APPS_SCRIPT_DEPLOYMENT_ID` with that Deployment ID
 5. Load `gooserelay-client_config.json` into the GooseRelay client, or paste it into MahsaNG v16's **GooseRelay tab**
 
 **Notes:**
+
 - No domain or DNS delegation needed — only the server IP + port 8444
 - Google Apps Script quota: ~20,000 calls/day per Google account; add multiple accounts for higher capacity
 - The `tunnel_key` is shared (not per-user); keep it secret
@@ -180,13 +190,17 @@ hand-edit except pasting in one ID):
 
 - **Lead with Reality, keep CDN ready.** If the server IP gets blocked, the
   CDN config keeps working without any change on the server.
+
 - **Enable MahsaNG's Fragment / fake-SNI** in its settings — these are
   client-side and complement (don't replace) the MoaV protocol choice.
+
 - **Hysteria2 last.** It's the fastest when it works, but UDP is the first
   thing to get throttled during heavy censorship.
+
 - **Rotate via subscription.** Using Method A means you can rotate a user's
   configs server-side (`moav regenerate-users`) and they refresh on the next
   subscription update — no need to resend links.
+
 - **One user per person.** Per-user configs let you `moav user revoke` a
   leaked identity without disrupting everyone else.
 

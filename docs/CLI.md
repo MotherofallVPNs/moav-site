@@ -113,11 +113,13 @@ moav uninstall --wipe    # Remove EVERYTHING (fresh install ready)
 ```
 
 **Without `--wipe` (default):**
+
 - Stops and removes all Docker containers
 - Removes the global `moav` command
 - Preserves: `.env`, keys, certificates, user bundles, Docker volumes
 
 **With `--wipe`:**
+
 - Removes all Docker containers AND volumes
 - Removes `.env` and all generated configs
 - Removes all keys and certificates
@@ -156,6 +158,7 @@ moav doctor updates      # Check for MoaV updates
 ```
 
 **Available checks:**
+
 - `docker` — Docker daemon running, Compose available, Docker disk usage summary
 - `memory` — Total RAM, available memory, warns if <1GB or <2GB with monitoring enabled
 - `disk` — Disk space on root and Docker partition, warns if <2GB free
@@ -176,6 +179,7 @@ moav bootstrap
 ```
 
 This command:
+
 1. Checks prerequisites
 2. Prompts for domain, email, admin password (if not in .env)
 3. Generates Reality and dnstt keypairs
@@ -191,6 +195,7 @@ moav domainless
 ```
 
 Available services in domainless mode:
+
 - Reality (VLESS+Reality)
 - XHTTP (VLESS+XHTTP+Reality)
 - WireGuard (direct + wstunnel)
@@ -219,6 +224,7 @@ moav update -b main      # Switch back to main branch
 ```
 
 **Options:**
+
 - `-b BRANCH` - Switch to specified branch before updating
 
 If local changes are detected, you'll be prompted to stash or discard them.
@@ -231,6 +237,7 @@ moav setup-dns
 ```
 
 This command:
+
 1. Stops systemd-resolved
 2. Disables it from starting on boot
 3. Configures /etc/resolv.conf with public DNS servers
@@ -251,6 +258,7 @@ moav start proxy wireguard admin  # Start three profiles
 ```
 
 **Arguments:**
+
 - No arguments: uses `DEFAULT_PROFILES` from `.env`
 - Profile names: start specific profiles (space-separated)
 - `--force` / `-f`: bypass the profile-filtering prompt (see below)
@@ -279,6 +287,7 @@ moav stop sing-box -r         # Stop specific service and remove container
 ```
 
 **Options:**
+
 - `-r` - Remove containers after stopping (not just stop)
 
 #### `moav restart`
@@ -298,6 +307,7 @@ moav status
 ```
 
 Displays:
+
 - Container status (running/stopped)
 - Health status
 - Port mappings
@@ -316,6 +326,7 @@ moav logs -f conduit          # Explicit follow mode
 ```
 
 **Options:**
+
 - `-n`, `--no-follow` - Show last 100 lines without following
 - `-f`, `--follow` - Follow mode (default)
 
@@ -421,16 +432,19 @@ moav user add --batch 5 --prefix dev -p   # Create dev01..dev05 with packages
 ```
 
 **Options:**
+
 - `--package`, `-p` - Create distributable zip file with HTML guide
 - `--batch N`, `-b N` - Create N users with auto-generated names
 - `--prefix NAME` - Prefix for batch usernames (default: "user")
 
 **Batch mode features:**
+
 - Smart numbering: if user01-user03 exist, `--batch 2` creates user04, user05
 - Services reload once at the end (not after each user)
 - Shows progress for each user and summary at the end
 
 Creates bundle in `outputs/bundles/USERNAME/` containing:
+
 - Config files for all protocols
 - QR codes for mobile import
 - README.html with instructions
@@ -443,6 +457,7 @@ moav user revoke john         # Revoke user 'john'
 ```
 
 Removes user from:
+
 - sing-box config (Reality, Trojan, Hysteria2, CDN)
 - WireGuard config
 - TrustTunnel credentials
@@ -495,6 +510,7 @@ moav test john --verbose      # Same as above
 ```
 
 **Options:**
+
 - `--json` - Output results in JSON format
 - `-v`, `--verbose` - Show detailed debug output
 
@@ -541,11 +557,13 @@ moav client connect john -p hysteria2       # Short form
 ```
 
 **Options:**
+
 - `--protocol`, `-p` - Specify protocol (default: auto)
 
 **Protocols:** `auto`, `reality`, `trojan`, `hysteria2`, `wireguard`, `tor`, `dnstt`, `slipstream`, `masterdns`
 
 **Proxy endpoints (configurable in .env):**
+
 - SOCKS5: `localhost:10800` (CLIENT_SOCKS_PORT)
 - HTTP: `localhost:18080` (CLIENT_HTTP_PORT)
 
@@ -609,6 +627,7 @@ moav donate info
 ```
 
 **Subcommands:**
+
 - `setup` — Configure any donation service (menu: MahsaNet / Conduit / Snowflake)
 - `status` — Show all 3 services: MahsaNet config stats, Conduit connected clients and bandwidth, Snowflake people served and bandwidth
 - `list` — List all donated MahsaNet configs with status and health
@@ -677,6 +696,7 @@ moav export mybackup.tar.gz   # Custom filename
 ```
 
 **Backup includes:**
+
 - `.env` configuration
 - All cryptographic keys (Reality, WireGuard, dnstt)
 - User credentials
@@ -694,6 +714,7 @@ moav import /path/to/backup.tar.gz
 ```
 
 Restores:
+
 - `.env` file
 - Keys and certificates
 - User credentials
@@ -708,6 +729,7 @@ moav migrate-ip $(curl -s api.ipify.org)  # Auto-detect current IP
 ```
 
 This command:
+
 1. Updates `SERVER_IP` in `.env`
 2. Regenerates all user bundle configs
 3. Updates QR codes (if qrencode installed)
@@ -720,6 +742,7 @@ moav regenerate-users
 ```
 
 Use this after:
+
 - Changing domain
 - Enabling/disabling protocols
 - Adding CDN_DOMAIN

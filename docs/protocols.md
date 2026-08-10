@@ -126,50 +126,48 @@ Telegram-specific proxy with Fake-TLS V2. Emulates real TLS connections, includi
 - **Engine:** [telemt](https://github.com/telemt/telemt)
 - **Clients:** Telegram app (built-in proxy settings)
 
-<details>
-<summary><strong>Anti-DPI Tuning Settings</strong></summary>
+??? note "Anti-DPI Tuning Settings"
 
-telemt has 17+ configurable settings for hostile network environments. All configurable in `.env`:
+    telemt has 17+ configurable settings for hostile network environments. All configurable in `.env`:
 
-**Traffic Disguise (anti-DPI):**
+    **Traffic Disguise (anti-DPI):**
 
-| Setting | Default | Purpose |
-|---------|---------|---------|
-| `TELEMT_KEEPALIVE_RANDOM` | `true` | Randomize keepalive payload to break DPI pattern-matching |
-| `TELEMT_KEEPALIVE_JITTER` | `4` | ±N seconds randomness on keepalive timing |
-| `TELEMT_KEEPALIVE_INTERVAL` | `20` | Base keepalive interval in seconds |
-| `TELEMT_WARMUP_JITTER` | `200` | Randomize connection establishment timing (ms) |
+    | Setting | Default | Purpose |
+    |---------|---------|---------|
+    | `TELEMT_KEEPALIVE_RANDOM` | `true` | Randomize keepalive payload to break DPI pattern-matching |
+    | `TELEMT_KEEPALIVE_JITTER` | `4` | ±N seconds randomness on keepalive timing |
+    | `TELEMT_KEEPALIVE_INTERVAL` | `20` | Base keepalive interval in seconds |
+    | `TELEMT_WARMUP_JITTER` | `200` | Randomize connection establishment timing (ms) |
 
-**Connection Pool Resilience:**
+    **Connection Pool Resilience:**
 
-| Setting | Default | Purpose |
-|---------|---------|---------|
-| `TELEMT_POOL_SIZE` | `12` | Number of persistent connections to Telegram DCs |
-| `TELEMT_REINIT_SECS` | `600` | Rebuild all connections every N seconds (prevents long-connection fingerprinting) |
-| `TELEMT_HARDSWAP` | `true` | Build new pool before tearing down old (zero-downtime rotation) |
-| `TELEMT_HARDSWAP_DELAY_MIN` | `500` | Min delay between new connections during swap (ms) |
-| `TELEMT_HARDSWAP_DELAY_MAX` | `1200` | Max delay between new connections during swap (ms) |
+    | Setting | Default | Purpose |
+    |---------|---------|---------|
+    | `TELEMT_POOL_SIZE` | `12` | Number of persistent connections to Telegram DCs |
+    | `TELEMT_REINIT_SECS` | `600` | Rebuild all connections every N seconds (prevents long-connection fingerprinting) |
+    | `TELEMT_HARDSWAP` | `true` | Build new pool before tearing down old (zero-downtime rotation) |
+    | `TELEMT_HARDSWAP_DELAY_MIN` | `500` | Min delay between new connections during swap (ms) |
+    | `TELEMT_HARDSWAP_DELAY_MAX` | `1200` | Max delay between new connections during swap (ms) |
 
-**Fast Reconnect:**
+    **Fast Reconnect:**
 
-| Setting | Default | Purpose |
-|---------|---------|---------|
-| `TELEMT_FAST_RETRIES` | `10` | Quick retries before exponential backoff |
-| `TELEMT_BACKOFF_BASE` | `300` | Backoff start interval (ms) |
-| `TELEMT_BACKOFF_CAP` | `10000` | Maximum backoff interval (ms) |
+    | Setting | Default | Purpose |
+    |---------|---------|---------|
+    | `TELEMT_FAST_RETRIES` | `10` | Quick retries before exponential backoff |
+    | `TELEMT_BACKOFF_BASE` | `300` | Backoff start interval (ms) |
+    | `TELEMT_BACKOFF_CAP` | `10000` | Maximum backoff interval (ms) |
 
-**Config Stability:**
+    **Config Stability:**
 
-| Setting | Default | Purpose |
-|---------|---------|---------|
-| `TELEMT_STABLE_SNAPSHOTS` | `3` | Require N consistent config snapshots before applying changes |
-| `TELEMT_APPLY_COOLDOWN` | `120` | Minimum seconds between config changes |
+    | Setting | Default | Purpose |
+    |---------|---------|---------|
+    | `TELEMT_STABLE_SNAPSHOTS` | `3` | Require N consistent config snapshots before applying changes |
+    | `TELEMT_APPLY_COOLDOWN` | `120` | Minimum seconds between config changes |
 
-**For aggressive censorship** (e.g., Iran during shutdowns): increase `TELEMT_POOL_SIZE` to 16-20, decrease `TELEMT_REINIT_SECS` to 300, and increase `TELEMT_FAST_RETRIES` to 20.
+    **For aggressive censorship** (e.g., Iran during shutdowns): increase `TELEMT_POOL_SIZE` to 16-20, decrease `TELEMT_REINIT_SECS` to 300, and increase `TELEMT_FAST_RETRIES` to 20.
 
-Full tuning docs: [telemt TUNING.en.md](https://github.com/telemt/telemt/blob/main/docs/TUNING.en.md) | [API docs](https://github.com/telemt/telemt/blob/main/docs/API.md)
+    Full tuning docs: [telemt TUNING.en.md](https://github.com/telemt/telemt/blob/main/docs/TUNING.en.md) | [API docs](https://github.com/telemt/telemt/blob/main/docs/API.md)
 
-</details>
 
 ### GooseRelay
 
@@ -361,21 +359,19 @@ The most loss-resilient of the four: low-overhead ARQ, packet duplication and re
 - **Clients:** Happ (beta), Xray CLI. **Not** standard v2rayNG yet.
 - **Best for:** Telegram and light chat apps — not fast enough for browsing
 
-<details>
-<summary><strong>XDNS Tuning</strong></summary>
+??? note "XDNS Tuning"
 
-| Setting | Default | Purpose |
-|---------|---------|---------|
-| `XDNS_MTU` | `35` | mKCP packet size. Smaller = works with more DNS resolvers. 35=safest, 67=most, 130=unrestricted |
-| `XDNS_SUBDOMAIN` | `x` | Subdomain for XDNS queries (x.yourdomain.com) |
-| `XDNS_RESOLVERS` | `1.1.1.1,8.8.8.8` | CSV of public DNS resolvers the client round-robins across in a single mKCP session (Xray v26.4.13+, [PR #5872](https://github.com/XTLS/Xray-core/pull/5872)). See [Reachable DNS resolvers](#reachable-dns-resolvers) — replace the defaults with resolvers that actually answer on your network. Set empty to fall back to single-resolver mode. |
-| `XDNS_METHOD` | `txt` | Finalmask record mode in generated client bundles. `txt` is the widest-compatibility default; `aaaa` ([Xray #6123](https://github.com/XTLS/Xray-core/pull/6123)) gives higher throughput per query but **requires an Xray client core ≥ v26.6.1** (Happ / Xray CLI). Server side needs no change. |
+    | Setting | Default | Purpose |
+    |---------|---------|---------|
+    | `XDNS_MTU` | `35` | mKCP packet size. Smaller = works with more DNS resolvers. 35=safest, 67=most, 130=unrestricted |
+    | `XDNS_SUBDOMAIN` | `x` | Subdomain for XDNS queries (x.yourdomain.com) |
+    | `XDNS_RESOLVERS` | `1.1.1.1,8.8.8.8` | CSV of public DNS resolvers the client round-robins across in a single mKCP session (Xray v26.4.13+, [PR #5872](https://github.com/XTLS/Xray-core/pull/5872)). See [Reachable DNS resolvers](#reachable-dns-resolvers) — replace the defaults with resolvers that actually answer on your network. Set empty to fall back to single-resolver mode. |
+    | `XDNS_METHOD` | `txt` | Finalmask record mode in generated client bundles. `txt` is the widest-compatibility default; `aaaa` ([Xray #6123](https://github.com/XTLS/Xray-core/pull/6123)) gives higher throughput per query but **requires an Xray client core ≥ v26.6.1** (Happ / Xray CLI). Server side needs no change. |
 
-MTU depends on domain name length — shorter domain allows higher MTU. The values above are for ~19-character domains.
+    MTU depends on domain name length — shorter domain allows higher MTU. The values above are for ~19-character domains.
 
-For aggressive censorship: use `MTU=35` and connect via a DNS resolver you can actually reach from inside the censored network (see below).
+    For aggressive censorship: use `MTU=35` and connect via a DNS resolver you can actually reach from inside the censored network (see below).
 
-</details>
 
 ## Choosing Protocols
 

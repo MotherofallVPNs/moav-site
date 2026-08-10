@@ -132,6 +132,7 @@ sudo ufw-docker allow moav-admin 8443/tcp from YOUR_IP
 ### Admin & Monitoring Access Control
 
 **Admin dashboard** (`https://server:9443`):
+
 - Username: `admin`
 - Password: set during install (in `.env` as `ADMIN_PASSWORD`)
 - Reset: `moav admin password`
@@ -140,11 +141,13 @@ sudo ufw-docker allow moav-admin 8443/tcp from YOUR_IP
 > **Fail-closed authentication.** The dashboard **refuses to serve** (HTTP 503) if `ADMIN_PASSWORD` is empty, unset, or one of the known-insecure defaults (`admin`, `change_me_to_something_secure`), rather than silently allowing access. This closes an edge case where an empty password would otherwise accept an empty `Authorization` header. Password comparison is constant-time. If you see a 503 with a remediation message, set a real `ADMIN_PASSWORD` in `.env` and `moav restart admin`.
 
 **Grafana** (`https://server:9444`):
+
 - Username: `admin`
 - Password: same as `ADMIN_PASSWORD`
 - Accessible from any IP by default (password-protected)
 
 **Internal services** (not publicly accessible):
+
 - Prometheus (9091) — `expose:` only, Docker-internal
 - All exporters — `expose:` only, Docker-internal
 - cAdvisor — `expose:` only, Docker-internal
@@ -200,12 +203,14 @@ moav regenerate-users
    ```bash
    moav user revoke compromised_user
    ```
+
 3. **Keep dnstt private keys private** — `state/keys/dnstt-server.key.hex` is the persistent dnstt server private key. It should be readable only by the dnstt container user (`100:101`, mode `0600`). If MoaV cannot set that ownership during bootstrap, fix the host permissions and re-run bootstrap rather than making the key world-readable.
 4. **Rotate server keys periodically** — re-bootstrap if concerned
 5. **Keep backups:**
    ```bash
    moav export    # Creates moav-backup-TIMESTAMP.tar.gz
    ```
+
 6. **Use strong admin password** — at least 16 characters, generated randomly
 
 ### Monitoring
@@ -313,6 +318,7 @@ moav doctor net   # sysctl + packet drops + PMTU + CGNAT + per-interface MTU
    moav migrate-ip NEW_IP
    moav start
    ```
+
 5. **Donate bandwidth** — even if your server is blocked for your users, it can still serve millions through Psiphon Conduit, Tor Snowflake, and MahsaNet
 
 ---
@@ -372,12 +378,14 @@ moav doctor net   # sysctl + packet drops + PMTU + CGNAT + per-interface MTU
 ### Sharing Bundles Safely
 
 **DO:**
+
 - Use end-to-end encrypted messaging (Signal, Telegram secret chat)
 - Share in person when possible (scan QR code directly)
 - Use encrypted file sharing (OnionShare)
 - Delete messages after recipient confirms receipt
 
 **DON'T:**
+
 - Email unencrypted configs
 - Post links in public channels
 - Share via unencrypted cloud storage
@@ -403,6 +411,7 @@ moav doctor net   # sysctl + packet drops + PMTU + CGNAT + per-interface MTU
 ### Data Retention
 
 MoaV is configured for minimal logging:
+
 - No URLs logged
 - No request content
 - Basic connection stats only (for admin dashboard)
@@ -429,11 +438,13 @@ LOG_LEVEL=error
 ### If Server is Seized
 
 User data exposure is limited:
+
 - No content is logged
 - IP addresses are in memory only
 - User identifiers are usernames (not real names)
 
 But assume:
+
 - Server IP is known
 - User identifiers are known
 - Active connections at time of seizure are known
@@ -441,6 +452,7 @@ But assume:
 ### If User is Compromised
 
 As admin:
+
 1. Revoke user immediately: `moav user revoke username`
 2. Monitor for unusual activity
 3. Consider rotating server if credentials were extracted

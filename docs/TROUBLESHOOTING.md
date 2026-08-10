@@ -57,11 +57,13 @@ Start here if no protocol works at all. The pattern of what fails tells you wher
 ### TLS handshake timeout
 
 **Causes:**
+
 - Server certificate issue
 - Deep packet inspection blocking
 - Server overloaded
 
 **Solutions:**
+
 1. Try Reality protocol (doesn't use your cert)
 2. Try Hysteria2 (uses UDP)
 3. Check server certificate is valid
@@ -78,11 +80,13 @@ When ISP blocks everything:
 ### Protocol detected and blocked
 
 Signs your protocol is detected:
+
 - Works for a few minutes then dies
 - Works initially then stops
 - Specific protocol fails but others work
 
 **Solutions:**
+
 1. Switch protocols immediately
 2. Change Reality target domain
 3. Update to latest sing-box version (better anti-detection)
@@ -100,6 +104,7 @@ During major events, Govs sometimes shuts internet entirely:
 ### Works on WiFi but not mobile data
 
 Mobile carriers may have different filtering:
+
 - Try Hysteria2 (UDP-based)
 - Try DNS tunnel
 - Some carriers block all VPN signatures
@@ -107,6 +112,7 @@ Mobile carriers may have different filtering:
 ### Works on mobile data but not WiFi
 
 Home ISPs often have stricter filtering:
+
 - Try Reality protocol
 - Try different Reality target sites
 - Try port 80 or other ports (if configured)
@@ -124,6 +130,7 @@ docker compose exec wireguard wg show
 ```
 
 Look for your peer's public key. It should show:
+
 - `latest handshake: X seconds ago`
 - `transfer: X received, X sent`
 
@@ -176,6 +183,7 @@ moav restart wireguard
 **Hysteria2 often helps** - it's optimized for lossy networks.
 
 **For sing-box clients:**
+
 - Enable multiplexing
 - Try different congestion control
 
@@ -254,6 +262,7 @@ docker compose --profile setup run --rm bootstrap
   # if empty, the flag was off when bootstrap ran
   moav bootstrap   # or rerun bootstrap to splice it in
   ```
+
 - **Server PSK missing** — `moav doctor config` will flag missing state keys. The server PSK lives at `state/keys/shadowsocks-server.psk`; per-user PSK at `state/users/<user>/shadowsocks.env`.
 - **Outline app says "invalid key"** — Outline's iOS/Android app expects the standard `ss://` URI with SS-2022 multi-user encoding (`method:server_psk:user_psk` base64-encoded). The bundle's `shadowsocks.txt` has this format. NekoBox / Hiddify / Streisand handle the same URI.
 - **Port 8388 blocked by ISP** — change `PORT_SS` in `.env` to a less-fingerprinted port (e.g., 4443, 8443 if Trojan is off) and rerun `moav restart sing-box`.
@@ -443,11 +452,13 @@ docker compose logs xhttp
 
 **DNS lookup failure:**
 If you see `lookup cdn.yourdomain.com: operation was canceled`:
+
 1. Verify `cdn` subdomain exists in Cloudflare DNS
 2. Check it's set to **Proxied** (orange cloud)
 3. Wait for DNS propagation (up to 5 minutes)
 
 **Connection refused:**
+
 1. Verify port 2082 is open: `ufw allow 2082/tcp`
 2. Check sing-box is listening: `docker compose logs sing-box | grep vless-ws`
 
@@ -492,6 +503,7 @@ This means Cloudflare is trying HTTPS to your origin, but MoaV's CDN inbound on 
    - This overrides the zone-wide SSL mode for just the CDN subdomain
 
 **Cloudflare 520 "Unknown error":**
+
 1. Set SSL/TLS mode to **Flexible** in Cloudflare dashboard (see 525 section above)
 2. Verify sing-box container is running
 3. Check sing-box config has `vless-ws-in` inbound on port 2082
@@ -523,6 +535,7 @@ aws cloudfront get-distribution --id YOUR_DIST_ID \
 ```
 
 Expected:
+
 - CachePolicyId: `4135ea2d-6df8-44a3-9df3-4b5a84be39ad` (CachingDisabled)
 - OriginRequestPolicyId: `216adef6-5c7f-47e4-b989-5492eafa07d3` (AllViewer)
 
@@ -627,6 +640,7 @@ docker run --rm --network host \
 Watch `moav logs -f dnstt` alongside it: if you see `begin stream` (not just `begin session`) and curl returns your server IP, the server is **verified good** — the standalone client works because it negotiates a small `effective MTU` (~132).
 
 **Fix (client side):** lower the client's dnstt MTU.
+
 - The **standalone dnstt-client** picks a safe MTU automatically — it works out of the box.
 - **MahsaNG v16 does not expose a dnstt MTU control**, so dnstt often opens a session but never a stream there. On MahsaNG, prefer **MasterDNS** (the native DNS tunnel in v16 — it manages its own small MTU, e.g. upload 109 / download 500, and works without tuning) or **Slipstream**; use the standalone dnstt-client when you specifically need dnstt with a tunable MTU.
 
@@ -639,6 +653,7 @@ Watch `moav logs -f dnstt` alongside it: if you see `begin stream` (not just `be
 **Cause — client-type mismatch, by design (not a bug):** the client is an **SSH-over-DNS app** (HTTP Injector / Dark Tunnel / "SSH + DNSTT" style) that expects an **SSH server** at the far end of the tunnel. MoaV's DNS tunnels forward to **sing-box's SOCKS5 inbound** (`sing-box:1080`), *not* an SSH host — so sing-box receives SSH handshake bytes it can't parse and resets the connection.
 
 **MoaV's DNS tunnels (dnstt, Slipstream, MasterDNS) are a SOCKS5 transport, not an SSH host.** Use a client that speaks SOCKS5 to the tunnel endpoint:
+
 - the standalone **dnstt-client**, with your app pointing SOCKS5 at its local listener;
 - **MahsaNG v16** (use its native **MasterDNS** tunnel);
 - **v2ray / sing-box / Xray** clients using the local dnstt port as a SOCKS proxy.
@@ -829,6 +844,7 @@ moav cert install
 > `--entrypoint certbot` and restarts the services that load certs at startup.
 
 **Certificate acquisition failed:**
+
 - Ensure DNS A record points to this server
 - Ensure port 80 is open (temporarily)
 - Check rate limits: https://letsencrypt.org/docs/rate-limits/
@@ -866,10 +882,12 @@ iptables -A INPUT -p tcp --dport 9443 -j ACCEPT
 **Browser shows security warning (domainless mode):**
 
 In domainless mode, admin uses a self-signed certificate. This is expected:
+
 1. Click "Advanced" or "Show Details"
 2. Click "Proceed to site" or "Accept the Risk"
 
 **Access URLs:**
+
 - With domain: `https://yourdomain.com:9443/`
 - Domain-less mode: `https://YOUR_SERVER_IP:9443/`
 
@@ -885,6 +903,7 @@ MahsaNet API returned 404: {"detail":"No Config matches the given query."}
 **Cause:** The MahsaNet API uses `id` (not `hash`) as the delete identifier. The config list endpoint returns `hash` but some API versions may not include `id`. MoaV now automatically falls back to looking up the config by hash to find the `id` for deletion.
 
 **Fixes:**
+
 1. Update MoaV to the latest version (includes the fallback logic)
 2. If the error persists, the config may have already been deleted on MahsaNet's side — click "Refresh" to reload the list
 
@@ -919,6 +938,7 @@ Aborting
 ```
 
 **Why this happens:**
+
 - You edited files while testing a fix or feature
 - You manually modified configuration scripts
 - You tested a development branch and switched back
@@ -1040,6 +1060,7 @@ nano .env  # Set DOMAIN, ACME_EMAIL, ADMIN_PASSWORD
 ```
 
 **After any breaking change update:**
+
 1. Download new user bundles from admin dashboard or `outputs/bundles/`
 2. Distribute to all users
 3. Users must delete old configs and import new ones
@@ -1225,6 +1246,7 @@ In some regions (Iran, Russia, China), certain container registries are blocked:
 | `docker.io` | Most base images | Usually works (mirrors available) |
 
 **Symptoms:**
+
 - `docker pull` hangs or times out
 - Build fails with "connection refused" or "timeout"
 - Monitoring stack won't start
@@ -1260,6 +1282,7 @@ MoaV can build monitoring stack images from source when registries are blocked.
 | Certbot | docker.io | `moav build --local certbot` |
 
 **How it works:**
+
 1. Downloads pre-built binaries from GitHub releases (not blocked)
 2. Creates a local Docker image
 3. Updates `.env` to use the local image
@@ -1300,6 +1323,7 @@ Grafana, Prometheus and the exporters. None of these affect whether users can co
 If your server hangs or becomes unresponsive after starting monitoring (especially the first time), you're likely running out of RAM.
 
 **Symptoms:**
+
 - SSH connection freezes
 - Commands stop responding
 - Server becomes unreachable
@@ -1474,6 +1498,7 @@ docker build --no-cache -t moav-client -f Dockerfile.client .
 ```
 
 **Network issues during build:**
+
 - Pre-built binaries are downloaded from GitHub/GitLab
 - If downloads fail, the build falls back to compiling from source (slower)
 - Check your server has internet access
@@ -1499,6 +1524,7 @@ ls outputs/bundles/user1/
 ### `moav test` shows "sing-box failed to start"
 
 **Configuration format issue:**
+
 - sing-box 1.12+ requires `route.final` instead of deprecated special outbounds
 - Check sing-box version: `docker run --rm moav-client sing-box version`
 
@@ -1553,6 +1579,7 @@ ss -tlnp | grep 1080
 ### WireGuard test shows "endpoint not reachable"
 
 This is expected if:
+
 - UDP port 51820 is blocked by firewall
 - Server WireGuard container is not running
 
@@ -1576,10 +1603,12 @@ docker run --rm moav-client snowflake-client --help
 ```
 
 **If binaries are missing:**
+
 - Some optional binaries may fail to download during build
 - Check build logs for "not available (optional)" messages
 
 **For Psiphon:**
+
 - Psiphon is not available via MoaV client
 - Use the [official Psiphon apps](https://psiphon.ca/en/download.html) instead
 

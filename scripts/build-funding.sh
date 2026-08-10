@@ -60,11 +60,16 @@ for line in open(sys.argv[1], encoding="utf-8"):
         label = f"{nice} ({key.upper()})" if nice.upper() != key.upper() else nice
         rows_crypto.append(f"| **{label}** | <code>{val}</code> |")
 
+# Each table goes inside a coloured admonition, indented to sit in the block.
+def boxed(kind, title, header, rows):
+    body = [header, "|---|---|", *rows]
+    return [f'!!! {kind} "{title}"', ""] + [f"    {r}" for r in body] + [""]
+
 out = []
 if rows_platform:
-    out += ["| Platform | Link |", "|---|---|", *rows_platform, ""]
+    out += boxed("tip", "Cards, PayPal, recurring", "| Platform | Link |", rows_platform)
 if rows_crypto:
-    out += ["| Coin | Address |", "|---|---|", *rows_crypto, ""]
+    out += boxed("abstract", "Crypto", "| Coin | Address |", rows_crypto)
 print("\n".join(out).rstrip())
 PY
 ) || { echo "build-funding: could not render — keeping the committed table."; rm -f "$tmp"; exit 0; }

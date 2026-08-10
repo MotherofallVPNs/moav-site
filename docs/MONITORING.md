@@ -2,11 +2,14 @@
 
 Real-time observability for your MoaV deployment with Grafana dashboards.
 
-<img src="assets/grafana-dashboard.jpg" alt="Grafana Dashboards" width="50%"> <a href="../site/demos/grafana-dashboards.webm">(demo video)</a>
+![Grafana dashboards](assets/grafana-dashboard.jpg){ width="640" }
+
+[Watch the 30-second demo](https://moav.sh/demos/grafana-dashboards.webm)
 
 ## Overview
 
 The monitoring profile provides:
+
 - **Prometheus** - Time-series database for metrics storage (15-day retention)
 - **Grafana** - Beautiful dashboards for visualization
 - **Node Exporter** - System metrics (CPU, RAM, disk, network)
@@ -153,6 +156,7 @@ Access via `https://grafana.yourdomain.xyz:2083` instead of `:9444`.
 > **Note:** Port 2083 is used because Cloudflare only proxies specific HTTPS ports (443, 2053, 2083, 2087, 2096, 8443). The `grafana-proxy` service handles SSL termination and caching headers.
 
 **Benefits:**
+
 - Static assets (JS, CSS, images) cached at Cloudflare edge
 - Gzip compression
 - Faster global access
@@ -224,6 +228,7 @@ Container-level metrics (CPU, memory, network) are still available for these ser
 Run `moav doctor services` to quickly check if monitoring services are running. For detailed issues, see [TROUBLESHOOTING.md](TROUBLESHOOTING.md#monitoring).
 
 Common issues covered:
+
 - System hangs after starting monitoring (RAM issues)
 - Grafana shows "No Data"
 - High memory usage from cAdvisor
@@ -246,6 +251,7 @@ moav build --local all
 ```
 
 Available images for local build:
+
 - `cadvisor` - Container metrics (gcr.io) **← commonly blocked**
 - `clash-exporter` - Clash API exporter (ghcr.io) **← commonly blocked**
 - `prometheus` - Time-series database (Docker Hub)

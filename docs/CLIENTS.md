@@ -109,6 +109,7 @@ This guide explains how to connect to MoaV from various devices.
 ¹ NekoRay: Repository notes it is no longer actively maintained. Consider alternatives like Hiddify or Clash Verge.
 
 **Notes:**
+
 - Psiphon is not available via MoaV client - use [official Psiphon apps](https://psiphon.ca/download.html)
 - iOS has no official Tor Browser; use [Onion Browser](https://apps.apple.com/us/app/onion-browser/id519296448) instead (Tor Project recommended)
 - Psiphon for Linux is not officially available
@@ -697,6 +698,13 @@ The test checks: Reality, Trojan, Hysteria2, WireGuard (config validation), dnst
 
 ### Client Mode (Connect Through Server)
 
+!!! tip "For everyday use, prefer the MoaV Client"
+    `moav client connect` exists mainly to verify a server from the server side. If you
+    want a client to actually **use** — endpoint probing, load-balancing across healthy
+    endpoints, automatic failover, routing rules and a dashboard — that is
+    **[MoaV Client](client.md)**, a separate and more capable project. The built-in client
+    mode here is deliberately minimal and may be reduced to testing only.
+
 Run MoaV as a local proxy client:
 
 ```bash
@@ -713,6 +721,7 @@ moav client connect user1 --protocol tor
 ```
 
 **Local proxy endpoints:**
+
 - SOCKS5: `127.0.0.1:1080`
 - HTTP: `127.0.0.1:8080`
 
@@ -723,6 +732,7 @@ CLIENT_HTTP_PORT=8080
 ```
 
 **Protocol fallback order (auto mode):**
+
 1. Reality (VLESS) - Most reliable
 2. Hysteria2 - Fast, UDP-based
 3. Trojan - TLS-based backup
@@ -743,6 +753,7 @@ moav client build
 ### Technical Details
 
 The client container includes:
+
 - **sing-box** - Handles Reality, Trojan, Hysteria2
 - **wireguard-go** - Userspace WireGuard implementation
 - **wstunnel** - WebSocket tunnel for WireGuard
@@ -751,6 +762,7 @@ The client container includes:
 - **tor** - Tor daemon
 
 **Container capabilities:**
+
 - Runs without privileged mode for most protocols
 - WireGuard requires `--cap-add NET_ADMIN` for full functionality
 - Uses Alpine Linux for minimal image size

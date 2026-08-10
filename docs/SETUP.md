@@ -5,6 +5,7 @@ Complete guide to deploy MoaV on a VPS or home server.
 ## Prerequisites
 
 **Server Requirements:**
+
 - Debian 12, Ubuntu 22.04, or Ubuntu 24.04 (Raspberry Pi OS works too)
 - Architecture: x64 (AMD64) or ARM64 (Raspberry Pi 4, Apple Silicon)
 - Minimum: 1 vCPU, 1GB RAM, 10GB disk
@@ -12,6 +13,7 @@ Complete guide to deploy MoaV on a VPS or home server.
 - Public IPv6 address (optional, see [IPv6 Support](#ipv6-support))
 
 **Domain (Optional but Recommended):**
+
 - Required for: Reality, Trojan, AnyTLS, Hysteria2, TrustTunnel, CDN mode, DNS tunnels (dnstt, Slipstream, XDNS)
 - Not required for: Reality, WireGuard, AmneziaWG, Telegram MTProxy, Admin dashboard, Conduit, Snowflake
 - See [Domainless Mode](#domainless-mode) if you don't have a domain
@@ -107,6 +109,7 @@ curl -fsSL moav.sh/install.sh | bash
 ```
 
 This installs:
+
 - Docker and Docker Compose
 - Git and qrencode
 - MoaV to `/opt/moav`
@@ -184,6 +187,7 @@ docker compose --profile setup run --rm bootstrap
 ```
 
 This will:
+
 1. Generate Reality and dnstt keypairs
 2. Obtain TLS certificate from Let's Encrypt
 3. Generate WireGuard server keys
@@ -206,7 +210,9 @@ echo -e "nameserver 1.1.1.1\nnameserver 8.8.8.8" > /etc/resolv.conf
 
 ### Step 6: Start Services
 
-<img src="assets/service-management.jpg" alt="Service Status" width="40%"> <a href="../site/demos/services.webm">(demo video)</a>
+![Service status](assets/service-management.jpg){ width="560" }
+
+[Watch the demo](https://moav.sh/demos/services.webm)
 
 ```bash
 # Start all services
@@ -264,7 +270,9 @@ moav doctor              # Run all diagnostic checks
 
 ### Step 7: Download User Bundles
 
-<img src="assets/admin-dashboard.jpg" alt="Admin Dashboard" width="40%"> <a href="../site/demos/admin-dashboard.webm">(demo video)</a>
+![Admin dashboard](assets/admin-dashboard.jpg){ width="560" }
+
+[Watch the demo](https://moav.sh/demos/admin-dashboard.webm)
 
 User bundles are ready in `outputs/bundles/`:
 
@@ -274,6 +282,7 @@ ls outputs/bundles/
 ```
 
 **Each bundle contains:**
+
 - `README.html` - User instructions (English + Farsi)
 - `reality.txt` - Reality share link + QR code
 - `trojan.txt` - Trojan share link
@@ -291,11 +300,13 @@ ls outputs/bundles/
 **Download Options:**
 
 **1. Admin Dashboard (Easiest):**
+
 1. Open `https://your-server:9443` in browser
 2. Login with username `admin` and your `ADMIN_PASSWORD`
 3. Click **Download** next to any user in the "User Bundles" section
 
 **Creating users from the dashboard:**
+
 1. Click **+ Create User** in the User Bundles section
 2. Enter a username (e.g. `alice`)
 3. For multiple users, check **Batch** and enter a count — creates `alice_01`, `alice_02`, etc.
@@ -320,11 +331,13 @@ scp -r root@YOUR_SERVER:/opt/moav/outputs/bundles/user01 ./user01-bundle/
 Send the bundle (or just the README.html + relevant protocol files) to users.
 
 **Secure Distribution:**
+
 - **In-person** - Safest. Show QR code or AirDrop
 - **Signal** - Send files with disappearing messages
 - **Encrypted email** - PGP or ProtonMail-to-ProtonMail
 
 **Avoid:**
+
 - Unencrypted email
 - Public file sharing links
 - SMS/Telegram regular chats
@@ -371,6 +384,7 @@ Reality protocols (VLESS+Reality and XHTTP+Reality) impersonate a legitimate web
 ### Requirements
 
 The target domain **must** support:
+
 - **TLS 1.3** — required for Reality's handshake
 - **HTTP/2 (h2)** — required for ALPN negotiation
 
@@ -397,6 +411,7 @@ If you get no output or the connection closes immediately, the domain either doe
 Avoid well-known targets like `google.com` or `microsoft.com` — censors monitor these heavily and can detect Reality by comparing your handshake to the real site.
 
 Instead, choose a domain that:
+
 1. **Is popular domestically** — blocking it would cause collateral damage (banks, fintech, e-commerce)
 2. **Has heavy TLS traffic** — your connection blends in with millions of real users
 3. **Isn't commonly used as a proxy target** — novel targets are harder to fingerprint
@@ -506,6 +521,7 @@ moav start
 MoaV supports dual-stack (IPv4 + IPv6). When enabled, user bundles include both IPv4 and IPv6 connection options.
 
 **Enable:**
+
 1. Enable IPv6 on your VPS (usually in provider control panel)
 2. Verify: `curl -6 -s https://api6.ipify.org`
 3. If already set up, regenerate bundles: `moav regenerate-users`
@@ -603,6 +619,7 @@ MAHSANET_POOL=mahsa
 ```
 
 **Protocol notes:**
+
 - `reality` — VLESS+Reality, works without a domain, recommended
 - `hysteria2` — QUIC-based, fast, requires domain + UDP
 - `trojan` — TLS-based, requires domain
@@ -721,6 +738,7 @@ moav uninstall
 ```
 
 This removes:
+
 - All Docker containers
 - Global `moav` command
 
@@ -741,6 +759,7 @@ moav uninstall --wipe
 ```
 
 This removes:
+
 - All Docker containers and volumes
 - `.env` and all generated configs
 - All keys and certificates

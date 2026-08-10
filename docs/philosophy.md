@@ -136,8 +136,8 @@ That's how infrastructure works.
 If you have a VPS and want to help:
 
 1. **[Deploy MoaV](quick-start.md)** and share access with people who need it.
-2. **[Enable Conduit](support.md#donate-bandwidth)** to relay bandwidth for Psiphon users worldwide.
-3. **[Enable Snowflake](support.md#donate-bandwidth)** to relay bandwidth for Tor users.
+2. **[Enable Conduit](support.md#donate-bandwidth-instead-of-users)** to relay bandwidth for Psiphon users worldwide.
+3. **[Enable Snowflake](support.md#donate-bandwidth-instead-of-users)** to relay bandwidth for Tor users.
 4. **[Donate configs to MahsaNet](mahsanet.md)** so 2M+ MahsaNG users discover your server automatically.
 5. **[Contribute code](https://github.com/MotherofallVPNs/moav)**: fix bugs, add protocols, improve documentation.
 

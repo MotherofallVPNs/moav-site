@@ -35,10 +35,10 @@ nav:
   - Home: index.md
   - Quick Start: quick-start.md
   - About:
+    - Architecture: architecture.md
     - Mission: mission.md
     - Impact: impact.md
     - Threat Model: threat-model.md
-    - Architecture: architecture.md
     - Supported Protocols: protocols.md
     - Philosophy: philosophy.md
   - Getting Started:
@@ -69,6 +69,7 @@ validation:
     anchors: warn
 
 markdown_extensions:
+  - attr_list
   - tables
   - toc:
       permalink: true
