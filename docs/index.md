@@ -14,7 +14,7 @@ Read the concise [Mission](mission.md), the project's [Impact](impact.md) model,
 
 ## Guides
 
-- **[Quick Start](quick-start.md)**: Get MoaV running in 5 steps
+- **[Quick Start](quick-start.md)**: Install, create a user, and share a bundle
 - **[Setup Guide](SETUP.md)**: Complete installation with all options
 - **[DNS Configuration](DNS.md)**: DNS records for your domain and provider
 - **[VPS Deployment](DEPLOY.md)**: One-click deploy on Hetzner, DigitalOcean, Vultr, Linode
@@ -34,8 +34,12 @@ Read the concise [Mission](mission.md), the project's [Impact](impact.md) model,
 - **[Threat Model](threat-model.md)**: Honest limits, adversaries, metadata risks, and safety assumptions
 - **[OPSEC Guide](OPSEC.md)**: Security best practices for operators
 - **[Mission & Philosophy](philosophy.md)**: The longer manifesto behind the project
-- **[Supported Protocols](protocols.md)**: All 16+ protocols with descriptions and links
+- **[Supported Protocols](protocols.md)**: All 16+ protocols, including the [DNS tunnels](protocols.md#dns-tunnels) that survive a shutdown
+
+## Support the project
+
+- **[Support MoaV](support.md)**: Run a server, donate bandwidth, contribute code, translate, or fund the infrastructure
 
 ## Developer
 
-- **[Development & Testing](development.md)**: repo layout, test/e2e coverage, self-hosted runner setup, and the contributor/agent checklists
+- **[Development & Testing](development.md)**: installing from a branch or tag, repo layout, how CI and the end-to-end suite work, and how to contribute
