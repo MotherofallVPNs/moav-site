@@ -12,9 +12,11 @@ name: Docs Preview
 #     fails the PR instead of shipping dead. mkdocs.yml sets
 #     validation.links.anchors to make that catchable.
 #
-# Preview delivery: a hosted Cloudflare Pages URL when the secrets are present,
-# otherwise a downloadable artifact so there is always some way to see the build
-# (fork PRs never receive secrets, so they get the artifact).
+# Preview delivery: a hosted Cloudflare Pages URL. If the secrets are absent or
+# Cloudflare is unavailable the deploy is skipped with a notice -- the strict
+# build still gates the PR, and contributors can preview locally with
+# `mkdocs serve` (documented in docs/development.md). No artifact fallback: this
+# repo's docs PRs come from branches, not forks, so the hosted preview is enough.
 #
 # One-time Cloudflare setup:
 #   1. Dashboard → Workers & Pages → Create → Pages → "Direct Upload",
@@ -60,7 +62,7 @@ jobs:
             echo "ready=true" >> "$GITHUB_OUTPUT"
           else
             echo "ready=false" >> "$GITHUB_OUTPUT"
-            echo "::notice::Cloudflare secrets not set — publishing the build as an artifact instead."
+            echo "::notice::Cloudflare secrets not set — skipping the hosted preview. The strict build above still gates this PR; preview locally with 'mkdocs serve' (see docs/development.md)."
           fi
 
       - name: Deploy preview
@@ -92,14 +94,6 @@ jobs:
             Reviewing these pages in GitHub's file view will misrepresent tabs and
             collapsibles — they need the built site.
 
-      # Fallback only: fork PRs and setups without the secrets.
-      - name: Upload the build as an artifact
-        if: steps.gate.outputs.ready != 'true'
-        uses: actions/upload-artifact@v4
-        with:
-          name: docs-preview-${{ github.event.pull_request.number }}
-          path: _preview
-          retention-days: 14
 
   # Cloudflare keeps every deployment and its branch alias until something
   # deletes them, so a merged PR would otherwise leave a live, unlisted copy of

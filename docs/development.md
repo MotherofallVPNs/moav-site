@@ -112,8 +112,15 @@ The docs are mkdocs-material in [moav-site](https://github.com/MotherofallVPNs/m
 
 ```bash
 pip install mkdocs-material
-mkdocs serve            # http://127.0.0.1:8000
+mkdocs serve            # http://127.0.0.1:8000, live-reloads as you edit
 mkdocs build --strict   # what CI runs — warnings are failures
 ```
 
-`--strict` matters: a link to a renamed heading fails the build instead of shipping dead. Note that **GitHub's file view doesn't render** tabs (`=== "X"`) or collapsibles (`??? note`) — they'll look like literal text and code blocks. Review docs changes from a build, not the diff.
+**Always review from a build, never from the diff.** GitHub's file view doesn't render tabs (`=== "X"`) or collapsibles (`??? note"`) — they appear as literal text with their content turned into code blocks, so a correct page looks broken and a broken one can look fine.
+
+Two ways to see a real render:
+
+- **`mkdocs serve` locally** — instant, live-reloading, and the only option if the hosted preview is unavailable.
+- **The PR preview** — every PR touching `docs/` gets a hosted URL posted as a comment (`pr-N.moav-docs-preview.pages.dev`). It's stable for the life of the PR, rebuilds on each push, and is deleted when the PR closes.
+
+`--strict` is the gate: a link to a renamed heading, or one pointing into a tab or collapsible (neither generates an anchor), fails the build rather than shipping dead. If the hosted preview is skipped — missing secrets, Cloudflare down — the strict build still runs, so correctness is never gated on the preview being available.
