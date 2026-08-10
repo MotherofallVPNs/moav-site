@@ -1,93 +1,97 @@
 # Quick Start
 
-Get MoaV running in **two steps** — install, then explore. It deploys [16+ anti-censorship protocols](protocols.md) and turns each user into a share-ready **client bundle** (configs + QR codes + plain-language instructions) that anyone can open and connect with — no deep networking knowledge required. Curious why MoaV exists? Read [the mission](philosophy.md).
+Install MoaV, then hand someone a link that connects them. That's the whole path, and it takes about ten minutes.
 
-## Requirements
+MoaV deploys [16+ anti-censorship protocols](protocols.md) and turns each user into a share-ready **bundle** — configs, QR codes, and plain-language instructions in English and Farsi. The person receiving it doesn't need to understand any of it. Curious why this exists? Read [the mission](philosophy.md).
 
-- A VPS **or a home server** — Debian 12 / Ubuntu 22.04/24.04, or a **Raspberry Pi 4+** (2 GB+ RAM, ARM64). 1 vCPU / 1 GB RAM minimum.
-- A domain name — optional; [domainless mode](SETUP.md#domainless-mode) works without one.
+## What you need
 
-!!! tip "Need a VPS?"
-    See [VPS Deployment](DEPLOY.md) for provider-by-provider steps starting at ~$5/month.
+- **A server** — Debian 12 / Ubuntu 22.04 or 24.04, or a **Raspberry Pi 4+** (ARM64). 1 vCPU / 1 GB RAM is the floor; 2 GB if you want monitoring.
+- **A domain** — optional, but worth it. It roughly doubles the protocols you can offer and is the only way to run the DNS tunnels, which are what still work during a shutdown. See [Do I need a domain?](DNS.md#do-i-need-a-domain).
 
-!!! tip "Raspberry Pi or home server?"
-    MoaV runs great at home in **domainless mode** — no domain required. A home server sits behind a router, so forward the protocol ports to it first: see [Home Servers & Raspberry Pi → Port Forwarding](DNS.md#port-forwarding). (Check for CGNAT before you start — some ISPs block inbound connections entirely.)
+!!! tip "Point your DNS *before* installing"
+    Certificate issuance needs the domain already resolving to the server, so adding the records first makes the install smooth. The exact records are in [DNS Configuration](DNS.md#with-a-domain-the-records) — and after setup, `moav doctor dns` writes them out for you as a file you can import straight into Cloudflare.
 
-## Step 1 — Install
+    No VPS yet? [VPS Deployment](DEPLOY.md) has provider-by-provider steps from ~$5/month. On a home server or Pi, check for CGNAT first and forward the [protocol ports](DNS.md#ports-to-forward).
 
-SSH into your server and run:
+## 1. Install
+
+SSH in and run:
 
 ```bash
 curl -fsSL moav.sh/install.sh | bash
 ```
 
-This installs Docker, clones MoaV, and walks you through first-time setup, asking for:
+It installs Docker, clones MoaV, and asks for three things: your **domain** (blank for domainless), an **email** for Let's Encrypt, and an **admin password** — which is also your Grafana password, so pick a real one.
 
-- **Domain** — pointed at this server (or leave blank for domainless mode)
-- **Email** — for your Let's Encrypt TLS certificates
-- **Admin password** — for the web dashboard
+When it finishes it prints your dashboard URLs and the DNS records to add.
 
-When it finishes, it prints the exact **DNS records** to add at your registrar — an `A` record for your domain, plus the `NS` records that delegate the DNS-tunnel subdomains to your server.
+## 2. Create your first user
 
-!!! tip "Point your DNS first (recommended)"
-    Certificate issuance needs your domain already resolving to this server, so it's smoothest to add the DNS records **before** you install. Find the exact records for your setup in [DNS Configuration](DNS.md), set them up, then run the installer.
+Two ways. Use whichever you prefer — they do the same thing.
 
-Finally, open your firewall for the protocols you enabled — the [full port list is here](DNS.md#port-forwarding). Most cloud VPS providers leave all ports open by default, so you may not need to.
+=== "Web dashboard"
+    Open **`https://your-server:9443`** and log in — **any username**, with the admin password you chose.
 
-## Step 2 — Explore your MoaV server
+    ??? warning "Your browser will warn about the certificate"
+        The dashboard uses a self-signed certificate, so you'll see a privacy warning the first time. That's expected. Proceed past it.
 
-Everything after install lives in one friendly place. Just run:
+    Click **+ New**, enter a name, and the user appears in the table with a badge for every protocol they got — Reality, Trojan, Hy2, CDN, WG, AWG, XHTTP and so on. Hit **.zip** to download their bundle.
 
-```bash
-moav
-```
+    The dashboard is the easiest place to run day to day: it lists every user with their creation date and protocols, downloads bundles on demand, and shows live server stats.
 
-to open the interactive menu:
+=== "Command line"
+    ```bash
+    moav user add alice              # one user
+    moav user add alice --package    # ...and build the .zip
+    moav user add --batch 10         # ten at once
+    moav user list                   # who exists
+    ```
 
-```
-  Services
-  1) Start services
-  2) Stop services
-  3) Restart services
-  4) View status
-  5) View logs
+    Bundles land in `outputs/bundles/alice/`.
 
-  Users & donations
-  6) User management
-  7) Donate configs (MahsaNet, Psiphon, Snowflake)
+Either way you get the same bundle:
 
-  System
-  8)  Doctor — diagnose problems
-  9)  Admin password reset
-  10) Update MoaV
-  11) Build/rebuild services
-  12) Export/Import (migration)
+- **`README.html`** — the file to actually send. Step-by-step instructions in English and Farsi, with QR codes. They open it, pick their platform, scan, and they're online.
+- Config files and share links for every enabled protocol, plus a one-paste **subscription** for MahsaNG, v2rayNG and Hiddify.
 
-  0)  Exit
-```
+Send it over something private — Signal, encrypted email, in person. See [Client Apps](CLIENTS.md) for what to tell them per platform.
 
-From here you **start services**, **add users**, run **diagnostics**, and more — nothing to memorize. The header shows what's running plus your **admin dashboard** (`https://your-server:9443`) and **Grafana** (`https://your-server:9444`, if monitoring is on). Every item maps to a `moav` command — the **[CLI Reference](CLI.md)** walks through the full menu and each one.
-
-Two commands worth knowing right away:
+## 3. Know these four commands
 
 ```bash
-moav status   # what's running, ports, and health at a glance
-moav help     # every command MoaV offers
+moav status    # what's running, which profiles are up, health at a glance
+moav doctor    # diagnose problems: DNS, ports, certificates, resources
+moav logs      # tail a service when something misbehaves
+moav test alice  # prove alice's configs actually pass traffic, end to end
 ```
 
-### Share with your users
+`moav doctor` is the one to reach for first when anything looks wrong — it checks the things that break most often and usually names the problem outright. `moav test` is the one to run before you tell someone their bundle works, because it connects through each protocol for real and reports the exit IP.
 
-Add a user — menu → **User management**, or `moav user add alice` (`--batch 10` for many) — and MoaV generates a **client bundle** in `outputs/bundles/`:
+Running plain **`moav`** opens an interactive menu over all of it, so there's nothing to memorize. Every entry maps to a command in the [CLI Reference](CLI.md).
 
-- **`README.html`** — step-by-step instructions (English + Farsi) with QR codes. Users open it in a browser, pick their platform, scan a code, and they're connected — no configuration.
-- Config files and share links for every enabled protocol, plus a one-paste **V2Ray subscription** for MahsaNG / v2rayNG / Hiddify.
+## 4. Watch it work (optional)
 
-Send them the bundle (or just `README.html`) over a secure channel — Signal, encrypted email, or in person. Grab it from the **admin dashboard** (login → Download), by `scp`, or `moav user package alice`. See [Client Apps](CLIENTS.md) for platform-specific details.
+If you enabled monitoring, **Grafana** is at **`https://your-server:9444`** — user `admin`, same password.
 
-## Next Steps
+Ten dashboards ship preconfigured, so there's nothing to build:
 
-- [Client Apps](CLIENTS.md) — Platform-specific connection instructions
-- [CLI Reference](CLI.md) — The full menu and every `moav` command
-- [CDN Mode](SETUP.md#cdn-fronted-mode-cloudflare) — Route through Cloudflare when your IP is blocked
-- [Monitoring](MONITORING.md) — Grafana dashboards
-- [Troubleshooting](TROUBLESHOOTING.md) — Common issues and fixes
+| Dashboard | What it tells you |
+|---|---|
+| **sing-box** | Per-user connections and throughput for Reality, Trojan, Hysteria2, Shadowsocks |
+| **WireGuard** · **AmneziaWG** | Peer handshakes, transfer per peer |
+| **DNS tunnels** | Traffic across dnstt, Slipstream, MasterDNS, XDNS |
+| **Xray** · **telemt** | XHTTP/XDNS and Telegram MTProxy activity |
+| **Conduit** · **Snowflake** | Bandwidth you're donating to Psiphon and Tor users |
+| **System** · **Containers** | CPU, memory, disk, and per-container resource use |
+
+Not running monitoring? `moav start monitoring` turns it on — it wants ~2 GB RAM. Details in [Monitoring](MONITORING.md).
+
+## Where to go next
+
+- **[Client Apps](CLIENTS.md)** — what your users install, per platform
+- **[CLI Reference](CLI.md)** — every command
+- **[DNS Configuration](DNS.md)** — records, DNS tunnels, CDN mode
+- **[Setup Guide](SETUP.md)** — every configuration option in depth
+- **[OPSEC Guide](OPSEC.md)** — running and sharing this safely
+- **[Troubleshooting](TROUBLESHOOTING.md)** — when something breaks

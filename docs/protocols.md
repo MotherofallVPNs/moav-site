@@ -24,7 +24,7 @@ MoaV deploys 16+ protocols, each with different stealth characteristics, speed p
 | [GooseRelay](#gooserelay) | 8444/tcp | Very High | Low-Medium | No |
 | [Psiphon Conduit](#psiphon-conduit) | dynamic | High | Medium | No |
 | [XHTTP (VLESS+XHTTP+Reality)](#xhttp-vlessxhttpreality) | 2096/tcp | Very High | High | No |
-| [XDNS (VLESS+mKCP+DNS)](#xdns-vlesmkcpdns) | 53/udp | Medium | Low | Yes |
+| [XDNS (VLESS+mKCP+DNS)](#xdns-vlessmkcpdns) | 53/udp | Medium | Low | Yes |
 | [Tor Snowflake](#tor-snowflake) | dynamic | High | Low | No |
 | [MahsaNet](#mahsanet) | — | — | — | No |
 <!-- END gen:overview-table -->
@@ -126,77 +126,48 @@ Telegram-specific proxy with Fake-TLS V2. Emulates real TLS connections, includi
 - **Engine:** [telemt](https://github.com/telemt/telemt)
 - **Clients:** Telegram app (built-in proxy settings)
 
-<details>
-<summary><strong>Anti-DPI Tuning Settings</strong></summary>
+??? note "Anti-DPI Tuning Settings"
 
-telemt has 17+ configurable settings for hostile network environments. All configurable in `.env`:
+    telemt has 17+ configurable settings for hostile network environments. All configurable in `.env`:
 
-**Traffic Disguise (anti-DPI):**
+    **Traffic Disguise (anti-DPI):**
 
-| Setting | Default | Purpose |
-|---------|---------|---------|
-| `TELEMT_KEEPALIVE_RANDOM` | `true` | Randomize keepalive payload to break DPI pattern-matching |
-| `TELEMT_KEEPALIVE_JITTER` | `4` | ±N seconds randomness on keepalive timing |
-| `TELEMT_KEEPALIVE_INTERVAL` | `20` | Base keepalive interval in seconds |
-| `TELEMT_WARMUP_JITTER` | `200` | Randomize connection establishment timing (ms) |
+    | Setting | Default | Purpose |
+    |---------|---------|---------|
+    | `TELEMT_KEEPALIVE_RANDOM` | `true` | Randomize keepalive payload to break DPI pattern-matching |
+    | `TELEMT_KEEPALIVE_JITTER` | `4` | ±N seconds randomness on keepalive timing |
+    | `TELEMT_KEEPALIVE_INTERVAL` | `20` | Base keepalive interval in seconds |
+    | `TELEMT_WARMUP_JITTER` | `200` | Randomize connection establishment timing (ms) |
 
-**Connection Pool Resilience:**
+    **Connection Pool Resilience:**
 
-| Setting | Default | Purpose |
-|---------|---------|---------|
-| `TELEMT_POOL_SIZE` | `12` | Number of persistent connections to Telegram DCs |
-| `TELEMT_REINIT_SECS` | `600` | Rebuild all connections every N seconds (prevents long-connection fingerprinting) |
-| `TELEMT_HARDSWAP` | `true` | Build new pool before tearing down old (zero-downtime rotation) |
-| `TELEMT_HARDSWAP_DELAY_MIN` | `500` | Min delay between new connections during swap (ms) |
-| `TELEMT_HARDSWAP_DELAY_MAX` | `1200` | Max delay between new connections during swap (ms) |
+    | Setting | Default | Purpose |
+    |---------|---------|---------|
+    | `TELEMT_POOL_SIZE` | `12` | Number of persistent connections to Telegram DCs |
+    | `TELEMT_REINIT_SECS` | `600` | Rebuild all connections every N seconds (prevents long-connection fingerprinting) |
+    | `TELEMT_HARDSWAP` | `true` | Build new pool before tearing down old (zero-downtime rotation) |
+    | `TELEMT_HARDSWAP_DELAY_MIN` | `500` | Min delay between new connections during swap (ms) |
+    | `TELEMT_HARDSWAP_DELAY_MAX` | `1200` | Max delay between new connections during swap (ms) |
 
-**Fast Reconnect:**
+    **Fast Reconnect:**
 
-| Setting | Default | Purpose |
-|---------|---------|---------|
-| `TELEMT_FAST_RETRIES` | `10` | Quick retries before exponential backoff |
-| `TELEMT_BACKOFF_BASE` | `300` | Backoff start interval (ms) |
-| `TELEMT_BACKOFF_CAP` | `10000` | Maximum backoff interval (ms) |
+    | Setting | Default | Purpose |
+    |---------|---------|---------|
+    | `TELEMT_FAST_RETRIES` | `10` | Quick retries before exponential backoff |
+    | `TELEMT_BACKOFF_BASE` | `300` | Backoff start interval (ms) |
+    | `TELEMT_BACKOFF_CAP` | `10000` | Maximum backoff interval (ms) |
 
-**Config Stability:**
+    **Config Stability:**
 
-| Setting | Default | Purpose |
-|---------|---------|---------|
-| `TELEMT_STABLE_SNAPSHOTS` | `3` | Require N consistent config snapshots before applying changes |
-| `TELEMT_APPLY_COOLDOWN` | `120` | Minimum seconds between config changes |
+    | Setting | Default | Purpose |
+    |---------|---------|---------|
+    | `TELEMT_STABLE_SNAPSHOTS` | `3` | Require N consistent config snapshots before applying changes |
+    | `TELEMT_APPLY_COOLDOWN` | `120` | Minimum seconds between config changes |
 
-**For aggressive censorship** (e.g., Iran during shutdowns): increase `TELEMT_POOL_SIZE` to 16-20, decrease `TELEMT_REINIT_SECS` to 300, and increase `TELEMT_FAST_RETRIES` to 20.
+    **For aggressive censorship** (e.g., Iran during shutdowns): increase `TELEMT_POOL_SIZE` to 16-20, decrease `TELEMT_REINIT_SECS` to 300, and increase `TELEMT_FAST_RETRIES` to 20.
 
-Full tuning docs: [telemt TUNING.en.md](https://github.com/telemt/telemt/blob/main/docs/TUNING.en.md) | [API docs](https://github.com/telemt/telemt/blob/main/docs/API.md)
+    Full tuning docs: [telemt TUNING.en.md](https://github.com/telemt/telemt/blob/main/docs/TUNING.en.md) | [API docs](https://github.com/telemt/telemt/blob/main/docs/API.md)
 
-</details>
-
-### dnstt
-
-DNS tunnel that encodes TCP traffic within DNS queries. Extremely hard to block without breaking DNS entirely. Very slow but works as a last resort when almost everything is blocked.
-
-- **Port:** 53/udp
-- **Engine:** [dnstt](https://www.bamsoftware.com/software/dnstt/)
-- **Requires:** Domain with NS delegation
-
-### Slipstream
-
-QUIC-over-DNS tunnel. Similar to dnstt but uses QUIC for better throughput — typically 1.5-5x faster than dnstt.
-
-- **Port:** 53/udp
-- **Engine:** [slipstream](https://github.com/Mygod/slipstream-rust) (Rust) / [pre-built binaries](https://github.com/net2share/slipstream-rust-build/releases)
-- **Requires:** Domain with NS delegation
-
-### MasterDNS
-
-Advanced DNS tunnel optimised beyond dnstt/Slipstream: low-overhead ARQ, resolver load-balancing, and high stability under packet loss. This is the **MasterDNS** component bundled in MahsaNG v16, so the MahsaNG Android app can connect directly. Faster than dnstt and more resilient on lossy links, but still a DNS tunnel (slow vs. real proxies) — use when little else works.
-
-- **Port:** 53/udp (via `dns-router`, on its own subdomain — coexists with dnstt/Slipstream)
-- **Engine:** [MasterDnsVPN](https://github.com/masterking32/MasterDnsVPN) (Go)
-- **Clients:** MahsaNG v16+, or the standalone MasterDnsVPN client (Linux/Windows/macOS/Termux)
-- **Encryption:** AES-256-GCM (`DATA_ENCRYPTION_METHOD=5`); the shared key is in each user's `masterdns-instructions.txt`
-- **Requires:** Domain with NS delegation (`MASTERDNS_SUBDOMAIN`, default `m`)
-- **Note:** Enabled by default (set `ENABLE_MASTERDNS=false` in `.env` to opt out). Egress is routed through sing-box like dnstt/Slipstream. Shares port 53 with dnstt, Slipstream, and XDNS via `dns-router` — all four can run simultaneously, no `switch-dns` needed.
 
 ### GooseRelay
 
@@ -217,48 +188,6 @@ SOCKS5 tunnelled through a **Google Apps Script** web app that the user deploys 
 - **Engine:** [Xray-core](https://github.com/XTLS/Xray-core)
 - **Clients:** V2rayNG, Hiddify, Streisand, V2Box, V2rayN, V2rayU, NekoBox
 - **Note:** Uses Xray-core (separate from sing-box). Disable with `ENABLE_XHTTP=false` in `.env`.
-
-### XDNS (VLESS+mKCP+DNS)
-
-**Experimental.** DNS tunnel using Xray-core's mKCP transport with FinalMask XDNS. Encodes VPN traffic inside DNS queries — works when almost everything except DNS is blocked. Slower than other protocols but extremely resilient during heavy internet shutdowns.
-
-- **Port:** 53/udp (via `dns-router` on subdomain `x.<domain>`, same as dnstt/Slipstream/MasterDNS)
-- **Engine:** [Xray-core](https://github.com/XTLS/Xray-core) (built from main branch for FinalMask support)
-- **Clients:** Apps with FinalMask support (Happ beta, Xray CLI). Standard v2rayNG does not support FinalMask yet.
-- **Requires:** Domain + NS record for the `x` subdomain (see DNS Setup Step 5)
-- **Note:** XDNS now runs behind `dns-router` alongside dnstt, Slipstream, and MasterDNS — all four can be active simultaneously on port 53, routed by subdomain suffix. Enabled by default; set `ENABLE_XDNS=false` to opt out. Best for Telegram and lightweight chat apps — not fast enough for web browsing.
-
-<details>
-<summary><strong>XDNS Tuning</strong></summary>
-
-| Setting | Default | Purpose |
-|---------|---------|---------|
-| `XDNS_MTU` | `35` | mKCP packet size. Smaller = works with more DNS resolvers. 35=safest, 67=most, 130=unrestricted |
-| `XDNS_SUBDOMAIN` | `x` | Subdomain for XDNS queries (x.yourdomain.com) |
-| `XDNS_RESOLVERS` | `1.1.1.1,8.8.8.8` | CSV of public DNS resolvers the client round-robins across in a single mKCP session (Xray v26.4.13+, [PR #5872](https://github.com/XTLS/Xray-core/pull/5872)). See [Reachable DNS resolvers](#reachable-dns-resolvers) — replace the defaults with resolvers that actually answer on your network. Set empty to fall back to single-resolver mode. |
-| `XDNS_METHOD` | `txt` | Finalmask record mode in generated client bundles. `txt` is the widest-compatibility default; `aaaa` ([Xray #6123](https://github.com/XTLS/Xray-core/pull/6123)) gives higher throughput per query but **requires an Xray client core ≥ v26.6.1** (Happ / Xray CLI). Server side needs no change. |
-
-MTU depends on domain name length — shorter domain allows higher MTU. The values above are for ~19-character domains.
-
-For aggressive censorship: use `MTU=35` and connect via a DNS resolver you can actually reach from inside the censored network (see below).
-
-</details>
-
-#### Reachable DNS resolvers
-
-DNS tunnels (dnstt, Slipstream, MasterDNS, XDNS) only work as well as the public DNS resolvers the client can reach. Censors increasingly throttle, null-route, or transparently rewrite well-known resolvers (`1.1.1.1`, `8.8.8.8`, `9.9.9.9`) during shutdowns, while less-publicized resolvers often keep answering. The right resolver for your network changes week to week.
-
-Find resolvers that respond on your specific network with a DNS scanner:
-
-- [findns](https://github.com/SamNet-dev/findns) — scans the public DNS-resolver space and reports which ones answer from your vantage point.
-- [dns-mns](https://gitlab.com/E-Gurl/dns-mns) — similar, with a curated list maintained for Iranian ISP conditions.
-
-Once you have a list of reachable resolvers:
-
-- **XDNS**: set `XDNS_RESOLVERS=<ip1>,<ip2>,<ip3>` in `.env` and re-run `moav regenerate-users`. Xray will round-robin queries across them within a single mKCP session — higher throughput plus automatic fallback when one resolver is rate-limited.
-- **dnstt**: pass `-doh https://<reachable-resolver>/dns-query` (DoH) or `-utls hellorandomized -doh ...` to `dnstt-client`.
-- **Slipstream**: pass `--dns-server <reachable-resolver>:53` to `slipstream-client`. Or use `--authoritative SERVER_IP:53` to skip public resolvers entirely.
-- **MasterDNS**: set `MASTERDNS_DNS_SERVERS=<ip1>,<ip2>` in `.env` and re-run `moav regenerate-users`. The server will forward DNS via the specified resolvers.
 
 ### Psiphon Conduit
 
@@ -319,6 +248,130 @@ Config donation to [MahsaServer.com](https://www.mahsaserver.com/), a decentrali
 - **Clients:** [Mahsa VPN](https://www.mahsaserver.com/) app (Android, iOS)
 - **Setup:** Register on MahsaServer.com, get API key, then `moav donate`
 - **Dashboard:** Donate, list, and manage configs from the Admin Dashboard
+
+## DNS Tunnels
+
+The last transports standing. When a network blocks or throttles almost everything else, DNS usually still resolves — breaking it breaks the whole internet for everyone. DNS tunnels encode traffic inside DNS queries, so they keep working through shutdowns that kill every other protocol.
+
+They are **slow**. Treat them as the fallback that keeps chat and messaging alive, not as an everyday transport.
+
+### How it works
+
+MoaV runs **four** DNS tunnels **simultaneously** on the same public port 53. A small Go service, `dns-router`, is the only thing bound to that port; it reads each query's subdomain prefix and forwards to the matching tunnel container on an internal port.
+
+```
+              Public 53/udp
+                   │
+            ┌──────▼──────┐
+            │ dns-router  │   ← the only listener on 53
+            └──────┬──────┘
+                   │  routes by subdomain prefix
+       t.*  ─────►  dnstt        (KCP + Noise)
+       s.*  ─────►  slipstream   (QUIC-over-DNS)
+       m.*  ─────►  masterdns    (ARQ, MahsaNG-native)
+       x.*  ─────►  xray         (XDNS via FinalMask)
+                   │
+                   ▼
+              sing-box  ──►  internet
+```
+
+Because they are separated by subdomain rather than by port, there is no "pick one" decision: a user connects with whichever tunnel their client supports, and all four can serve traffic at once.
+
+### What MoaV sets up for you
+
+Each tunnel needs an **NS delegation** handing its subdomain to your server, plus one A record for the nameserver itself:
+
+```
+dns.yourdomain.com  A   YOUR_SERVER_IP     # the nameserver
+t.yourdomain.com    NS  dns.yourdomain.com # dnstt
+s.yourdomain.com    NS  dns.yourdomain.com # Slipstream
+m.yourdomain.com    NS  dns.yourdomain.com # MasterDNS
+x.yourdomain.com    NS  dns.yourdomain.com # XDNS
+```
+
+`moav doctor dns` writes exactly the records your configuration needs to `outputs/dns-records.txt`, ready to import into Cloudflare. Full walkthrough: [DNS Configuration](DNS.md#with-a-domain-the-records).
+
+All four are on by default. Toggle them individually with `ENABLE_DNSTT` / `ENABLE_SLIPSTREAM` / `ENABLE_MASTERDNS` / `ENABLE_XDNS`, or set the combination in one command:
+
+```bash
+moav switch-dns                                    # show what is on
+moav switch-dns dnstt+slipstream+masterdns+xdns    # all four
+moav switch-dns dnstt+slipstream                   # the classic pair
+moav switch-dns off                                # no DNS tunnels
+```
+
+A disabled tunnel's container stays down and `dns-router` simply has no backend to forward to. Port **53/udp** must reach the server; some ISPs block it outright on residential lines.
+
+### Which one should I use?
+
+| Tunnel | Subdomain | Speed vs dnstt | Loss resilience | Best for |
+|---|---|---|---|---|
+| **dnstt** | `t` | 1× *(baseline)* | low | **Widest client support** — standalone client on 25+ platforms |
+| **Slipstream** | `s` | 1.5–5× | medium | Faster general use where a Slipstream client exists |
+| **MasterDNS** | `m` | up to 9× | **high** *(ARQ + packet duplication + multi-resolver)* | **Harsh shutdowns**; native in [MahsaNG v16](mahsanet.md) |
+| **XDNS** | `x` | ~1× | low | FinalMask clients (Happ, Xray CLI); per-user auth |
+
+**Short answer:** in Iran during heavy throttling or a blackout, **MasterDNS** is the strongest and works straight from the MahsaNG app. Offer **dnstt** too, because its client runs almost everywhere.
+
+!!! warning "The client's resolver matters more than the tunnel"
+    Every DNS tunnel depends on a public resolver **the client can still reach**, and `1.1.1.1` / `8.8.8.8` are commonly throttled or null-routed exactly when a tunnel is needed. XDNS round-robins across `XDNS_RESOLVERS`; dnstt and Slipstream take a resolver flag client-side. [findns](https://github.com/SamNet-dev/findns) and [dns-mns](https://gitlab.com/E-Gurl/dns-mns) scan for resolvers that still work on a given network — see [reachable resolvers](#reachable-dns-resolvers).
+
+### Reachable DNS resolvers
+
+Every DNS tunnel is only as good as the resolver the **client** can reach. During shutdowns the well-known ones (`1.1.1.1`, `8.8.8.8`, `9.9.9.9`) are routinely throttled, hijacked or null-routed, and a tunnel that worked yesterday will look broken.
+
+Two scanners find resolvers that still answer on a given network:
+
+- **[findns](https://github.com/SamNet-dev/findns)** — sweeps a range and reports which resolvers respond correctly
+- **[dns-mns](https://gitlab.com/E-Gurl/dns-mns)** — same idea, maintained separately
+
+Feed the survivors to the client: `XDNS_RESOLVERS` accepts a comma-separated list that XDNS round-robins across, and the dnstt / Slipstream clients each take a resolver flag. It's worth shipping users two or three known-good resolvers rather than one.
+
+### dnstt
+
+Encodes a TCP stream inside DNS queries using KCP + Noise. Extremely hard to block without breaking DNS itself; the slowest of the four and the most portable.
+
+- **Port:** 53/udp *(subdomain `t`)* · **Engine:** [dnstt](https://www.bamsoftware.com/software/dnstt/)
+- **Clients:** standalone dnstt client on 25+ platforms
+- **Requires:** domain + NS delegation
+
+### Slipstream
+
+The same idea over **QUIC**, which buys real throughput — typically 1.5–5× dnstt.
+
+- **Port:** 53/udp *(subdomain `s`)* · **Engine:** [slipstream-rust](https://github.com/Mygod/slipstream-rust) · [pre-built binaries](https://github.com/net2share/slipstream-rust-build/releases)
+- **Requires:** domain + NS delegation
+
+### MasterDNS
+
+The most loss-resilient of the four: low-overhead ARQ, packet duplication and resolver load-balancing, which is what keeps it usable on throttled links. This is the MasterDNS component bundled in **MahsaNG v16**, so that app connects with no extra client.
+
+- **Port:** 53/udp *(subdomain `MASTERDNS_SUBDOMAIN`, default `m`)* · **Engine:** [MasterDnsVPN](https://github.com/masterking32/MasterDnsVPN) (Go)
+- **Clients:** MahsaNG v16+, or the standalone client (Linux/Windows/macOS/Termux)
+- **Encryption:** AES-256-GCM (`DATA_ENCRYPTION_METHOD=5`); the shared key ships in each user's bundle
+- **Extra:** `MASTERDNS_PUBLIC_SUBDOMAIN` publishes a *different* delegation name than the one used internally — generated bundles then use the public one
+
+### XDNS (VLESS+mKCP+DNS)
+
+**Experimental.** Xray-core's mKCP transport with FinalMask, and the only DNS tunnel here with **per-user authentication** — at the cost of needing a FinalMask-aware client.
+
+- **Port:** 53/udp *(subdomain `x`)* · **Engine:** [Xray-core](https://github.com/XTLS/Xray-core) *(built from main for FinalMask)*
+- **Clients:** Happ (beta), Xray CLI. **Not** standard v2rayNG yet.
+- **Best for:** Telegram and light chat apps — not fast enough for browsing
+
+??? note "XDNS Tuning"
+
+    | Setting | Default | Purpose |
+    |---------|---------|---------|
+    | `XDNS_MTU` | `35` | mKCP packet size. Smaller = works with more DNS resolvers. 35=safest, 67=most, 130=unrestricted |
+    | `XDNS_SUBDOMAIN` | `x` | Subdomain for XDNS queries (x.yourdomain.com) |
+    | `XDNS_RESOLVERS` | `1.1.1.1,8.8.8.8` | CSV of public DNS resolvers the client round-robins across in a single mKCP session (Xray v26.4.13+, [PR #5872](https://github.com/XTLS/Xray-core/pull/5872)). See [Reachable DNS resolvers](#reachable-dns-resolvers) — replace the defaults with resolvers that actually answer on your network. Set empty to fall back to single-resolver mode. |
+    | `XDNS_METHOD` | `txt` | Finalmask record mode in generated client bundles. `txt` is the widest-compatibility default; `aaaa` ([Xray #6123](https://github.com/XTLS/Xray-core/pull/6123)) gives higher throughput per query but **requires an Xray client core ≥ v26.6.1** (Happ / Xray CLI). Server side needs no change. |
+
+    MTU depends on domain name length — shorter domain allows higher MTU. The values above are for ~19-character domains.
+
+    For aggressive censorship: use `MTU=35` and connect via a DNS resolver you can actually reach from inside the censored network (see below).
+
 
 ## Choosing Protocols
 

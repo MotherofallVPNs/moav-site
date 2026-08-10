@@ -35,10 +35,10 @@ nav:
   - Home: index.md
   - Quick Start: quick-start.md
   - About:
+    - Architecture: architecture.md
     - Mission: mission.md
     - Impact: impact.md
     - Threat Model: threat-model.md
-    - Architecture: architecture.md
     - Supported Protocols: protocols.md
     - Philosophy: philosophy.md
   - Getting Started:
@@ -54,10 +54,22 @@ nav:
     - Troubleshooting: TROUBLESHOOTING.md
   - Security:
     - OPSEC Guide: OPSEC.md
+  - Support MoaV: support.md
+
   - Developer:
     - Development & Testing: development.md
 
+# Fail loudly on links that point at a heading which no longer exists. The DNS
+# rewrite silently broke 9 inbound anchors (other pages linked to headings that
+# had been renamed or folded into tabs) and a normal build said nothing.
+validation:
+  links:
+    absolute_links: ignore
+    unrecognized_links: warn
+    anchors: warn
+
 markdown_extensions:
+  - attr_list
   - tables
   - toc:
       permalink: true

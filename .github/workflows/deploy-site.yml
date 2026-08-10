@@ -46,6 +46,14 @@ jobs:
         # docs/. Not committed, same as the mkdocs output under site/docs.
         run: ./scripts/build-llms-full.sh
 
+      - name: Refresh donation addresses from FUNDING.yml
+        # Addresses live in MoaV's .github/FUNDING.yml, which is already the
+        # canonical list. Regenerating the table here means adding an address in
+        # one repo publishes it everywhere, and the site cannot drift. Best
+        # effort: on any failure the committed table stays, because a blank or
+        # wrong donation address is the worst possible outcome.
+        run: ./scripts/build-funding.sh
+
       - name: Publish latest install.sh
         # install.sh is server code — its source of truth lives in
         # MotherofallVPNs/moav. We serve it from moav.sh (reachable in censored

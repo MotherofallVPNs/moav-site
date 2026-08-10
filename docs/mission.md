@@ -49,7 +49,7 @@ If you want to help users reach the open internet:
 1. [Deploy MoaV](quick-start.md) on a VPS.
 2. Read the [OPSEC Guide](OPSEC.md) before sharing access.
 3. Share user bundles only through trusted channels.
-4. Enable donation paths such as [Psiphon Conduit](SETUP.md#bandwidth-donation-conduit-snowflake), [Tor Snowflake](SETUP.md#bandwidth-donation-conduit-snowflake), or [MahsaNet](mahsanet.md) when appropriate.
+4. Enable donation paths such as [Psiphon Conduit](support.md#donate-bandwidth-instead-of-users), [Tor Snowflake](support.md#donate-bandwidth-instead-of-users), or [MahsaNet](mahsanet.md) when appropriate.
 5. Contribute code, protocol support, documentation, testing, or translations.
 
 ## Related pages

@@ -1,42 +1,126 @@
 # Development & Testing
 
-MoaV is developed across three repos under the [MotherofallVPNs](https://github.com/MotherofallVPNs) org:
+How to run MoaV from source, how it's tested, and how to contribute a change that lands.
 
-- **[moav](https://github.com/MotherofallVPNs/moav)** — the server (the `moav` CLI + the Docker stack)
-- **[moav-client](https://github.com/MotherofallVPNs/moav-client)** — the multi-protocol client + web dashboard
-- **[moav-site](https://github.com/MotherofallVPNs/moav-site)** — this documentation site
+## Installing a specific version
 
-Start with **[CONTRIBUTING.md](https://github.com/MotherofallVPNs/moav/blob/main/CONTRIBUTING.md)** (dev setup, branch/PR flow, coding conventions).
+The one-liner on `moav.sh` always installs the **latest stable release**. To run a development build or a specific release candidate, fetch the installer *from that ref* and tell it to clone the same one — the two must match, or you'll get an installer from one version setting up another.
 
-## Test coverage
+=== "Latest dev"
+    ```bash
+    curl -fsSL https://raw.githubusercontent.com/MotherofallVPNs/MoaV/dev/install.sh | bash -s -- -b dev
+    ```
 
-Two layers, on each repo:
+=== "A specific tag"
+    ```bash
+    curl -fsSL https://raw.githubusercontent.com/MotherofallVPNs/MoaV/v2.0.0/install.sh | bash -s -- -b v2.0.0
+    ```
 
-- **Per-PR CI** (GitHub-hosted, fast) — lint (`shellcheck`, `go vet`, `golangci-lint`), unit tests (`go test -race`, web-ui `vitest`), `docker compose config` validation, and a protocol-roster drift check. Runs on every pull request; never brings the stack up.
-- **End-to-end** (self-hosted runner, real server) — stands the full stack up and verifies real connectivity.
+=== "Already installed"
+    ```bash
+    moav update -b dev     # or a tag
+    moav build             # images must be rebuilt when the code moves
+    moav start
+    ```
 
-### Server e2e (`moav`)
+!!! warning "`dev` is where work in progress lands"
+    It gets the fixes first and the regressions first. Run it on a test server, not on the one people depend on.
 
-`moav test` (`client-test.sh`) drives a client tunnel per protocol against a **live** server and checks the exit IP, plus a `moav` **CLI smoke test**. It covers the full protocol matrix:
+## Running from a clone
 
-> Reality · Trojan · AnyTLS · Hysteria2 · Shadowsocks-2022 · XHTTP · CDN · WireGuard · AmneziaWG · wstunnel · dnstt · Slipstream · MasterDNS · XDNS · GooseRelay · TrustTunnel · telemt
+```bash
+git clone https://github.com/MotherofallVPNs/MoaV.git && cd MoaV
+cp .env.example .env         # set DOMAIN, ACME_EMAIL, ADMIN_PASSWORD
+./moav.sh build && ./moav.sh bootstrap && ./moav.sh start all
+./moav.sh doctor
+```
 
-Run it manually (**Actions → e2e → Run workflow**), on every push to `main`, and on each release. It has a `domainless` mode that skips Let's Encrypt entirely for quick iteration.
+`./moav.sh` is the same dispatcher the installed `moav` command runs — the global install is just a symlink.
 
-### Client e2e (`moav-client`)
+!!! note "bash 4+ required"
+    MoaV uses associative arrays, and macOS ships bash 3.2. The dispatcher refuses to run and tells you so rather than failing obscurely. On macOS: `brew install bash`, or work on a Linux box.
 
-Brings the client stack up against a real MoaV server bundle, connects per protocol, and asserts traffic **exits from the server's IP** (not the runner's). The **[protocol parity audit](https://github.com/MotherofallVPNs/moav-client/blob/main/docs/PROTOCOL-PARITY.md)** documents which server protocols the client connects with.
+## How the code is laid out
 
-## Setting up the self-hosted runner
+| Path | What lives there |
+|---|---|
+| `moav.sh` | The CLI dispatcher — argument parsing, then straight into a `cmd_*` function |
+| `lib/*.sh` | Host-side modules: `service`, `users`, `bootstrap`, `doctor`, `cert`, `migrate`, `donate`, `nettune`, `dns`, `menu`, … |
+| `scripts/*-entrypoint.sh` | Container entrypoints, one per service |
+| `scripts/lib/*.sh` | Shared provisioning libraries, mounted into containers as `/app/lib` |
+| `configs/` | `*.template` files (tracked) rendered into `*.json` / `*.conf` (gitignored) |
+| `dockerfiles/`, `exporters/`, `admin/` | Image builds, Prometheus exporters, the FastAPI dashboard |
+| `tests/` | The regression suite |
 
-The e2e needs a **dedicated test VPS** (Docker + a throwaway test domain) with a self-hosted GitHub runner. Full step-by-step setup — registering the runner, the required secrets, the reclaim-workspace hook, and how to read the pass/warn/skip/fail matrix — is in the repo:
+The deep guide for anyone — human or AI agent — working in the repo is [`AGENTS.md`](https://github.com/MotherofallVPNs/MoaV/blob/main/AGENTS.md), and [`llms.txt`](https://moav.sh/llms.txt) is the one-fetch index.
 
-- **Server:** [`docs/devdocs/E2E-TESTING.md`](https://github.com/MotherofallVPNs/moav/blob/main/docs/devdocs/E2E-TESTING.md)
-- **Client:** [`docs/devdocs/E2E-TESTING.md`](https://github.com/MotherofallVPNs/moav-client/blob/main/docs/devdocs/E2E-TESTING.md)
+## How testing works
 
-## Developer references
+Two layers, and they answer different questions.
 
-Kept in the server repo (they're contributor/agent-facing, not end-user docs):
+### CI — fast, on every push
 
-- **[Protocol Integration Checklist](https://github.com/MotherofallVPNs/moav/blob/main/docs/devdocs/PROTOCOL-INTEGRATION-CHECKLIST.md)** — every file/step to add a new protocol end-to-end.
-- **[Version Bump Checklist](https://github.com/MotherofallVPNs/moav/blob/main/docs/devdocs/VERSION-BUMP-CHECKLIST.md)** — the release checklist.
+Runs on GitHub-hosted runners in a couple of minutes: `shellcheck`, a parse check on every script, `docker compose config`, Go tests for the DNS router, and **22 bash suites**.
+
+Each suite is named after the bug class it pins rather than the file it tests — `reality-desync-test`, `wg-keygen-fallback-test`, `entrypoint-strict-test`, `state-perms-test`, `uuid-capture-test`. That naming is deliberate: the suite reads as a list of ways MoaV has broken before and can't break again.
+
+```bash
+bash tests/<name>-test.sh     # any suite, locally, no install needed
+```
+
+### End-to-end — slow, before anything ships
+
+A self-hosted workflow builds the entire stack on a real server with a real domain, provisions a user, and **connects through every protocol**, checking the exit IP is the server. It's the merge bar for anything touching provisioning, because it's the only thing that proves a bundle actually carries traffic.
+
+Tiers: `default` (domain mode), `full` (domain + domainless), `mega` (adds local image builds and image removal on uninstall). The server and domain come from repository secrets, so contributors don't need infrastructure of their own — the maintainers run it on the PR.
+
+Two scripts in `tests/` are **integration harnesses**, not CI suites: `cli-smoke-test.sh` drives a live stack, and `client-test.sh` *is* what `moav test` runs. Both need a real install, and both exit `2` rather than pretending to pass when preconditions are missing.
+
+### The rule
+
+**Every bug fixed ships a regression test in the same PR.** Not as bureaucracy — several of those tests earned their place immediately by catching mistakes made *while* fixing something else: a render guard that could return a false PASS, a name that came out with a double dash, a probe that proved nothing because its control case also passed.
+
+If you fix something, add the test that would have caught it. If the fix is a one-liner and the test is thirty lines, that's usually the right ratio.
+
+## Contributing
+
+1. **Branch off `dev`.** Never commit to `main` — it tracks releases.
+2. **Open a PR into `dev`.** CI runs automatically; a maintainer triggers e2e for anything touching provisioning, protocols or permissions.
+3. **Include the regression test** for whatever you fixed.
+4. **Explain the failure, not just the change.** The most useful PR descriptions say what broke, how it presented, and why the fix addresses the cause rather than the symptom.
+
+Bug reports are genuinely valuable, especially with `moav doctor` output and the relevant `moav logs`. A reproducible report is often more work than the fix.
+
+Details on style and review: [`CONTRIBUTING.md`](https://github.com/MotherofallVPNs/MoaV/blob/main/CONTRIBUTING.md).
+
+!!! danger "Never paste real credentials into an issue"
+    Bundles, `.env` contents, share links and QR codes contain live keys. Redact server IPs and domains too if your setup is in use. See [OPSEC](OPSEC.md).
+
+## Conventions that bite
+
+Hard-won, and easy to trip over:
+
+- **Strict mode everywhere.** Entrypoints run `set -eu` with `pipefail` probed in a subshell — `set -o pipefail` is fatal in `dash`, so the usual `|| true` guard doesn't save you. `((x++))` returns 1 when `x` is 0. A plain `VAR=$(cmd)` propagates the failure, so an unguarded assignment can kill a script silently.
+- **Never hand a TTY to a container exec.** `docker exec -i` attaches stdin; against a terminal it blocks until the timeout. This is why some commands worked in scripts and CI but failed interactively.
+- **`get_env_val` is the only `.env` accessor.** Don't hand-roll `grep | cut` — it breaks on base64 values containing `=`.
+- **Generated configs are gitignored**; only `*.template` is tracked, so a `git pull` can never clobber a rendered config.
+- **Secrets live in state, not `.env`.** Renders re-source state immediately before writing, so an empty `.env` value can't blank a live secret.
+
+## Contributing to these docs
+
+The docs are mkdocs-material in [moav-site](https://github.com/MotherofallVPNs/moav-site).
+
+```bash
+pip install mkdocs-material
+mkdocs serve            # http://127.0.0.1:8000, live-reloads as you edit
+mkdocs build --strict   # what CI runs — warnings are failures
+```
+
+**Always review from a build, never from the diff.** GitHub's file view doesn't render tabs (`=== "X"`) or collapsibles (`??? note`) — they appear as literal text with their content turned into code blocks, so a correct page looks broken and a broken one can look fine.
+
+Two ways to see a real render:
+
+- **`mkdocs serve` locally** — instant, live-reloading, and the only option if the hosted preview is unavailable.
+- **The PR preview** — every PR touching `docs/` gets a hosted URL posted as a comment (`pr-N.moav-docs-preview.pages.dev`). It's stable for the life of the PR, rebuilds on each push, and is deleted when the PR closes.
+
+`--strict` is the gate: a link to a renamed heading, or one pointing into a tab or collapsible (neither generates an anchor), fails the build rather than shipping dead. If the hosted preview is skipped — missing secrets, Cloudflare down — the strict build still runs, so correctness is never gated on the preview being available.
