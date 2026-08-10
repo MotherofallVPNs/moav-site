@@ -1,6 +1,6 @@
 # Supported Protocols
 
-MoaV deploys 16+ protocols, each with different stealth characteristics, speed profiles, and network requirements. This diversity ensures that when one protocol is blocked, others remain available.
+MoaV deploys 16+ circumvention transports and fallback paths, plus optional Psiphon, Tor and MahsaNet donation integrations. Each has different stealth characteristics, speed profiles, and network requirements. This diversity ensures that when one protocol is blocked, others remain available.
 
 ## Protocol Overview
 
@@ -12,7 +12,7 @@ MoaV deploys 16+ protocols, each with different stealth characteristics, speed p
 | [AnyTLS](#anytls) | 8445/tcp | Very High | High | Yes |
 | [Hysteria2](#hysteria2) | 443/udp | High | Very High | Yes |
 | [Shadowsocks-2022](#shadowsocks-2022) | 8388/tcp+udp | High | Very High | No |
-| [CDN (VLESS+WS)](#cdn-vlessws) | 443 via CDN | Very High | Medium | Yes (Cloudflare) |
+| [CDN (VLESS+WS)](#cdn-vlessws) | 443 via CDN | Very High | Medium | Cloudflare: yes · CloudFront: no |
 | [TrustTunnel](#trusttunnel) | 4443/tcp+udp | Very High | High | Yes |
 | [WireGuard](#wireguard) | 51820/udp | Medium | Very High | No |
 | [AmneziaWG](#amneziawg) | 51821/udp | Very High | High | No |
@@ -33,7 +33,7 @@ MoaV deploys 16+ protocols, each with different stealth characteristics, speed p
 
 ### Reality (VLESS)
 
-**Primary protocol.** VLESS with Reality makes your proxy traffic indistinguishable from a real TLS connection to a legitimate website (e.g., `dl.google.com`). The server presents a genuine TLS certificate from the target site, passing even active probing.
+**Primary protocol.** VLESS with Reality makes your proxy traffic resemble a real TLS connection to a legitimate website (e.g., `dl.google.com`). The server presents a genuine TLS certificate from the target site, passing even active probing.
 
 - **Port:** 443/tcp
 - **Engine:** [sing-box](https://github.com/SagerNet/sing-box)
@@ -49,7 +49,7 @@ Password-authenticated TLS proxy. Traffic looks like normal HTTPS. Uses your dom
 
 ### AnyTLS
 
-Password-authenticated TLS proxy designed to defeat **TLS-in-TLS fingerprinting**. By varying record sizes and padding, AnyTLS removes the tell-tale TLS-inside-TLS pattern that DPI uses to detect TLS-tunneling proxies, giving it very high stealth. Reuses the same sing-box engine, the Trojan TLS certificate, and your server domain.
+Password-authenticated TLS proxy designed to resist **TLS-in-TLS fingerprinting**. By varying record sizes and padding, AnyTLS removes the tell-tale TLS-inside-TLS pattern that DPI uses to detect TLS-tunneling proxies, giving it high stealth against the filtering techniques it targets. Reuses the same sing-box engine, the Trojan TLS certificate, and your server domain.
 
 - **Port:** 8445/tcp
 - **Engine:** [sing-box](https://github.com/SagerNet/sing-box) (1.13.x)
@@ -77,12 +77,12 @@ AEAD-2022 Shadowsocks (`2022-blake3-aes-128-gcm`), the modern Shadowsocks genera
 
 ### CDN (VLESS+WS)
 
-Routes VLESS traffic through Cloudflare's CDN via WebSocket. When your server's IP is blocked, traffic goes through Cloudflare instead, making it unblockable without blocking all of Cloudflare.
+Routes VLESS traffic through Cloudflare's CDN via WebSocket. When your server's IP is blocked, traffic goes through Cloudflare instead, which makes IP-based blocking substantially harder, because clients connect through CDN infrastructure.
 
 - **Port:** 443 (Cloudflare) → 2082 (origin)
 - **Engine:** [sing-box](https://github.com/SagerNet/sing-box)
 - **Clients:** Streisand, Hiddify, v2rayNG, v2rayN
-- **Requires:** Cloudflare-proxied domain
+- **Requires:** a Cloudflare-proxied domain you control; AWS CloudFront can use the distribution hostname and needs no custom domain
 
 ### TrustTunnel
 
@@ -103,7 +103,7 @@ Fast kernel-level VPN. Simple, audited, and widely supported. Direct UDP connect
 
 ### AmneziaWG
 
-Obfuscated WireGuard variant that defeats Deep Packet Inspection. Adds junk packets, changes handshake timing, and modifies header fields to avoid detection.
+Obfuscated WireGuard variant designed to resist common DPI signatures. Adds junk packets, changes handshake timing, and modifies header fields to avoid detection.
 
 - **Port:** 51821/udp
 - **Engine:** [amneziawg-tools](https://github.com/amnezia-vpn/amneziawg-tools)
@@ -111,7 +111,7 @@ Obfuscated WireGuard variant that defeats Deep Packet Inspection. Adds junk pack
 
 ### WireGuard (wstunnel)
 
-WireGuard tunneled through WebSocket (TCP). Works when UDP is completely blocked. When a `DOMAIN` is configured the tunnel is served over **`wss://` (TLS)** using the server's Let's Encrypt certificate, so the WebSocket upgrade is indistinguishable from ordinary HTTPS; it falls back to plain `ws://` only in domainless mode. A per-install **HTTP-upgrade path secret** is also required, so a scanner probing port 8080 can't complete the WebSocket upgrade blind. The exact client command (correct `wss://`/`ws://` scheme and path prefix) is emitted in each user bundle's `wireguard-instructions.txt`.
+WireGuard tunneled through WebSocket (TCP). Works when UDP is completely blocked. When a `DOMAIN` is configured the tunnel is served over **`wss://` (TLS)** using the server's Let's Encrypt certificate, so the WebSocket upgrade resembles ordinary HTTPS; it falls back to plain `ws://` only in domainless mode. A per-install **HTTP-upgrade path secret** is also required, so a scanner probing port 8080 can't complete the WebSocket upgrade blind. The exact client command (correct `wss://`/`ws://` scheme and path prefix) is emitted in each user bundle's `wireguard-instructions.txt`.
 
 - **Port:** 8080/tcp
 - **Engine:** [wstunnel](https://github.com/erebe/wstunnel) wrapping the WireGuard container
@@ -171,7 +171,7 @@ Telegram-specific proxy with Fake-TLS V2. Emulates real TLS connections, includi
 
 ### GooseRelay
 
-SOCKS5 tunnelled through a **Google Apps Script** web app that the user deploys in their own Google account, which forwards to this VPS exit server. On the wire the client only ever appears to make a domain-fronted HTTPS request to `google.com` — everything is end-to-end AES-256-GCM and Google never sees plaintext or the key. This is the **GooseRelay** component bundled in MahsaNG v16. Extremely stealthy (looks like Google traffic), but throughput is capped by the Apps Script ~20k-calls/day-per-account quota.
+SOCKS5 tunnelled through a **Google Apps Script** web app that the user deploys in their own Google account, which forwards to this VPS exit server. On the wire the client only ever appears to make a domain-fronted HTTPS request to `google.com` — the payload is AES-256-GCM encrypted end-to-end between the GooseRelay endpoints, so Apps Script relays ciphertext, but Google can still observe request metadata. This is the **GooseRelay** component bundled in MahsaNG v16. Extremely stealthy (looks like Google traffic), but throughput is capped by the Apps Script ~20k-calls/day-per-account quota.
 
 - **Port:** `${PORT_GOOSE}`/tcp (default 8444 on the host → 8443 in the container; 8443 on the host is Trojan's)
 - **Engine:** [GooseRelayVPN](https://github.com/kianmhz/GooseRelayVPN) (Go), server built from source
@@ -251,7 +251,7 @@ Config donation to [MahsaServer.com](https://www.mahsaserver.com/), a decentrali
 
 ## DNS Tunnels
 
-The last transports standing. When a network blocks or throttles almost everything else, DNS usually still resolves — breaking it breaks the whole internet for everyone. DNS tunnels encode traffic inside DNS queries, so they keep working through shutdowns that kill every other protocol.
+The last transports standing. When a network blocks or throttles almost everything else, DNS usually still resolves — breaking it breaks the whole internet for everyone. DNS tunnels encode traffic inside DNS queries, so they can remain usable where ordinary traffic is blocked but recursive DNS still resolves.
 
 They are **slow**. Treat them as the fallback that keeps chat and messaging alive, not as an everyday transport.
 
@@ -377,7 +377,7 @@ The most loss-resilient of the four: low-overhead ARQ, packet duplication and re
 
 **For censored networks (Iran, China, Russia):**
 
-1. Start with **Reality** — highest stealth, most reliable
+1. Start with **Reality** — high stealth against the filtering techniques it targets, a strong first choice on networks where it currently works
 2. Add **CDN mode** — works when your server IP is blocked
 3. Enable **AmneziaWG** — for full VPN when WireGuard is fingerprinted
 4. Enable **DNS tunnels** — last resort when almost everything is blocked

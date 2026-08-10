@@ -38,7 +38,7 @@ survive Iran's censorship:
 
 | MoaV protocol | URI scheme | MahsaNG | Notes for Iran |
 |---|---|---|---|
-| **Reality (VLESS)** | `vless://` | ✅ | **Best default.** No domain, indistinguishable from real TLS. |
+| **Reality (VLESS)** | `vless://` | ✅ | **Best default.** No domain, resembles real TLS. |
 | **CDN (VLESS+WS)** | `vless://` | ✅ | **Best when your server IP is blocked** — rides Cloudflare. |
 | **XHTTP (VLESS+XHTTP+Reality)** | `vless://` | ✅ | HTTP-camouflaged; good alternate. |
 | **Trojan** | `trojan://` | ✅ | Solid; needs a domain + valid TLS cert. |

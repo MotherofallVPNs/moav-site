@@ -20,7 +20,7 @@ Internet shutdowns are not abstract policy debates. They cut people off from fam
 
 MoaV was created to **democratize access to anti-censorship tools**. Running a VPN server shouldn't require deep technical expertise. Running *multiple* protocols, so users can find one that works when others are blocked, shouldn't require managing a dozen separate tools.
 
-MoaV packages 16+ distinct protocols into a single deployment. One command deploys all of them. A $5 VPS is enough. The goal is simple: make it as easy as possible for anyone with a spare server to provide reliable internet access to people who need it.
+MoaV packages 16+ circumvention transports and fallback paths, plus optional Psiphon, Tor and MahsaNet donation integrations, into a single deployment. One command deploys all of them. A $5 VPS is enough. The goal is simple: make it as easy as possible for anyone with a spare server to provide reliable internet access to people who need it.
 
 ## What Infrastructure Actually Means
 

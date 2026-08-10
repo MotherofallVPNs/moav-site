@@ -54,7 +54,7 @@ Ten dashboards are provisioned automatically — nothing to import or build. Gra
 | **AmneziaWG** | The same, for the obfuscated interface |
 | **Xray (XHTTP)** | XHTTP / XDNS connections and throughput |
 | **Telegram MTProxy** | telemt connections, pool health, config-change activity |
-| **DNS Tunnels & GooseRelay** | Traffic across dnstt, Slipstream, MasterDNS, XDNS and GooseRelay |
+| **DNS Tunnels & GooseRelay** | Traffic across dnstt, Slipstream, MasterDNS, XDNS and GooseRelay. dnstt has no protocol-level metrics API, so its panels show container and network telemetry only |
 | **Conduit** | Bandwidth donated to Psiphon users, lifetime totals |
 | **Snowflake** | Bandwidth donated to Tor users, client connections |
 

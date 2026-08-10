@@ -4,7 +4,7 @@ What DNS records MoaV needs, and how to add them. Most setups need **one to six 
 
 ## Do I need a domain?
 
-**Not strictly — but get one.** MoaV runs fine on a bare IP, and if you can't register a domain, skip to [without a domain](#without-a-domain). But a domain roughly **doubles the transports you can offer**, and it is the only way to run the **DNS tunnels** — which are what keep working when almost everything else is blocked. A domain costs a few dollars a year; see [getting a domain](#getting-a-domain).
+**Not strictly — but get one.** MoaV runs fine on a bare IP, and if you can't register a domain, skip to [without a domain](#without-a-domain). But a domain **unlocks several additional transports**, and it is the only way to run the **DNS tunnels** — which can remain usable where ordinary traffic is blocked but recursive DNS still resolves. A domain costs a few dollars a year; see [getting a domain](#getting-a-domain).
 
 | Protocol | Bare IP | With a domain |
 |---|:-:|:-:|
@@ -98,7 +98,7 @@ The records are the same everywhere; only the UI differs. Cloudflare additionall
           "PriceClass":"PriceClass_200"}'
         ```
 
-    Then in `.env` (note `CDN_TRANSPORT=ws` — CloudFront rejects the default `httpupgrade`):
+    Then in `.env` (`CDN_TRANSPORT=ws` is the default and is what CloudFront needs; `httpupgrade` will not work):
     ```bash
     CDN_SUBDOMAIN=
     CDN_DOMAIN=d123.cloudfront.net

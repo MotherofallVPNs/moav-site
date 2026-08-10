@@ -62,7 +62,7 @@ Every protocol is one or more containers grouped into a docker-compose **profile
 | `snowflake` | `snowflake` + exporter | Bandwidth donated to Tor |
 | `client` | `client` | Local testing (`moav test`) |
 
-AnyTLS is opt-in because it defeats TLS-in-TLS fingerprinting but has narrower client support. `all` starts every profile whose flag is on.
+AnyTLS is opt-in because it resists TLS-in-TLS fingerprinting but has narrower client support. `all` starts every profile whose flag is on.
 
 ## DNS-router fan-out
 

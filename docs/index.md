@@ -2,7 +2,7 @@
 
 **MoaV (Mother of all VPNs)** is a free, open-source multi-protocol censorship circumvention stack. Deploy a full arsenal of [anti-censorship protocols](protocols.md) on any VPS or home server with a single command.
 
-MoaV generates ready-to-use **client bundles** for each user, containing config files, QR codes, and step-by-step instructions (in English and Farsi) for every enabled protocol. Non-technical users simply open the bundle's `README.html` in their browser, scan a QR code, and connect. No manual configuration needed.
+MoaV generates ready-to-use **client bundles** for each user, containing config files, QR codes, and step-by-step instructions (in English and Farsi) for each enabled and successfully configured user-facing protocol. Non-technical users simply open the bundle's `README.html` in their browser, scan a QR code, and connect. No manual configuration needed.
 
 Read the concise [Mission](mission.md), the project's [Impact](impact.md) model, and the public [Threat Model](threat-model.md).
 
@@ -34,7 +34,7 @@ Read the concise [Mission](mission.md), the project's [Impact](impact.md) model,
 - **[Threat Model](threat-model.md)**: Honest limits, adversaries, metadata risks, and safety assumptions
 - **[OPSEC Guide](OPSEC.md)**: Security best practices for operators
 - **[Mission & Philosophy](philosophy.md)**: The longer manifesto behind the project
-- **[Supported Protocols](protocols.md)**: All 16+ protocols, including the [DNS tunnels](protocols.md#dns-tunnels) that survive a shutdown
+- **[Supported Protocols](protocols.md)**: All 16+ circumvention transports and fallback paths, plus optional Psiphon, Tor and MahsaNet donation integrations, including the [DNS tunnels](protocols.md#dns-tunnels) that can remain usable where ordinary traffic is blocked but recursive DNS still resolves
 
 ## Support the project
 

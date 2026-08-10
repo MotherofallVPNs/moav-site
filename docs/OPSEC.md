@@ -133,7 +133,7 @@ sudo ufw-docker allow moav-admin 8443/tcp from YOUR_IP
 
 **Admin dashboard** (`https://server:9443`):
 
-- Username: `admin`
+- Username: any value — only the password is checked
 - Password: set during install (in `.env` as `ADMIN_PASSWORD`)
 - Reset: `moav admin password`
 - IP whitelist: `ADMIN_IP_WHITELIST` in `.env`
@@ -157,8 +157,8 @@ sudo ufw-docker allow moav-admin 8443/tcp from YOUR_IP
 
 1. **Use WHOIS privacy** — hide personal information in domain registration
 2. **Use a neutral registrar** — avoid country-specific registrars
-3. **Keep registration info generic** — don't use real name if possible
-4. **Pay anonymously** — use crypto if available
+3. **Keep registration details accurate** — use registrar-provided WHOIS privacy or a reputable privacy/proxy registration service rather than false information
+4. **Match payment to your threat model** — don't assume cryptocurrency is anonymous; many blockchains create permanent public transaction records
 5. **Separate domain from identity** — don't use a domain linked to your name
 
 ### Reality fallback target (`REALITY_TARGET`)
@@ -406,7 +406,7 @@ moav doctor net   # sysctl + packet drops + PMTU + CGNAT + per-interface MTU
 
 - Laws vary by country — running or using circumvention tools may carry legal risks
 - Assess your personal risk level
-- The decoy website provides plausible deniability (server looks like a normal HTTPS site)
+- The decoy website reduces obvious disclosure during casual or unauthenticated probing; it is not protection against targeted investigation
 
 ### Data Retention
 
