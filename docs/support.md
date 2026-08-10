@@ -68,24 +68,37 @@ Funds go to infrastructure the project actually needs — test servers for the e
     | **GitHub Sponsors** | [github.com/sponsors/shayanb](https://github.com/sponsors/shayanb) |
     | **Buy Me a Coffee** | [buymeacoffee.com/pangana](https://buymeacoffee.com/pangana) |
 
-!!! abstract "Crypto"
+!!! abstract "Crypto — click an address to copy it"
 
-    | Coin | Address |
-    |---|---|
-    | **Bitcoin (BTC)** | <code>bc1qkfq3hg5kpzgy7muc8m3pmh6zemhv820a0ndqgg</code> |
-    | **Ethereum (ETH)** <sup>1</sup> | <code>0xB4D06BDb0C2f1D81E0b0b805Ed813F4ffe960aE2</code> |
-    | **Zcash (ZEC)** | <code>u1pclheucppc87qlffh9m8wjfw87w2nka40w9nxjuqnyppj0kx9xp7z9rg6wx556662y5f8dtfyeynmm2lnz5aqvaqzmnpajlq0mnmkntdqzqqegk8lwv09cnudf3ttzm3878p3030j3lwupj257rmmv9p3ea32hgwsuf3jdh8ycv7q587</code> |
-    | **Tron** <sup>2</sup> | <code>TBSCbnTZCELrMnioobZMkah5r9qS6B1tC6</code> |
+    **Bitcoin (BTC)**
 
-    <sup>1</sup> **Ethereum (ETH)** — works on **all EVM chains** at this same address: Ethereum mainnet, BNB Smart Chain (BEP-20), and every L2 (Arbitrum, Optimism, Base, Polygon, Gnosis, zkSync, and so on), plus **any ERC-20 token** such as USDC, USDT or DAI. Use whichever network is cheapest for you.
+    ```text
+    bc1qkfq3hg5kpzgy7muc8m3pmh6zemhv820a0ndqgg
+    ```
 
-    <sup>2</sup> **Tron** — accepts TRX and **TRC-20 tokens** (USDT, USDC). Tron has its own address format, so this one is not interchangeable with the EVM address above.
+    **Ethereum (ETH)** — works on **all EVM chains** at this same address: Ethereum mainnet and every L2 (Arbitrum, Optimism, Base, Polygon, Gnosis, zkSync, and so on), plus **any ERC-20 token** such as USDC, USDT or DAI.
+
+    ```text
+    0xB4D06BDb0C2f1D81E0b0b805Ed813F4ffe960aE2
+    ```
+
+    **Zcash (ZEC)**
+
+    ```text
+    u1pclheucppc87qlffh9m8wjfw87w2nka40w9nxjuqnyppj0kx9xp7z9rg6wx556662y5f8dtfyeynmm2lnz5aqvaqzmnpajlq0mnmkntdqzqqegk8lwv09cnudf3ttzm3878p3030j3lwupj257rmmv9p3ea32hgwsuf3jdh8ycv7q587
+    ```
+
+    **Tron** — accepts TRX and **TRC-20 tokens** (USDT, USDC). Tron has its own address format, so this one is not interchangeable with the EVM address above.
+
+    ```text
+    TBSCbnTZCELrMnioobZMkah5r9qS6B1tC6
+    ```
 <!-- FUNDING:END -->
 
 !!! warning "Verify the address"
     Addresses are long and easy to spoof. Take them from this page or the repository over HTTPS, and check the first and last characters after pasting. **We will never DM you an address.**
 
-    The table above is generated at build time from [`.github/FUNDING.yml`](https://github.com/MotherofallVPNs/MoaV/blob/main/.github/FUNDING.yml) in the MoaV repository, which is the single source of truth — so what you see here is whatever that file says, and it cannot drift from the repo.
+    The addresses above are generated at build time from [`.github/FUNDING.yml`](https://github.com/MotherofallVPNs/MoaV/blob/main/.github/FUNDING.yml) in the MoaV repository, which is the single source of truth — so what you see here is whatever that file says, and it cannot drift from the repo.
 
 ---
 

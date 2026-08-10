@@ -1,5 +1,9 @@
 site_name: MoaV Docs
-site_url: https://moav.sh/docs/
+# Overridable so the PR preview can build for its own host. The i18n language
+# switcher emits site_url-absolute links on the homepage (/docs/fa/), which 404
+# on any host that does not serve the docs under /docs/ -- which is exactly what
+# the preview does. docs-preview.yml sets SITE_URL to the preview origin.
+site_url: !ENV [SITE_URL, "https://moav.sh/docs/"]
 # Header repo link + star/fork counts point at the main MoaV project.
 repo_url: https://github.com/MotherofallVPNs/MoaV
 repo_name: MotherofallVPNs/MoaV

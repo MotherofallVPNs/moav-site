@@ -7,9 +7,6 @@
   width: 1.75rem;
 }
 
-/* The drawer renders the same mark much larger, where it reads fine as-is. */
-.md-nav__title .md-nav__button.md-logo img,
-.md-nav__title .md-nav__button.md-logo svg {
-  height: 4rem;
-  width: 4rem;
-}
+/* No override for the drawer logo. Material reserves exactly 3rem of top
+   padding in .md-nav__title for an absolutely-positioned 2.4rem mark; anything
+   taller spills onto the "MoaV Docs" title underneath it. */

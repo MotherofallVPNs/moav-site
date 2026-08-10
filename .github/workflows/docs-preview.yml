@@ -53,7 +53,15 @@ jobs:
         run: pip install --quiet -r requirements.txt
 
       # The gate. One build, reused for the preview below.
+      #
+      # SITE_URL points at this PR's own preview host. Production serves the docs
+      # under /docs/, and the i18n language switcher emits site_url-absolute
+      # links on the homepage, so building with the production site_url makes
+      # those links 404 on the preview -- the switcher would send a reviewer to
+      # /docs/fa/, which does not exist here.
       - name: Build (strict)
+        env:
+          SITE_URL: https://pr-${{ github.event.pull_request.number }}.moav-docs-preview.pages.dev/
         run: mkdocs build --strict --site-dir _preview
 
       - name: Are the Cloudflare secrets configured?
