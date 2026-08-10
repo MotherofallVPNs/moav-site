@@ -54,6 +54,8 @@ nav:
     - Troubleshooting: TROUBLESHOOTING.md
   - Security:
     - OPSEC Guide: OPSEC.md
+  - Support MoaV: support.md
+
   - Developer:
     - Development & Testing: development.md
 

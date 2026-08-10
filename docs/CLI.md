@@ -2,24 +2,10 @@
 
 Complete reference for the `moav` command-line interface.
 
-## Table of Contents
-
-- [Installation](#installation)
-- [Quick Reference](#quick-reference)
-- [Commands](#commands)
-  - [General](#general)
-  - [Setup & Configuration](#setup-configuration)
-  - [Service Management](#service-management)
-  - [Certificates](#certificates)
-  - [User Management](#user-management)
-  - [Testing & Client](#testing-client)
-  - [Migration](#migration)
-- [Profiles](#profiles)
-- [Service Names & Aliases](#service-names-aliases)
-- [Environment Variables](#environment-variables)
-- [Examples](#examples)
-
----
+!!! tip "`moav help` is the short version"
+    Every command below is listed by `moav help`, grouped the same way. This page adds
+    the flags, the behaviour, and worked examples. Running plain `moav` opens an
+    interactive menu over the same commands, so nothing here has to be memorised.
 
 ## Installation
 
@@ -343,6 +329,25 @@ moav build conduit snowflake  # Build multiple images
 ```
 
 ---
+
+### Network Tuning
+
+#### `moav net [status|apply|revert]`
+
+Kernel network tuning: BBR congestion control plus larger socket buffers. Circumvention
+traffic takes long, often lossy paths out of censored networks, which is exactly where
+the default (`cubic`) collapses and BBR holds throughput. Larger UDP buffers stop the
+QUIC/UDP protocols (Hysteria2, WireGuard) dropping packets under load.
+
+```bash
+moav net            # status: current vs recommended sysctl values (default)
+moav net status
+moav net apply      # write the tuning bundle and reload sysctl
+moav net revert     # remove it and reload
+```
+
+Everything is written to one dedicated sysctl file, so `revert` is clean and leaves no
+trace in your other sysctl config. The installer offers to apply this during setup.
 
 ### Certificates
 
@@ -721,6 +726,29 @@ Use this after:
 - Changing any configuration that affects client configs
 
 ---
+
+## Command Aliases
+
+The dispatcher accepts several spellings for the same command. Use whichever you
+remember; they are identical.
+
+| Canonical | Also accepted |
+|---|---|
+| `cert` | `certificate`, `certs` |
+| `switch-dns` | `dns-switch`, `dnsswitch`, `switch_dns` |
+| `setup-dns` | `dns-setup`, `setup_dns` |
+| `migrate-ip` | `migrateip`, `migrate_ip` |
+| `regenerate-users` | `regen-users`, `regenerate_users` |
+| `domainless` | `domain-less`, `no-domain` |
+| `uninstall` | `remove` |
+| `net` | `net-tuning` |
+| `conduit-offsets` | `conduit_offsets`, `conduit-lifetime` |
+| `users` | `user list` |
+| `help` | `-h`, `--help` |
+| `version` | `-v`, `--version` |
+
+Service names have their own short forms: `wg` → wireguard, `awg` → amneziawg,
+`tg` → telegram.
 
 ## Profiles
 
