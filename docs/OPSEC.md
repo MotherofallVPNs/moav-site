@@ -6,8 +6,8 @@ Security recommendations for running and using MoaV safely.
 
 - [For Server Operators](#for-server-operators)
   - [Server Security](#server-security)
-  - [Firewall & Docker](#firewall--docker)
-  - [Admin & Monitoring Access Control](#admin--monitoring-access-control)
+  - [Firewall & Docker](#firewall-docker)
+  - [Admin & Monitoring Access Control](#admin-monitoring-access-control)
   - [Domain Security](#domain-security)
   - [Credential Management](#credential-management)
   - [Monitoring](#monitoring)
@@ -183,6 +183,8 @@ sudo ufw-docker allow moav-admin 8443/tcp from YOUR_IP
 5. **Separate domain from identity** — don't use a domain linked to your name
 
 ### Reality fallback target (`REALITY_TARGET`)
+
+> How to pick one, with candidate targets and the trade-offs, is in [Setup → Choosing a Reality Target](SETUP.md#choosing-a-reality-target-sni). This section covers why the choice matters for your threat model.
 
 Reality's `REALITY_TARGET` (and `XHTTP_REALITY_TARGET`) is the public TLS site the inbound proxies non-Reality TLS hellos to. Every probe and every misauthenticated client gets that site's real ServerHello back — so an outside observer sees a normal connection to a real CDN, not a closed port.
 

@@ -25,7 +25,7 @@ This guide explains how to connect to MoaV from various devices.
 - [About Tor Snowflake (Server Feature)](#about-tor-snowflake-server-feature)
 - [Troubleshooting](#troubleshooting)
 - [Tips for Highly Censored Environments](#tips-for-highly-censored-environments)
-- [Connection Optimization (Fragment & MUX)](#connection-optimization-fragment--mux)
+- [Connection Optimization (Fragment & MUX)](#connection-optimization-fragment-mux)
 
 ---
 

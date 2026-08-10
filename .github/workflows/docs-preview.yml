@@ -33,12 +33,11 @@ jobs:
       - name: Install mkdocs-material
         run: pip install --quiet mkdocs-material
 
-      # Not --strict here: the repo still carries pre-existing dead self-links in
-      # pages that have not been rewritten yet, and failing every PR on those
-      # would train people to ignore this job. It fails on genuine build errors,
-      # and the warning list is printed below for review.
+      # --strict: warnings are failures. The tree is clean as of the docs pass, so
+      # a link to a renamed heading (or into a tab/collapsible, which generate no
+      # anchor) now fails the PR instead of shipping dead.
       - name: Build
-        run: mkdocs build --site-dir _preview
+        run: mkdocs build --strict --site-dir _preview
 
       - name: Report link/anchor warnings
         if: always()
