@@ -1,17 +1,31 @@
 name: Docs Preview
 
-# Builds the docs on every PR and attaches the rendered site as a downloadable
-# artifact. Two reasons this exists:
+# Builds the docs on every PR, gates on a clean build, and publishes a preview.
+#
+# Two reasons this exists:
 #
 #  1. GitHub's file/PR view does NOT render mkdocs-material syntax — tabs
-#     (=== "X") show as literal text and their indented content turns into code
-#     blocks. Reviewing docs changes on GitHub is therefore misleading; you have
-#     to look at a real build.
-#  2. `--strict` turns warnings into failures, so a link to a heading that was
-#     renamed (or folded into a tab, which generates no anchor) fails the PR
-#     instead of shipping a dead link. mkdocs.yml sets validation.links.anchors.
+#     (=== "X") show as literal text and their indented content becomes code
+#     blocks. Reviewing docs changes in the diff is misleading; you need a build.
+#  2. --strict turns warnings into failures, so a link to a heading that was
+#     renamed (or points into a tab or collapsible, which generate no anchor)
+#     fails the PR instead of shipping dead. mkdocs.yml sets
+#     validation.links.anchors to make that catchable.
+#
+# Preview delivery: a hosted Cloudflare Pages URL when the secrets are present,
+# otherwise a downloadable artifact so there is always some way to see the build
+# (fork PRs never receive secrets, so they get the artifact).
+#
+# One-time Cloudflare setup:
+#   1. Dashboard → Workers & Pages → Create → Pages → "Direct Upload",
+#      project name: moav-docs-preview
+#   2. An API token from the "Cloudflare Pages: Edit" template
+#   3. Repo secrets: CLOUDFLARE_API_TOKEN, CLOUDFLARE_ACCOUNT_ID
+#
+# The production site deploy (deploy-site.yml) is untouched by this workflow.
 on:
   pull_request:
+    types: [opened, synchronize, reopened, closed]
     paths:
       - 'docs/**'
       - 'mkdocs.yml'
@@ -19,9 +33,11 @@ on:
 
 permissions:
   contents: read
+  pull-requests: write
 
 jobs:
   build:
+    if: github.event.action != 'closed'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -33,45 +49,131 @@ jobs:
       - name: Install mkdocs-material
         run: pip install --quiet mkdocs-material
 
-      # --strict: warnings are failures. The tree is clean as of the docs pass, so
-      # a link to a renamed heading (or into a tab/collapsible, which generate no
-      # anchor) now fails the PR instead of shipping dead.
-      - name: Build
+      # The gate. One build, reused for the preview below.
+      - name: Build (strict)
         run: mkdocs build --strict --site-dir _preview
 
-      - name: Report link/anchor warnings
-        if: always()
+      - name: Are the Cloudflare secrets configured?
+        id: gate
         run: |
-          echo "### Docs build warnings" >> "$GITHUB_STEP_SUMMARY"
-          echo '' >> "$GITHUB_STEP_SUMMARY"
-          if mkdocs build --site-dir /tmp/_check 2>&1 | grep -E '^WARNING' > /tmp/warns.txt; then
-            echo '```' >> "$GITHUB_STEP_SUMMARY"
-            cat /tmp/warns.txt >> "$GITHUB_STEP_SUMMARY"
-            echo '```' >> "$GITHUB_STEP_SUMMARY"
-            echo '' >> "$GITHUB_STEP_SUMMARY"
-            echo "A broken anchor usually means a heading was renamed, or a link points into a tab or collapsible (which generate no anchor)." >> "$GITHUB_STEP_SUMMARY"
+          if [ -n "${{ secrets.CLOUDFLARE_API_TOKEN }}" ] && [ -n "${{ secrets.CLOUDFLARE_ACCOUNT_ID }}" ]; then
+            echo "ready=true" >> "$GITHUB_OUTPUT"
           else
-            echo 'None.' >> "$GITHUB_STEP_SUMMARY"
+            echo "ready=false" >> "$GITHUB_OUTPUT"
+            echo "::notice::Cloudflare secrets not set — publishing the build as an artifact instead."
           fi
 
-      - name: Upload rendered site
+      - name: Deploy preview
+        if: steps.gate.outputs.ready == 'true'
+        id: deploy
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          command: >-
+            pages deploy _preview
+            --project-name=moav-docs-preview
+            --branch=pr-${{ github.event.pull_request.number }}
+
+      # Update one comment rather than adding a new one per push. The alias URL
+      # is stable for the PR and always serves the newest build; deployment-url
+      # is a per-push hash, kept for pinning a specific commit.
+      - name: Comment the preview URL
+        if: steps.gate.outputs.ready == 'true'
+        uses: marocchino/sticky-pull-request-comment@v2
+        with:
+          header: docs-preview
+          message: |
+            📄 **Docs preview:** ${{ steps.deploy.outputs.pages-deployment-alias-url }}
+
+            Stable for this PR and rebuilt on every push. This exact commit is
+            pinned at ${{ steps.deploy.outputs.deployment-url }}.
+
+            Reviewing these pages in GitHub's file view will misrepresent tabs and
+            collapsibles — they need the built site.
+
+      # Fallback only: fork PRs and setups without the secrets.
+      - name: Upload the build as an artifact
+        if: steps.gate.outputs.ready != 'true'
         uses: actions/upload-artifact@v4
         with:
           name: docs-preview-${{ github.event.pull_request.number }}
           path: _preview
           retention-days: 14
 
-      - name: How to view it
+  # Cloudflare keeps every deployment and its branch alias until something
+  # deletes them, so a merged PR would otherwise leave a live, unlisted copy of
+  # the docs at pr-N.*.pages.dev indefinitely.
+  cleanup:
+    if: github.event.action == 'closed'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Are the Cloudflare secrets configured?
+        id: gate
         run: |
-          {
-            echo ''
-            echo '### Preview'
-            echo ''
-            echo "Download the **docs-preview-${{ github.event.pull_request.number }}** artifact from this run, unzip, and open \`index.html\` — or serve it:"
-            echo ''
-            echo '```bash'
-            echo 'python3 -m http.server -d _preview 8000'
-            echo '```'
-            echo ''
-            echo 'Reviewing the changed pages on GitHub will misrepresent tabs and collapsibles.'
-          } >> "$GITHUB_STEP_SUMMARY"
+          if [ -n "${{ secrets.CLOUDFLARE_API_TOKEN }}" ] && [ -n "${{ secrets.CLOUDFLARE_ACCOUNT_ID }}" ]; then
+            echo "ready=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "ready=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Delete this PR's preview deployments
+        if: steps.gate.outputs.ready == 'true'
+        env:
+          CF_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CF_ACCOUNT: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          BRANCH: pr-${{ github.event.pull_request.number }}
+        run: |
+          set -euo pipefail
+          API="https://api.cloudflare.com/client/v4/accounts/$CF_ACCOUNT/pages/projects/moav-docs-preview/deployments"
+
+          # jq, not an inline python heredoc: an unindented heredoc inside a YAML
+          # block scalar terminates the block and makes the workflow unparseable
+          # (GitHub then reports a failed run with zero jobs).
+          ids=""
+          page=1
+          while :; do
+            if ! body=$(curl -fsS -H "Authorization: Bearer $CF_TOKEN" "$API?env=preview&per_page=100&page=$page"); then
+              echo "::warning::could not list deployments (page $page)"
+              break
+            fi
+            batch=$(printf '%s' "$body" | jq -r --arg br "$BRANCH" '.result[]? | select(.deployment_trigger.metadata.branch == $br) | .id')
+            if [ -n "$batch" ]; then
+              ids="$ids $batch"
+            fi
+            count=$(printf '%s' "$body" | jq '(.result // []) | length')
+            if [ "$count" -lt 100 ]; then
+              break
+            fi
+            page=$((page + 1))
+            if [ "$page" -gt 20 ]; then
+              echo "::warning::stopped paginating at page 20"
+              break
+            fi
+          done
+
+          ids=$(printf '%s' "$ids" | tr ' ' '\n' | grep -v '^$' || true)
+          if [ -z "$ids" ]; then
+            echo "No preview deployments found for $BRANCH - nothing to clean up."
+            exit 0
+          fi
+
+          # force=true is required to delete the deployment currently serving the
+          # alias, which is exactly the one we want gone.
+          n=0
+          for id in $ids; do
+            if curl -fsS -X DELETE -H "Authorization: Bearer $CF_TOKEN" "$API/$id?force=true" >/dev/null; then
+              n=$((n + 1))
+            else
+              echo "::warning::could not delete deployment $id"
+            fi
+          done
+          echo "Deleted $n preview deployment(s) for $BRANCH."
+
+      - name: Note it on the PR
+        if: steps.gate.outputs.ready == 'true'
+        uses: marocchino/sticky-pull-request-comment@v2
+        with:
+          header: docs-preview
+          message: |
+            📄 Docs preview for this PR has been removed now that it is closed.

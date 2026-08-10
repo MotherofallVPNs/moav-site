@@ -108,10 +108,8 @@ jobs:
           set -euo pipefail
           API="https://api.cloudflare.com/client/v4/accounts/$CF_ACCOUNT/pages/projects/moav-docs-preview/deployments"
 
-          # Deployments are paginated; a long-lived PR can have many. Note the
-          # `if` blocks rather than `[ cond ] && break` -- under set -e a false
-          # test in a && list exits the whole script, which would silently skip
-          # the cleanup.
+          # jq, not inline python: an unindented heredoc inside a YAML block
+          # scalar terminates the block and makes the whole workflow unparseable.
           ids=""
           page=1
           while :; do
@@ -119,22 +117,15 @@ jobs:
               echo "::warning::could not list deployments (page $page)"
               break
             fi
-            batch=$(printf '%s' "$body" | BRANCH="$BRANCH" python3 -c "
-import json,sys,os
-d=json.load(sys.stdin)
-br=os.environ['BRANCH']
-for r in d.get('result') or []:
-    meta=(r.get('deployment_trigger') or {}).get('metadata') or {}
-    if meta.get('branch')==br: print(r['id'])
-")
+            batch=$(printf '%s' "$body" | jq -r --arg br "$BRANCH" '.result[]? | select(.deployment_trigger.metadata.branch == $br) | .id')
             if [ -n "$batch" ]; then
               ids="$ids $batch"
             fi
-            count=$(printf '%s' "$body" | python3 -c "import json,sys;print(len(json.load(sys.stdin).get('result') or []))")
+            count=$(printf '%s' "$body" | jq '(.result // []) | length')
             if [ "$count" -lt 100 ]; then
               break
             fi
-            page=$((page+1))
+            page=$((page + 1))
             if [ "$page" -gt 20 ]; then
               echo "::warning::stopped paginating at page 20"
               break
@@ -143,16 +134,16 @@ for r in d.get('result') or []:
 
           ids=$(printf '%s' "$ids" | tr ' ' '\n' | grep -v '^$' || true)
           if [ -z "$ids" ]; then
-            echo "No preview deployments found for $BRANCH — nothing to clean up."
+            echo "No preview deployments found for $BRANCH - nothing to clean up."
             exit 0
           fi
 
-          # force=true is required to delete the deployment currently serving the
-          # alias, which is exactly the one we want gone.
+          # force=true is required to delete the deployment currently serving
+          # the alias, which is exactly the one we want gone.
           n=0
           for id in $ids; do
             if curl -fsS -X DELETE -H "Authorization: Bearer $CF_TOKEN" "$API/$id?force=true" >/dev/null; then
-              n=$((n+1))
+              n=$((n + 1))
             else
               echo "::warning::could not delete deployment $id"
             fi
