@@ -51,7 +51,10 @@ Deep developer docs can stay English.
 - **Human-reviewed only.** A machine-translated DNS or OPSEC instruction that's subtly wrong is worse than an English one that's right. Unreviewed drafts get marked as drafts.
 - **English stays the source of truth**, so a translated page can be checked against it when things change.
 
-Open an issue saying which language you'd like to take, and we'll set up the scaffolding.
+!!! abstract "The scaffolding is ready — start here"
+    **[Translating the Docs](TRANSLATING.md)** is the full walkthrough: which page to pick, where the file goes, what must stay untranslated, and how to preview your work before opening a pull request.
+
+    Farsi and Russian are open now. Copy one English page into `docs/fa/` or `docs/ru/`, translate it, and open a PR — untranslated pages fall back to English, so **a single page is a complete contribution.** For another language, open an issue and we'll add it.
 
 ## Donate money
 

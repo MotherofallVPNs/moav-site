@@ -36,8 +36,10 @@ jobs:
           python-version: '3.x'
 
       - name: Build docs
+        # requirements.txt, not an inline install: the PR preview builds from the
+        # same file, so a plugin can't be present in one build and missing here.
         run: |
-          pip install mkdocs-material
+          pip install -r requirements.txt
           mkdocs build -d site/docs
 
       - name: Generate llms-full.txt

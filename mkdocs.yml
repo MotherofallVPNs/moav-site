@@ -26,7 +26,9 @@ theme:
         icon: material/brightness-4
         name: Switch to dark mode
   features:
-    - navigation.instant
+    # navigation.instant is deliberately absent: it breaks the i18n language
+    # switcher's contextual link, so switching language would dump the reader on
+    # the homepage instead of the same page translated.
     - navigation.sections
     - navigation.top
     - navigation.expand
@@ -62,10 +64,41 @@ nav:
 
   - Developer:
     - Development & Testing: development.md
+    - Translating the Docs: TRANSLATING.md
 
 # Fail loudly on links that point at a heading which no longer exists. The DNS
 # rewrite silently broke 9 inbound anchors (other pages linked to headings that
 # had been renamed or folded into tabs) and a normal build said nothing.
+plugins:
+  # Listing `search` explicitly is required: declaring any plugin replaces the
+  # theme's default plugin list, so omitting it silently kills site search.
+  - search
+  # Translations live in docs/<lang>/ mirroring the English tree. A page with no
+  # translation falls back to English, so a language can ship one page at a time
+  # instead of needing all of them before it is useful.
+  # Contributor guide: docs/TRANSLATING.md
+  - i18n:
+      docs_structure: folder
+      fallback_to_default: true
+      reconfigure_material: true
+      reconfigure_search: true
+      languages:
+        - locale: en
+          default: true
+          name: English
+          build: true
+        - locale: fa
+          name: فارسی
+          build: true
+          # RTL comes from reconfigure_material setting theme.language: fa --
+          # Material derives dir="rtl" from the locale itself. An explicit
+          # theme.direction override is rejected by the plugin.
+          nav_translations:
+            Home: خانه
+        - locale: ru
+          name: Русский
+          build: true
+
 extra_css:
   - stylesheets/extra.css
 

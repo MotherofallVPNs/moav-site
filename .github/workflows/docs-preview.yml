@@ -31,6 +31,7 @@ on:
     paths:
       - 'docs/**'
       - 'mkdocs.yml'
+      - 'requirements.txt'
       - '.github/workflows/docs-preview.yml'
 
 permissions:
@@ -48,8 +49,8 @@ jobs:
         with:
           python-version: '3.x'
 
-      - name: Install mkdocs-material
-        run: pip install --quiet mkdocs-material
+      - name: Install docs dependencies
+        run: pip install --quiet -r requirements.txt
 
       # The gate. One build, reused for the preview below.
       - name: Build (strict)
