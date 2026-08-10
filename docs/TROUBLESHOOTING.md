@@ -137,17 +137,13 @@ cat configs/wireguard/server.pub
 docker compose exec wireguard wg show wg0 public-key
 ```
 
-**If keys don't match**, run the sync script:
+**If keys don't match**, regenerate the bundles — the sync happens automatically:
+
 ```bash
-# Automatically sync keys from running WireGuard
-./scripts/wg-sync-keys.sh
-
-# Or manually fix:
-docker compose exec wireguard wg show wg0 public-key > configs/wireguard/server.pub
-
-# Regenerate user with correct key
-./scripts/wg-user-add.sh newuser
+moav regenerate-users
 ```
+
+Since v2 every peer add reads the running container's public key and writes `server.pub` inline, so this mismatch heals itself on the next add or regenerate. (The old `scripts/wg-sync-keys.sh` that used to be needed here was removed in v2 — it had no callers left and the mismatch it patched no longer occurs.)
 
 **Check NAT/masquerade:**
 ```bash

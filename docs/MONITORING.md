@@ -32,83 +32,28 @@ moav start monitoring
 
 ## Access
 
-| Service | URL | Credentials |
-|---------|-----|-------------|
-| Grafana | `https://your-server:9444` | admin / ADMIN_PASSWORD |
+Grafana is on **port 9444** over HTTPS: `https://your-domain:9444` (or the server IP). Log in as **`admin`** with your `ADMIN_PASSWORD` — the same one as the admin dashboard.
 
-Login with username `admin` and the password you set in your `.env` file (`ADMIN_PASSWORD`).
+For a faster, CDN-fronted route see [Cloudflare CDN for Grafana](#cloudflare-cdn-for-faster-grafana-recommended) below.
 
-## Pre-built Dashboards
+## Pre-built dashboards
 
-### MoaV - System
+Ten dashboards are provisioned automatically — nothing to import or build. Grafana groups them under the **MoaV** folder.
 
-<!-- Screenshot: System dashboard (CPU/Memory gauges and graphs) -->
+| Dashboard | What it shows |
+|---|---|
+| **System** | CPU, memory, disk, network throughput for the host |
+| **Containers** | Per-container CPU, memory, restarts (via cAdvisor) |
+| **sing-box** | Per-user connections and traffic for Reality, Trojan, AnyTLS, Hysteria2, Shadowsocks, CDN |
+| **WireGuard** | Peer handshakes, transfer per peer, last-seen |
+| **AmneziaWG** | The same, for the obfuscated interface |
+| **Xray (XHTTP)** | XHTTP / XDNS connections and throughput |
+| **Telegram MTProxy** | telemt connections, pool health, config-change activity |
+| **DNS Tunnels & GooseRelay** | Traffic across dnstt, Slipstream, MasterDNS, XDNS and GooseRelay |
+| **Conduit** | Bandwidth donated to Psiphon users, lifetime totals |
+| **Snowflake** | Bandwidth donated to Tor users, client connections |
 
-System-level metrics from Node Exporter:
-- CPU usage (gauge + time series)
-- Memory usage (gauge + time series)
-- Disk usage
-- Network I/O (receive/transmit)
-- System load (1m, 5m, 15m)
-- Uptime
-
-### MoaV - Containers
-
-<!-- Screenshot: Containers dashboard (per-container resource usage) -->
-
-Per-container metrics from cAdvisor:
-- Running container count
-- Total memory and CPU usage
-- Memory usage by container (stacked)
-- CPU usage by container (stacked)
-- Network download/upload by container
-- Distribution pie charts
-- Summary table with all metrics
-
-### MoaV - sing-box
-
-<!-- Screenshot: sing-box dashboard (connections and traffic) -->
-
-Proxy metrics via Clash Exporter:
-- Active connections
-- Total upload/download traffic
-- Memory usage
-- Connections over time
-- Traffic rate (upload/download)
-- Connections by inbound type (pie chart)
-
-### MoaV - WireGuard
-
-<!-- Screenshot: WireGuard dashboard (peer metrics) -->
-
-VPN metrics from WireGuard Exporter:
-- Total peers
-- Last handshake time
-- Total received/sent bytes
-- Traffic rate per peer
-- Peer details table (name, public key, allowed IPs, traffic, last handshake)
-
-### MoaV - Snowflake
-
-<!-- Screenshot: Snowflake dashboard (donation metrics) -->
-
-Tor donation metrics from Snowflake Exporter:
-- People served (total connections helped)
-- Total download bandwidth donated
-- Total upload bandwidth donated
-- Total bandwidth donated
-- Connections over time
-- Bandwidth over time
-
-> The Snowflake exporter only runs when the Snowflake relay does. With `ENABLE_SNOWFLAKE=false`, no Snowflake panels emit data.
-
-### MoaV - Conduit
-
-Psiphon donation metrics:
-
-- **Live bandwidth** (`conduit_bytes_downloaded` / `conduit_bytes_uploaded`) — in-memory gauges, reset on every Conduit container restart.
-- **Lifetime bandwidth** (`conduit_bytes_downloaded_lifetime` / `conduit_bytes_uploaded_lifetime`) — Prometheus recording rule that adds a per-install offset to the live counters, so cumulative donation totals survive restarts.
-- **Connected clients** + per-region splits.
+Per-user series come from the Clash API via `clash-exporter`; WireGuard and AmneziaWG read interface state published by their containers, so the exporters never need the Docker socket.
 
 ## Conduit lifetime bandwidth
 
