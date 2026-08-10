@@ -42,7 +42,19 @@ coins = {
     "LIGHTNING": "Lightning",
 }
 
-rows_platform, rows_crypto = [], []
+# Footnotes keyed by ticker. The ETH one matters: the same 0x address receives
+# on every EVM chain, so people don't need a new address per network. Tron is
+# deliberately NOT listed here -- TRX/TRC-20 use a base58 `T...` address and
+# anything sent to the 0x address is unrecoverable.
+notes = {
+    "ETH": "works on **all EVM chains** at this same address: Ethereum mainnet and "
+           "every L2 (Arbitrum, Optimism, Base, Polygon, Gnosis, zkSync, and so on), "
+           "plus **any ERC-20 token** such as USDC, USDT or DAI.",
+    "TRON": "accepts TRX and **TRC-20 tokens** (USDT, USDC). Tron has its own address "
+            "format, so this one is not interchangeable with the EVM address above.",
+}
+
+rows_platform, blocks_crypto = [], []
 for line in open(sys.argv[1], encoding="utf-8"):
     line = line.split("#", 1)[0].strip()
     m = re.match(r'^([A-Za-z_]+)\s*:\s*(.+)$', line)
@@ -58,18 +70,28 @@ for line in open(sys.argv[1], encoding="utf-8"):
     else:
         nice = coins.get(key.upper(), key)
         label = f"{nice} ({key.upper()})" if nice.upper() != key.upper() else nice
-        rows_crypto.append(f"| **{label}** | <code>{val}</code> |")
+        # A fenced block rather than a table row: content.code.copy gives every
+        # code block a copy button, which a <code> span in a table cell does not
+        # get. It also stops the long addresses (the ZEC unified address is ~200
+        # characters) from wrecking the table on a narrow screen.
+        heading = f"**{label}**"
+        note = notes.get(key.upper())
+        if note:
+            heading += f" — {note}"
+        blocks_crypto += [heading, "", "```text", val, "```", ""]
 
-# Each table goes inside a coloured admonition, indented to sit in the block.
-def boxed(kind, title, header, rows):
-    body = [header, "|---|---|", *rows]
-    return [f'!!! {kind} "{title}"', ""] + [f"    {r}" for r in body] + [""]
+# Each block goes inside a coloured admonition, indented to sit in it.
+def boxed(kind, title, body):
+    return [f'!!! {kind} "{title}"', ""] + [
+        (f"    {line}" if line else "") for line in body
+    ] + [""]
 
 out = []
 if rows_platform:
-    out += boxed("tip", "Cards, PayPal, recurring", "| Platform | Link |", rows_platform)
-if rows_crypto:
-    out += boxed("abstract", "Crypto", "| Coin | Address |", rows_crypto)
+    out += boxed("tip", "Cards, PayPal, recurring",
+                 ["| Platform | Link |", "|---|---|", *rows_platform])
+if blocks_crypto:
+    out += boxed("abstract", "Crypto — click an address to copy it", blocks_crypto)
 print("\n".join(out).rstrip())
 PY
 ) || { echo "build-funding: could not render — keeping the committed table."; rm -f "$tmp"; exit 0; }

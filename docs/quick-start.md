@@ -26,6 +26,12 @@ It installs Docker, clones MoaV, and asks for three things: your **domain** (bla
 
 When it finishes it prints your dashboard URLs and the DNS records to add.
 
+<video class="moav-demo" controls preload="none" poster="https://moav.sh/demos/install.jpg">
+  <source src="https://moav.sh/demos/install.webm" type="video/webm">
+  <a href="https://moav.sh/demos/install.webm">Watch the installation demo</a>
+</video>
+<span class="moav-demo-caption">The install, start to finish — 14s. Nothing downloads until you press play (808 KB).</span>
+
 ## 2. Create your first user
 
 Two ways. Use whichever you prefer — they do the same thing.
@@ -40,6 +46,12 @@ Two ways. Use whichever you prefer — they do the same thing.
 
     The dashboard is the easiest place to run day to day: it lists every user with their creation date and protocols, downloads bundles on demand, and shows live server stats.
 
+    <video class="moav-demo" controls preload="none" poster="https://moav.sh/demos/admin-dashboard.jpg">
+      <source src="https://moav.sh/demos/admin-dashboard.webm" type="video/webm">
+      <a href="https://moav.sh/demos/admin-dashboard.webm">Watch the dashboard demo</a>
+    </video>
+    <span class="moav-demo-caption">Creating and packaging a user from the dashboard — 22s, 284 KB.</span>
+
 === "Command line"
     ```bash
     moav user add alice              # one user
@@ -49,6 +61,12 @@ Two ways. Use whichever you prefer — they do the same thing.
     ```
 
     Bundles land in `outputs/bundles/alice/`.
+
+    <video class="moav-demo" controls preload="none" poster="https://moav.sh/demos/users.jpg">
+      <source src="https://moav.sh/demos/users.webm" type="video/webm">
+      <a href="https://moav.sh/demos/users.webm">Watch the user management demo</a>
+    </video>
+    <span class="moav-demo-caption">Adding, listing and packaging users from the CLI — 31s, 636 KB.</span>
 
 Either way you get the same bundle:
 

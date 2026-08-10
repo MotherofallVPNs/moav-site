@@ -1,5 +1,9 @@
 site_name: MoaV Docs
-site_url: https://moav.sh/docs/
+# Overridable so the PR preview can build for its own host. The i18n language
+# switcher emits site_url-absolute links on the homepage (/docs/fa/), which 404
+# on any host that does not serve the docs under /docs/ -- which is exactly what
+# the preview does. docs-preview.yml sets SITE_URL to the preview origin.
+site_url: !ENV [SITE_URL, "https://moav.sh/docs/"]
 # Header repo link + star/fork counts point at the main MoaV project.
 repo_url: https://github.com/MotherofallVPNs/MoaV
 repo_name: MotherofallVPNs/MoaV
@@ -8,6 +12,10 @@ edit_uri_template: https://github.com/MotherofallVPNs/moav-site/edit/main/docs/{
 
 theme:
   name: material
+  # The header keeps the cyan primary in both colour schemes, so one white
+  # silhouette of the MoaV mark is correct for light and dark alike.
+  logo: assets/moav-logo-white.png
+  favicon: assets/favicon.png
   palette:
     - scheme: slate
       primary: cyan
@@ -22,7 +30,9 @@ theme:
         icon: material/brightness-4
         name: Switch to dark mode
   features:
-    - navigation.instant
+    # navigation.instant is deliberately absent: it breaks the i18n language
+    # switcher's contextual link, so switching language would dump the reader on
+    # the homepage instead of the same page translated.
     - navigation.sections
     - navigation.top
     - navigation.expand
@@ -58,10 +68,44 @@ nav:
 
   - Developer:
     - Development & Testing: development.md
+    - Translating the Docs: TRANSLATING.md
 
 # Fail loudly on links that point at a heading which no longer exists. The DNS
 # rewrite silently broke 9 inbound anchors (other pages linked to headings that
 # had been renamed or folded into tabs) and a normal build said nothing.
+plugins:
+  # Listing `search` explicitly is required: declaring any plugin replaces the
+  # theme's default plugin list, so omitting it silently kills site search.
+  - search
+  # Translations live in docs/<lang>/ mirroring the English tree. A page with no
+  # translation falls back to English, so a language can ship one page at a time
+  # instead of needing all of them before it is useful.
+  # Contributor guide: docs/TRANSLATING.md
+  - i18n:
+      docs_structure: folder
+      fallback_to_default: true
+      reconfigure_material: true
+      reconfigure_search: true
+      languages:
+        - locale: en
+          default: true
+          name: English
+          build: true
+        - locale: fa
+          name: فارسی
+          build: true
+          # RTL comes from reconfigure_material setting theme.language: fa --
+          # Material derives dir="rtl" from the locale itself. An explicit
+          # theme.direction override is rejected by the plugin.
+          nav_translations:
+            Home: خانه
+        - locale: ru
+          name: Русский
+          build: true
+
+extra_css:
+  - stylesheets/extra.css
+
 validation:
   links:
     absolute_links: ignore
