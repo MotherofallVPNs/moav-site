@@ -59,6 +59,9 @@ cp docs/CLIENTS.md docs/fa/CLIENTS.md
 
 A page you haven't translated yet falls back to English automatically, so **one page is a complete, useful contribution.** Nothing is broken by the other pages not existing.
 
+!!! tip "There is a worked example"
+    [`docs/fa/quick-start.md`](https://github.com/MotherofallVPNs/moav-site/blob/main/docs/fa/quick-start.md) is a complete translation of Quick Start, following every rule on this page — including the video blocks, the tabs, and the links. Read it next to the English original and the pattern should be obvious.
+
 ## What to translate, and what to leave alone
 
 Translate all the prose: headings, paragraphs, list items, table cells, admonition titles, tab labels, image alt text.
@@ -74,6 +77,16 @@ Leave these **exactly as they are** — they're machine-read, and translating th
 | URLs, domains and ports | `moav.sh`, `9443`, `dl.google.com` |
 | The admonition keyword | `!!! tip` stays `!!! tip`; its **title** gets translated |
 | Link filenames | `[متن](CLIENTS.md)` — the `CLIENTS.md` part stays |
+
+One nuance on code blocks: the **command** must survive untouched, but a trailing
+`#` comment is prose and is worth translating. It renders correctly in
+right-to-left languages — the command stays left-to-right and the comment reads
+naturally after it:
+
+```bash
+moav user add alice              # یک کاربر
+moav user list                   # چه کسانی هستند
+```
 
 Two syntax details worth seeing side by side:
 
@@ -104,6 +117,19 @@ Two syntax details worth seeing side by side:
     === "پنل وب"
     === "خط فرمان"
     ```
+
+### Links keep their English filename
+
+Leave the `.md` filename exactly as it is, with no `../`:
+
+```markdown
+[اپلیکیشن‌های کاربر](CLIENTS.md)
+```
+
+From `docs/fa/quick-start.md` that resolves to `/fa/CLIENTS/`, which serves the
+English page inside your language's tree, so the reader keeps the language
+switcher and the Persian navigation. Adding `../` also builds, but it is
+unnecessary — copy the English link and translate only the text in brackets.
 
 ### Links with a `#anchor`
 

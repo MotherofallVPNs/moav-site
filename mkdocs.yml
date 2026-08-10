@@ -99,6 +99,7 @@ plugins:
           # theme.direction override is rejected by the plugin.
           nav_translations:
             Home: خانه
+            Quick Start: شروع سریع
         - locale: ru
           name: Русский
           build: true
