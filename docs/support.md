@@ -49,17 +49,27 @@ Open an issue saying which language you'd like to take, and we'll set up the sca
 
 Funds go to infrastructure the project actually needs — test servers for the end-to-end suite, domains, and build capacity. Not salaries.
 
-| | |
+<!-- FUNDING:START -->
+| Platform | Link |
 |---|---|
-| **GitHub Sponsors** | [github.com/sponsors/MotherofallVPNs](https://github.com/sponsors/MotherofallVPNs) |
-| **Monero (XMR)** | *see the [repository](https://github.com/MotherofallVPNs/MoaV) for the current address* |
-| **Bitcoin / Lightning** | *see the [repository](https://github.com/MotherofallVPNs/MoaV) for the current address* |
+| **GitHub Sponsors** | [github.com/sponsors/shayanb](https://github.com/sponsors/shayanb) |
+| **Buy Me a Coffee** | [buymeacoffee.com/pangana](https://buymeacoffee.com/pangana) |
 
-!!! note "Why Monero and Lightning"
-    For a censorship-circumvention project, privacy-preserving payment rails aren't a nice-to-have. Donors in hostile jurisdictions shouldn't have to create a traceable financial link to a circumvention tool in order to support one.
+| Coin | Address |
+|---|---|
+| **Bitcoin (BTC)** | <code>bc1qkfq3hg5kpzgy7muc8m3pmh6zemhv820a0ndqgg</code> |
+| **Ethereum (ETH)** | <code>0xB4D06BDb0C2f1D81E0b0b805Ed813F4ffe960aE2</code> |
+| **Zcash (ZEC)** | <code>u1pclheucppc87qlffh9m8wjfw87w2nka40w9nxjuqnyppj0kx9xp7z9rg6wx556662y5f8dtfyeynmm2lnz5aqvaqzmnpajlq0mnmkntdqzqqegk8lwv09cnudf3ttzm3878p3030j3lwupj257rmmv9p3ea32hgwsuf3jdh8ycv7q587</code> |
+| **Tron** | <code>TBSCbnTZCELrMnioobZMkah5r9qS6B1tC6</code> |
+<!-- FUNDING:END -->
+
+!!! note "Monero and Lightning are coming"
+    For a censorship-circumvention project, privacy-preserving payment rails aren't a nice-to-have. Donors in hostile jurisdictions shouldn't have to create a traceable financial link to a circumvention tool in order to support one. Both will appear in the table above automatically once they're added to the funding file.
 
 !!! warning "Verify the address"
-    Addresses are long and easy to spoof. Take them from the project repository or this site over HTTPS, and check the first and last characters after pasting. We will never DM you an address.
+    Addresses are long and easy to spoof. Take them from this page or the repository over HTTPS, and check the first and last characters after pasting. **We will never DM you an address.**
+
+    The table above is generated at build time from [`.github/FUNDING.yml`](https://github.com/MotherofallVPNs/MoaV/blob/main/.github/FUNDING.yml) in the MoaV repository, which is the single source of truth — so what you see here is whatever that file says, and it cannot drift from the repo.
 
 ---
 
