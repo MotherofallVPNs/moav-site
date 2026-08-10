@@ -70,9 +70,13 @@ Funds go to infrastructure the project actually needs — test servers for the e
     | Coin | Address |
     |---|---|
     | **Bitcoin (BTC)** | <code>bc1qkfq3hg5kpzgy7muc8m3pmh6zemhv820a0ndqgg</code> |
-    | **Ethereum (ETH)** | <code>0xB4D06BDb0C2f1D81E0b0b805Ed813F4ffe960aE2</code> |
+    | **Ethereum (ETH)** <sup>1</sup> | <code>0xB4D06BDb0C2f1D81E0b0b805Ed813F4ffe960aE2</code> |
     | **Zcash (ZEC)** | <code>u1pclheucppc87qlffh9m8wjfw87w2nka40w9nxjuqnyppj0kx9xp7z9rg6wx556662y5f8dtfyeynmm2lnz5aqvaqzmnpajlq0mnmkntdqzqqegk8lwv09cnudf3ttzm3878p3030j3lwupj257rmmv9p3ea32hgwsuf3jdh8ycv7q587</code> |
-    | **Tron** | <code>TBSCbnTZCELrMnioobZMkah5r9qS6B1tC6</code> |
+    | **Tron** <sup>2</sup> | <code>TBSCbnTZCELrMnioobZMkah5r9qS6B1tC6</code> |
+
+    <sup>1</sup> **Ethereum (ETH)** — works on **all EVM chains** at this same address: Ethereum mainnet, BNB Smart Chain (BEP-20), and every L2 (Arbitrum, Optimism, Base, Polygon, Gnosis, zkSync, and so on), plus **any ERC-20 token** such as USDC, USDT or DAI. Use whichever network is cheapest for you.
+
+    <sup>2</sup> **Tron** — accepts TRX and **TRC-20 tokens** (USDT, USDC). Tron has its own address format, so this one is not interchangeable with the EVM address above.
 <!-- FUNDING:END -->
 
 !!! warning "Verify the address"

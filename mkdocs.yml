@@ -8,6 +8,10 @@ edit_uri_template: https://github.com/MotherofallVPNs/moav-site/edit/main/docs/{
 
 theme:
   name: material
+  # The header keeps the cyan primary in both colour schemes, so one white
+  # silhouette of the MoaV mark is correct for light and dark alike.
+  logo: assets/moav-logo-white.png
+  favicon: assets/favicon.png
   palette:
     - scheme: slate
       primary: cyan
@@ -62,6 +66,9 @@ nav:
 # Fail loudly on links that point at a heading which no longer exists. The DNS
 # rewrite silently broke 9 inbound anchors (other pages linked to headings that
 # had been renamed or folded into tabs) and a normal build said nothing.
+extra_css:
+  - stylesheets/extra.css
+
 validation:
   links:
     absolute_links: ignore

@@ -14,15 +14,16 @@ Complete guide to deploy MoaV on a VPS or home server.
 
 **Domain (Optional but Recommended):**
 
-- Required for: Reality, Trojan, AnyTLS, Hysteria2, TrustTunnel, CDN mode, DNS tunnels (dnstt, Slipstream, XDNS)
-- Not required for: Reality, WireGuard, AmneziaWG, Telegram MTProxy, Admin dashboard, Conduit, Snowflake
+- Required for: Trojan, AnyTLS, Hysteria2, TrustTunnel, CDN mode, DNS tunnels (dnstt, Slipstream, MasterDNS, XDNS)
+- Not required for: Reality, XHTTP, Shadowsocks-2022, WireGuard, AmneziaWG, Telegram MTProxy, Admin dashboard, Conduit, Snowflake
+- Per-protocol checklist: [Do I need a domain?](DNS.md#do-i-need-a-domain)
 - See [Domainless Mode](#domainless-mode) if you don't have a domain
 
 **Ports to Open:**
 
 | Port | Protocol | Service | Requires Domain |
 |------|----------|---------|-----------------|
-| 443/tcp | TCP | Reality (VLESS) | Yes |
+| 443/tcp | TCP | Reality (VLESS) | No — borrows a public SNI via `REALITY_TARGET` |
 | 443/udp | UDP | Hysteria2 | Yes |
 | 8443/tcp | TCP | Trojan | Yes |
 | 8445/tcp | TCP | AnyTLS | Yes |
@@ -44,7 +45,17 @@ Complete guide to deploy MoaV on a VPS or home server.
 
 ## Quick Start
 
-The fast path — install and first user in a few minutes — is [Quick Start](quick-start.md). The rest of this page is the reference: every option, and what to do when the defaults don't fit.
+!!! tip "The whole install is one command"
+
+    ```bash
+    curl -fsSL moav.sh/install.sh | bash
+    ```
+
+    It installs Docker, clones MoaV, and asks for three things: your **domain** (leave blank for domainless), an **email** for Let's Encrypt, and an **admin password**. When it finishes it prints your dashboard URLs and the DNS records to add.
+
+If that's all you need, follow it through to your first user in [**Quick Start**](quick-start.md) — about ten minutes end to end.
+
+The rest of this page is the reference: every option, and what to do when the defaults don't fit.
 
 ## Step-by-Step Setup
 
