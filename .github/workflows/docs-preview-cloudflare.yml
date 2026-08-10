@@ -16,6 +16,7 @@ name: Docs Preview (Cloudflare)
 # The production site is untouched by this workflow.
 on:
   pull_request:
+    types: [opened, synchronize, reopened, closed]
     paths:
       - 'docs/**'
       - 'mkdocs.yml'
@@ -26,6 +27,7 @@ permissions:
 
 jobs:
   preview:
+    if: github.event.action != 'closed'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -70,8 +72,97 @@ jobs:
         with:
           header: docs-preview
           message: |
-            📄 **Docs preview:** ${{ steps.deploy.outputs.deployment-url }}
+            📄 **Docs preview:** ${{ steps.deploy.outputs.pages-deployment-alias-url }}
+
+            This link is stable for the life of this PR and serves the newest build,
+            so it updates on every push. (This exact commit is also pinned at
+            ${{ steps.deploy.outputs.deployment-url }} if you need to compare.)
 
             Rendered with the real mkdocs-material build. Reviewing these pages in
             GitHub's file view will misrepresent tabs and collapsibles — they need
             the built site.
+
+  # Previews are not free forever: Cloudflare keeps every deployment (and its
+  # branch alias) until something deletes it, so a merged PR would otherwise
+  # leave a live, unlisted copy of the docs at pr-N.*.pages.dev indefinitely.
+  cleanup:
+    if: github.event.action == 'closed'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Are the Cloudflare secrets configured?
+        id: gate
+        run: |
+          if [ -n "${{ secrets.CLOUDFLARE_API_TOKEN }}" ] && [ -n "${{ secrets.CLOUDFLARE_ACCOUNT_ID }}" ]; then
+            echo "ready=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "ready=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Delete this PR's preview deployments
+        if: steps.gate.outputs.ready == 'true'
+        env:
+          CF_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CF_ACCOUNT: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          BRANCH: pr-${{ github.event.pull_request.number }}
+        run: |
+          set -euo pipefail
+          API="https://api.cloudflare.com/client/v4/accounts/$CF_ACCOUNT/pages/projects/moav-docs-preview/deployments"
+
+          # Deployments are paginated; a long-lived PR can have many. Note the
+          # `if` blocks rather than `[ cond ] && break` -- under set -e a false
+          # test in a && list exits the whole script, which would silently skip
+          # the cleanup.
+          ids=""
+          page=1
+          while :; do
+            if ! body=$(curl -fsS -H "Authorization: Bearer $CF_TOKEN" "$API?env=preview&per_page=100&page=$page"); then
+              echo "::warning::could not list deployments (page $page)"
+              break
+            fi
+            batch=$(printf '%s' "$body" | BRANCH="$BRANCH" python3 -c "
+import json,sys,os
+d=json.load(sys.stdin)
+br=os.environ['BRANCH']
+for r in d.get('result') or []:
+    meta=(r.get('deployment_trigger') or {}).get('metadata') or {}
+    if meta.get('branch')==br: print(r['id'])
+")
+            if [ -n "$batch" ]; then
+              ids="$ids $batch"
+            fi
+            count=$(printf '%s' "$body" | python3 -c "import json,sys;print(len(json.load(sys.stdin).get('result') or []))")
+            if [ "$count" -lt 100 ]; then
+              break
+            fi
+            page=$((page+1))
+            if [ "$page" -gt 20 ]; then
+              echo "::warning::stopped paginating at page 20"
+              break
+            fi
+          done
+
+          ids=$(printf '%s' "$ids" | tr ' ' '\n' | grep -v '^$' || true)
+          if [ -z "$ids" ]; then
+            echo "No preview deployments found for $BRANCH — nothing to clean up."
+            exit 0
+          fi
+
+          # force=true is required to delete the deployment currently serving the
+          # alias, which is exactly the one we want gone.
+          n=0
+          for id in $ids; do
+            if curl -fsS -X DELETE -H "Authorization: Bearer $CF_TOKEN" "$API/$id?force=true" >/dev/null; then
+              n=$((n+1))
+            else
+              echo "::warning::could not delete deployment $id"
+            fi
+          done
+          echo "Deleted $n preview deployment(s) for $BRANCH."
+
+      - name: Note it on the PR
+        if: steps.gate.outputs.ready == 'true'
+        uses: marocchino/sticky-pull-request-comment@v2
+        with:
+          header: docs-preview
+          message: |
+            📄 Docs preview for this PR has been removed now that it is closed.
