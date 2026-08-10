@@ -822,10 +822,10 @@ Key variables in `.env` that affect CLI behavior:
 
 | Variable | Description | Default |
 |----------|-------------|---------|
-| `DEFAULT_PROFILES` | Profiles started by `moav start` | `proxy admin` |
+| `DEFAULT_PROFILES` | Profiles started by `moav start` | empty — `moav start` prompts, and `moav profiles` saves your choice here |
 | `CLIENT_SOCKS_PORT` | SOCKS5 port for client mode | `10800` |
 | `CLIENT_HTTP_PORT` | HTTP port for client mode | `18080` |
-| `INITIAL_USERS` | Users created during bootstrap | `5` |
+| `INITIAL_USERS` | Users created during bootstrap | `1` |
 | `MAHSANET_API_KEY` | MahsaNet API key for config donation | (empty) |
 | `MAHSANET_PROTOCOLS` | Protocols to donate to MahsaNet | `reality hysteria2` |
 | `MAHSANET_POOL` | MahsaNet pool for donated configs | `mahsa` |

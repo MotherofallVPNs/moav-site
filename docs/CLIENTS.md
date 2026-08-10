@@ -15,15 +15,15 @@ Everything below arrives in the bundle you were sent. Opening its **`README.html
 
 | Protocol | Port | Description |
 |----------|------|-------------|
-| [Reality (VLESS)](https://github.com/XTLS/REALITY) | 443/tcp | TLS camouflage, virtually undetectable |
+| [Reality (VLESS)](https://github.com/XTLS/REALITY) | 443/tcp | TLS camouflage, hard to detect with common techniques |
 | [Trojan](https://trojan-gfw.github.io/trojan/) | 8443/tcp | HTTPS mimicry, battle-tested |
-| [AnyTLS](https://github.com/anytls/anytls-go) | 8445/tcp | Defeats TLS-in-TLS fingerprinting, very high stealth |
+| [AnyTLS](https://github.com/anytls/anytls-go) | 8445/tcp | Resists TLS-in-TLS fingerprinting, high stealth against the filtering techniques it targets |
 | [Shadowsocks-2022](https://github.com/shadowsocks/shadowsocks-org/blob/main/docs/doc/sip022.md) | 8388/tcp+udp | AEAD-2022 anti-active-probing; same protocol Outline VPN uses |
 | [Hysteria2](https://v2.hysteria.network/) | 443/udp | QUIC-based, fast on lossy networks |
 | CDN (VLESS+WS) | 443 via Cloudflare | When server IP is blocked |
 | [TrustTunnel](https://trusttunnel.org/) | 4443/tcp+udp | HTTP/2 & QUIC, looks like HTTPS |
 | [WireGuard](https://www.wireguard.com/) (Direct) | 51820/udp | Full VPN mode, simple setup |
-| [AmneziaWG](https://github.com/amnezia-vpn/amneziawg-linux-kernel-module) | 51821/udp | Obfuscated WireGuard, defeats DPI |
+| [AmneziaWG](https://github.com/amnezia-vpn/amneziawg-linux-kernel-module) | 51821/udp | Obfuscated WireGuard, designed to resist common DPI signatures |
 | [WireGuard](https://www.wireguard.com/) + [wstunnel](https://github.com/erebe/wstunnel) | 8080/tcp | VPN wrapped in WebSocket |
 | [DNS Tunnel (dnstt)](https://www.bamsoftware.com/software/dnstt/) | 53/udp | Last resort, slow but hard to block |
 | [Slipstream](https://github.com/Mygod/slipstream-rust) | 53/udp | QUIC-over-DNS, 1.5-5x faster than dnstt |
@@ -125,7 +125,7 @@ Everything below arrives in the bundle you were sent. Opening its **`README.html
 ## Protocol priority
 Try these in order. If one doesn't work, try the next:
 
-1. **Reality (VLESS)** - Primary, most reliable (port 443/tcp)
+1. **Reality (VLESS)** - Primary, a strong first choice on networks where it currently works (port 443/tcp)
 2. **Hysteria2** - Fast alternative, uses QUIC/UDP (port 443/udp)
 3. **Trojan** - Backup, uses your domain's TLS cert (port 8443/tcp)
 4. **CDN (VLESS+WS)** - When server IP is blocked, routes via Cloudflare (port 443 via CDN)
@@ -423,7 +423,7 @@ Most protocols just work once the subscription is imported. These have quirks wo
     ---
 
 ??? note "AnyTLS"
-    AnyTLS is a password-authenticated TLS proxy that defeats **TLS-in-TLS fingerprinting** for very high stealth. It runs on the same sing-box engine as Trojan and reuses your domain's TLS certificate. It is **opt-in** (enabled with `ENABLE_ANYTLS=true` on the server) and uses the same per-user password as your Trojan/Hysteria2 entries.
+    AnyTLS is a password-authenticated TLS proxy designed to resist **TLS-in-TLS fingerprinting**, giving it high stealth against the filtering techniques it targets. It runs on the same sing-box engine as Trojan and reuses your domain's TLS certificate. It is **opt-in** (enabled with `ENABLE_ANYTLS=true` on the server) and uses the same per-user password as your Trojan/Hysteria2 entries.
 
     **Your config file:** `anytls.txt`
 
@@ -741,7 +741,7 @@ CLIENT_HTTP_PORT=8080
 
 **Protocol fallback order (auto mode):**
 
-1. Reality (VLESS) - Most reliable
+1. Reality (VLESS) - A strong first choice on networks where it currently works
 2. Hysteria2 - Fast, UDP-based
 3. Trojan - TLS-based backup
 4. WireGuard - Full VPN

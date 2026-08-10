@@ -166,24 +166,37 @@ ADMIN_PASSWORD=your-secure-password
 # Server IP (auto-detected if empty)
 SERVER_IP=
 
-# Initial users to create (default: 5)
-INITIAL_USERS=5
+# Initial users to create during bootstrap
+INITIAL_USERS=1
 
 # Reality target (site to impersonate)
 # Good choices: dl.google.com, www.apple.com, www.doi.org
 REALITY_TARGET=dl.google.com:443
 
-# CDN domain (optional, Cloudflare-proxied subdomain)
-CDN_DOMAIN=cdn.yourdomain.com
+# CDN mode. CDN_SUBDOMAIN is the record you proxy (Cloudflare); CDN_ADDRESS and
+# CDN_SNI override the host clients dial, which is how CloudFront is configured.
+CDN_SUBDOMAIN=cdn
+CDN_ADDRESS=
+CDN_SNI=
+CDN_TRANSPORT=ws
 
 # Enable/disable services
 ENABLE_REALITY=true
 ENABLE_TROJAN=true
 ENABLE_HYSTERIA2=true
+ENABLE_ANYTLS=false
+ENABLE_SS=true
+ENABLE_XHTTP=true
 ENABLE_WIREGUARD=true
+ENABLE_AMNEZIAWG=true
+ENABLE_TELEMT=true
 ENABLE_DNSTT=true
+ENABLE_SLIPSTREAM=true
+ENABLE_MASTERDNS=true
+ENABLE_XDNS=true
 ENABLE_TRUSTTUNNEL=true
-ENABLE_PSIPHON_CONDUIT=false
+ENABLE_GOOSERELAY=false
+ENABLE_CONDUIT=true
 ENABLE_ADMIN_UI=true
 ```
 
@@ -307,7 +320,7 @@ ls outputs/bundles/
 - `README.html` - User instructions (English + Farsi)
 - `reality.txt` - Reality share link + QR code
 - `trojan.txt` - Trojan share link
-- `anytls.txt` - AnyTLS share link (if `ENABLE_ANYTLS=true`)
+- `anytls.txt` - AnyTLS share link (if `ENABLE_ANYTLS=false`)
 - `shadowsocks.txt` / `shadowsocks-qr.png` - Shadowsocks-2022 `ss://` URI + QR
 - `hysteria2.txt` - Hysteria2 share link
 - `cdn-vless.txt` - CDN share link (if CDN_DOMAIN set)
@@ -323,7 +336,7 @@ ls outputs/bundles/
 **1. Admin Dashboard (Easiest):**
 
 1. Open `https://your-server:9443` in browser
-2. Login with username `admin` and your `ADMIN_PASSWORD`
+2. Log in with **any username** and your `ADMIN_PASSWORD` — only the password is checked
 3. Click **Download** next to any user in the "User Bundles" section
 
 **Creating users from the dashboard:**
@@ -389,10 +402,10 @@ What lives here is the MoaV side — the `.env` variables:
 | Variable | Purpose |
 |---|---|
 | `CDN_SUBDOMAIN` | Cloudflare subdomain to front (default `cdn`); leave empty when using CloudFront |
-| `CDN_DOMAIN` | The hostname the CDN serves (`cdn.yourdomain.com`, or `d123.cloudfront.net`) |
+| `CDN_DOMAIN` | Optional override for the hostname the CDN serves. Derived from `CDN_SUBDOMAIN` + `DOMAIN` when unset, so it is absent from `.env.example`; set it explicitly for CloudFront (`d123.cloudfront.net`) |
 | `CDN_ADDRESS` | What clients actually connect to — set to `www.yourdomain.com` for stealth |
 | `CDN_SNI` | SNI presented by the client |
-| `CDN_TRANSPORT` | `httpupgrade` (Cloudflare default) or `ws` (**required** for CloudFront) |
+| `CDN_TRANSPORT` | `ws` (the shipped default, and **required** for CloudFront) or `httpupgrade` |
 | `CDN_WS_PATH` | Generated automatically with 48-bit entropy; treat it as a secret |
 
 After changing any of these, run `moav bootstrap` to re-render, then `moav regenerate-users` so

@@ -423,7 +423,7 @@ docker compose logs trusttunnel
 **Check container is running:**
 ```bash
 docker compose --profile xhttp ps
-docker compose logs xhttp
+docker compose logs xray   # the xhttp profile runs the xray service
 ```
 
 **Common issues:**
@@ -434,7 +434,7 @@ docker compose logs xhttp
    ```
 
 2. **Service not enabled:**
-   - XHTTP is experimental and opt-in. Ensure `ENABLE_XHTTP=true` in `.env`
+   - XHTTP is experimental but enabled by default. Confirm `ENABLE_XHTTP=true` in `.env`
    - Restart after enabling: `moav restart`
 
 3. **Verify port is listening:**
@@ -593,7 +593,7 @@ sed -i 's/example.com/yourdomain.com/g' configs/dnstt/server.conf
 
 # Rebuild and restart dnstt
 docker compose build dnstt
-docker compose --profile dnstt up -d dnstt
+docker compose --profile dnstunnel up -d dnstt
 ```
 
 **Verify NS delegation:**
@@ -1694,7 +1694,7 @@ docker run --rm -v moav_moav_state:/state alpine rm /state/.bootstrapped
 docker compose --profile setup run --rm bootstrap
 
 # Restart dnstt
-docker compose --profile dnstt up -d dnstt
+docker compose --profile dnstunnel up -d dnstt
 ```
 
 ---

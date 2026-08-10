@@ -2,12 +2,12 @@
 
 Install MoaV, then hand someone a link that connects them. That's the whole path, and it takes about ten minutes.
 
-MoaV deploys [16+ anti-censorship protocols](protocols.md) and turns each user into a share-ready **bundle** — configs, QR codes, and plain-language instructions in English and Farsi. The person receiving it doesn't need to understand any of it. Curious why this exists? Read [the mission](philosophy.md).
+MoaV deploys [16+ circumvention transports and fallback paths](protocols.md), plus optional Psiphon, Tor and MahsaNet donation integrations, and turns each user into a share-ready **bundle** — configs, QR codes, and plain-language instructions in English and Farsi. The person receiving it doesn't need to understand any of it. Curious why this exists? Read [the mission](philosophy.md).
 
 ## What you need
 
 - **A server** — Debian 12 / Ubuntu 22.04 or 24.04, or a **Raspberry Pi 4+** (ARM64). 1 vCPU / 1 GB RAM is the floor; 2 GB if you want monitoring.
-- **A domain** — optional, but worth it. It roughly doubles the protocols you can offer and is the only way to run the DNS tunnels, which are what still work during a shutdown. See [Do I need a domain?](DNS.md#do-i-need-a-domain).
+- **A domain** — optional, but worth it. It unlocks several additional transports, particularly the TLS-based proxies and all DNS tunnels, which can remain usable where ordinary traffic is blocked but recursive DNS still resolves. See [Do I need a domain?](DNS.md#do-i-need-a-domain).
 
 !!! tip "Point your DNS *before* installing"
     Certificate issuance needs the domain already resolving to the server, so adding the records first makes the install smooth. The exact records are in [DNS Configuration](DNS.md#with-a-domain-the-records) — and after setup, `moav doctor dns` writes them out for you as a file you can import straight into Cloudflare.
@@ -40,7 +40,7 @@ Two ways. Use whichever you prefer — they do the same thing.
     Open **`https://your-server:9443`** and log in — **any username**, with the admin password you chose.
 
     ??? warning "Your browser will warn about the certificate"
-        The dashboard uses a self-signed certificate, so you'll see a privacy warning the first time. That's expected. Proceed past it.
+        In domainless mode the dashboard uses a self-signed certificate, so you'll see a privacy warning the first time. That's expected — proceed past it. With a domain configured it uses your Let's Encrypt certificate and there's no warning.
 
     Click **+ New**, enter a name, and the user appears in the table with a badge for every protocol they got — Reality, Trojan, Hy2, CDN, WG, AWG, XHTTP and so on. Hit **.zip** to download their bundle.
 
@@ -71,7 +71,7 @@ Two ways. Use whichever you prefer — they do the same thing.
 Either way you get the same bundle:
 
 - **`README.html`** — the file to actually send. Step-by-step instructions in English and Farsi, with QR codes. They open it, pick their platform, scan, and they're online.
-- Config files and share links for every enabled protocol, plus a one-paste **subscription** for MahsaNG, v2rayNG and Hiddify.
+- Config files and share links for each enabled and successfully configured user-facing protocol, plus a one-paste **subscription** for MahsaNG, v2rayNG and Hiddify.
 
 Send it over something private — Signal, encrypted email, in person. See [Client Apps](CLIENTS.md) for what to tell them per platform.
 
