@@ -48,6 +48,11 @@ jobs:
         # docs/. Not committed, same as the mkdocs output under site/docs.
         run: ./scripts/build-llms-full.sh
 
+      - name: Assert llms-full.txt has no relative links
+        # Relative [CLI](CLI.md) survives into llms-full.txt and 404s there:
+        # the file is served from the site root, not from /docs/.
+        run: bash tests/llms-full-links-test.sh
+
       - name: Refresh donation addresses from FUNDING.yml
         # Addresses live in MoaV's .github/FUNDING.yml, which is already the
         # canonical list. Regenerating the table here means adding an address in

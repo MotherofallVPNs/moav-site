@@ -54,7 +54,9 @@ for page in "${PAGES[@]}"; do
     echo
     echo "<!-- source: docs/$page | url: $url -->"
     echo
-    cat "docs/$page"
+    # Not a plain cat: mkdocs-relative links have to become absolute, or they
+    # resolve against moav.sh/ instead of moav.sh/docs/ and 404. See the script.
+    LLMS_BASE="$BASE" python3 scripts/absolutize-links.py < "docs/$page"
     echo
   } >> "$OUT"
 done
