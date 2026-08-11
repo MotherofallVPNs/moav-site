@@ -60,6 +60,23 @@ else
     echo "  note  site/llms-full.txt not built; skipped the artifact check"
 fi
 
+# --- nav and the generator's PAGES list must agree ---------------------------
+# They are two hand-maintained lists of the same thing. A page added to the nav
+# but not to PAGES is simply absent from llms-full.txt, with nothing to notice.
+# Plain loop, no comm/process-substitution/nested heredocs -- an earlier version
+# used all three and silently compared against an empty list.
+gen_list=$(sed -n '/^PAGES=(/,/^)/p' "$ROOT/scripts/build-llms-full.sh" | grep -oE '[A-Za-z0-9_.-]+\.md')
+nav_list=$(sed -n '/^nav:/,/^[a-z_]*:/p' "$ROOT/mkdocs.yml" | grep -oE '[A-Za-z0-9_.-]+\.md')
+missing=""
+for pg in $nav_list; do
+    printf '%s\n' "$gen_list" | grep -qx "$pg" || missing="$missing $pg"
+done
+if [ -z "$missing" ]; then
+    ok "every nav page is in the generator's PAGES list ($(printf '%s\n' "$nav_list" | wc -l | tr -d ' ') pages)"
+else
+    bad "in the nav but missing from llms-full.txt:$missing"
+fi
+
 echo ""
 echo "  passed: $pass   failed: $fail"
 [ "$fail" -eq 0 ] || exit 1

@@ -450,6 +450,8 @@ docker compose logs xray   # the xhttp profile runs the xray service
 
 > The `521` / `525` / `1016` response-code diagnosis lives in [DNS → Troubleshooting](DNS.md#troubleshooting); the Cloudflare settings it refers to are in [DNS → CDN mode](DNS.md#cdn-mode).
 
+**No CDN config in the bundle at all?** Check `ENABLE_CDN` in `.env` — it is `false` by default, and no CDN links are generated until it is `true`. `moav doctor dns` reports whether CDN is enabled, whether the record resolves, and whether it is actually proxied.
+
 **DNS lookup failure:**
 If you see `lookup cdn.yourdomain.com: operation was canceled`:
 

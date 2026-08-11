@@ -63,6 +63,9 @@ CDN mode fronts VLESS+WebSocket behind a CDN, so the client appears to talk to C
 
 How you express those two facts differs per provider, which is the next section. Verifying it works is the same everywhere: see [CDN returns 521 / 525](#troubleshooting).
 
+!!! note "CDN links are off until you turn them on"
+    `ENABLE_CDN=false` is the default, because a CDN link generated before the CDN is actually fronting traffic looks valid to the user and cannot connect. Set `ENABLE_CDN=true` in `.env` once the steps below are done, then confirm with `moav doctor dns` — it checks the record is *proxied*, not merely resolving.
+
 ## Provider setup
 
 The records are the same everywhere; only the UI differs. Cloudflare additionally needs two settings for CDN mode.
@@ -100,6 +103,7 @@ The records are the same everywhere; only the UI differs. Cloudflare additionall
 
     Then in `.env` (`CDN_TRANSPORT=ws` is the default and is what CloudFront needs; `httpupgrade` will not work):
     ```bash
+    ENABLE_CDN=true
     CDN_SUBDOMAIN=
     CDN_DOMAIN=d123.cloudfront.net
     CDN_ADDRESS=d123.cloudfront.net

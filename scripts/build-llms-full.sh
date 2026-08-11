@@ -22,6 +22,7 @@ PAGES=(
   SETUP.md
   DNS.md
   DEPLOY.md
+  ai-agent.md
   CLIENTS.md
   client.md
   mahsanet.md
@@ -29,7 +30,9 @@ PAGES=(
   MONITORING.md
   TROUBLESHOOTING.md
   OPSEC.md
+  support.md
   development.md
+  TRANSLATING.md
 )
 
 {
