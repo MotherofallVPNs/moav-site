@@ -79,6 +79,8 @@ AEAD-2022 Shadowsocks (`2022-blake3-aes-128-gcm`), the modern Shadowsocks genera
 
 Routes VLESS traffic through Cloudflare's CDN via WebSocket. When your server's IP is blocked, traffic goes through Cloudflare instead, which makes IP-based blocking substantially harder, because clients connect through CDN infrastructure.
 
+**Opt-in:** `ENABLE_CDN=false` by default, because the link only works once the subdomain is proxied and rewritten to the CDN port. Turn it on after [CDN mode](DNS.md#cdn-mode) is set up.
+
 - **Port:** 443 (Cloudflare) → 2082 (origin)
 - **Engine:** [sing-box](https://github.com/SagerNet/sing-box)
 - **Clients:** Streisand, Hiddify, v2rayNG, v2rayN

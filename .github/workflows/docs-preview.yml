@@ -64,6 +64,13 @@ jobs:
           SITE_URL: https://pr-${{ github.event.pull_request.number }}.moav-docs-preview.pages.dev/
         run: mkdocs build --strict --site-dir _preview
 
+      - name: llms-full.txt link absolutization
+        # A relative [CLI](CLI.md) survives into llms-full.txt and 404s there,
+        # because the file is served from the site root, not from /docs/.
+        run: |
+          ./scripts/build-llms-full.sh
+          bash tests/llms-full-links-test.sh
+
       - name: Are the Cloudflare secrets configured?
         id: gate
         run: |

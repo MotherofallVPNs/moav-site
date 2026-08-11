@@ -55,6 +55,7 @@ nav:
     - Setup Guide: SETUP.md
     - DNS Configuration: DNS.md
     - VPS Deployment: DEPLOY.md
+    - Run MoaV with an AI agent: ai-agent.md
   - User Guides:
     - Client Apps: CLIENTS.md
     - MoaV Client: client.md

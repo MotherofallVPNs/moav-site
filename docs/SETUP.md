@@ -173,8 +173,11 @@ INITIAL_USERS=1
 # Good choices: dl.google.com, www.apple.com, www.doi.org
 REALITY_TARGET=dl.google.com:443
 
-# CDN mode. CDN_SUBDOMAIN is the record you proxy (Cloudflare); CDN_ADDRESS and
-# CDN_SNI override the host clients dial, which is how CloudFront is configured.
+# CDN mode. OFF by default: a CDN link only works once the record is proxied and
+# port-rewritten, so set ENABLE_CDN=true once that is in place. CDN_SUBDOMAIN is
+# the record you proxy (Cloudflare); CDN_ADDRESS and CDN_SNI override the host
+# clients dial, which is how CloudFront is configured.
+ENABLE_CDN=true
 CDN_SUBDOMAIN=cdn
 CDN_ADDRESS=
 CDN_SNI=
@@ -401,6 +404,7 @@ What lives here is the MoaV side — the `.env` variables:
 
 | Variable | Purpose |
 |---|---|
+| `ENABLE_CDN` | Master switch for CDN links, **`false` by default**. Turn on after the record is proxied and rewritten to `PORT_CDN`; check with `moav doctor dns` |
 | `CDN_SUBDOMAIN` | Cloudflare subdomain to front (default `cdn`); leave empty when using CloudFront |
 | `CDN_DOMAIN` | Optional override for the hostname the CDN serves. Derived from `CDN_SUBDOMAIN` + `DOMAIN` when unset, so it is absent from `.env.example`; set it explicitly for CloudFront (`d123.cloudfront.net`) |
 | `CDN_ADDRESS` | What clients actually connect to — set to `www.yourdomain.com` for stealth |
