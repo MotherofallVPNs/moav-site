@@ -18,11 +18,12 @@ Read the concise [Mission](mission.md), the project's [Impact](impact.md) model,
 - **[Setup Guide](SETUP.md)**: Complete installation with all options
 - **[DNS Configuration](DNS.md)**: DNS records for your domain and provider
 - **[VPS Deployment](DEPLOY.md)**: One-click deploy on Hetzner, DigitalOcean, Vultr, Linode
+- **[Video Tutorials](video-tutorials.md)**: Video Walkthroughs
 
 ## Using MoaV
 
 - **[Client Apps](CLIENTS.md)**: Connect from iOS, Android, macOS, Windows, Linux
-- **[MoaV Client](client.md)**: Self-hosted client with a dashboard, load-balancing, and automatic failover
+- **[MoaV Client](client.md)**: MoaV client with a dashboard, load-balancing, and automatic failover
 - **[CLI Reference](CLI.md)**: All `moav` commands and options
 - **[Monitoring](MONITORING.md)**: Grafana + Prometheus dashboards
 - **[Troubleshooting](TROUBLESHOOTING.md)**: Common issues and fixes
