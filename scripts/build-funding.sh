@@ -39,8 +39,11 @@ labels = {
 coins = {
     "BTC": "Bitcoin", "ETH": "Ethereum", "ZEC": "Zcash", "XMR": "Monero",
     "LTC": "Litecoin", "TRON": "Tron", "SOL": "Solana", "LN": "Lightning",
-    "LIGHTNING": "Lightning",
+    "LIGHTNING": "Lightning", "LN_ADDRESS": "Lightning Address",
 }
+# Keys whose pretty name already says everything: no "(KEY)" suffix, which would
+# render as the useless "Lightning Address (LN_ADDRESS)".
+no_suffix = {"LN", "LIGHTNING", "LN_ADDRESS"}
 
 # Footnotes keyed by ticker. The ETH one matters: the same 0x address receives
 # on every EVM chain, so people don't need a new address per network. Tron is
@@ -69,7 +72,8 @@ for line in open(sys.argv[1], encoding="utf-8"):
         rows_platform.append(f"| **{name}** | [{url.format(v=val).split('//')[1]}]({url.format(v=val)}) |")
     else:
         nice = coins.get(key.upper(), key)
-        label = f"{nice} ({key.upper()})" if nice.upper() != key.upper() else nice
+        label = nice if key.upper() in no_suffix or nice.upper() == key.upper() \
+                else f"{nice} ({key.upper()})"
         # A fenced block rather than a table row: content.code.copy gives every
         # code block a copy button, which a <code> span in a table cell does not
         # get. It also stops the long addresses (the ZEC unified address is ~200
