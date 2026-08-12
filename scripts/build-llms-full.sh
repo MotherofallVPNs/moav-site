@@ -23,6 +23,7 @@ PAGES=(
   DNS.md
   DEPLOY.md
   ai-agent.md
+  video-tutorials.md
   CLIENTS.md
   client.md
   mahsanet.md
