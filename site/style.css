@@ -1327,14 +1327,10 @@ body.modal-open {
         width: clamp(100px, 30vw, 160px);
     }
 
-    .donate-options {
-        flex-direction: column;
-        gap: 12px;
-    }
-
-    .donate-btn {
-        width: 100%;
-        justify-content: center;
+    /* No full-width override here: the chips size to their text at every width,
+       and a row that no longer fits just wraps. */
+    .donate-row {
+        gap: 8px;
     }
 }
 
