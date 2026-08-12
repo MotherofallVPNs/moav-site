@@ -7,21 +7,16 @@
 ساختهٔ **[@iaghapour](https://x.com/iaghapour)** — آموزش کامل راه‌اندازی سرور MoaV به زبان فارسی.
 
 <div class="moav-embed">
-  <iframe src="https://www.youtube-nocookie.com/embed/UndaXuS9-Ws" title="آموزش راه‌اندازی سرور MoaV — @iaghapour" loading="lazy" referrerpolicy="no-referrer" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+  <iframe src="https://www.youtube.com/embed/UndaXuS9-Ws" title="آموزش راه‌اندازی سرور MoaV — @iaghapour" loading="lazy" referrerpolicy="no-referrer" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
 </div>
 
 <p><a href="https://www.youtube.com/watch?v=UndaXuS9-Ws">تماشا در یوتیوب</a></p>
 
 در این آموزش یاد می‌گیرید چطور بیش از ۱۶ پروتکل مختلف را یکجا و فقط با یک دستور روی سرورتان نصب کنید، تا اگر یک مسیر مسدود شد بلافاصله به مسیر دیگری سوئیچ کنید.
 
-!!! tip "اگر ویدیو بالا بارگذاری نشد"
-    پخش‌کننده روی یوتیوب است و ممکن است بدون ابزار عبور از فیلترینگ باز نشود. معرفی ویدیو در ایکس هم آمده است: [پست @iaghapour](https://x.com/iaghapour/status/2087186991406309549). متن نوشتاری همان مسیر در [شروع سریع](quick-start.md) هست و به ویدیو نیازی ندارد.
-
-سپاس از @iaghapour — تماشای کار یک اپراتور واقعی چند باگ را نشان داد که در نسخهٔ ۲.۱.۰ برطرف شدند.
+سپاس از @iaghapour — تماشای کار یک اپراتور واقعی چند باگ را نشان داد که در نسخهٔ [۲.۱.۰](https://github.com/MotherofallVPNs/MoaV/releases/tag/v2.1.0) برطرف شدند.
 
 ## یک آموزش خوب چه چیزهایی را پوشش می‌دهد
-
-تقریباً به همان ترتیبی که یک اپراتور تازه لازم دارد. لازم نیست همه‌اش در یک ویدیو باشد؛ حتی یک بخش روشن هم به‌تنهایی ارزش دارد.
 
 **راه‌اندازی سرور**
 
