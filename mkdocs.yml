@@ -4,6 +4,10 @@ site_name: MoaV Docs
 # on any host that does not serve the docs under /docs/ -- which is exactly what
 # the preview does. docs-preview.yml sets SITE_URL to the preview origin.
 site_url: !ENV [SITE_URL, "https://moav.sh/docs/"]
+# The default site_dir is `site/`, which in this repo is the hand-written landing
+# page -- a bare `mkdocs build` cleans it away. Deploy already passes this path
+# explicitly; the PR preview overrides it.
+site_dir: site/docs
 # Header repo link + star/fork counts point at the main MoaV project.
 repo_url: https://github.com/MotherofallVPNs/MoaV
 repo_name: MotherofallVPNs/MoaV
