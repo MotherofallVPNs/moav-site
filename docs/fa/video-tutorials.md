@@ -6,8 +6,10 @@
 
 ساختهٔ **[@iaghapour](https://x.com/iaghapour)** — آموزش کامل راه‌اندازی سرور MoaV به زبان فارسی.
 
+<!-- referrerpolicy must not be no-referrer: YouTube reads the origin to load
+     a public embed and answers Error 153 without it. -->
 <div class="moav-embed">
-  <iframe src="https://www.youtube.com/embed/UndaXuS9-Ws" title="آموزش راه‌اندازی سرور MoaV — @iaghapour" loading="lazy" referrerpolicy="no-referrer" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+  <iframe src="https://www.youtube.com/embed/UndaXuS9-Ws" title="آموزش راه‌اندازی سرور MoaV — @iaghapour" loading="lazy" referrerpolicy="strict-origin-when-cross-origin" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
 </div>
 
 <p><a href="https://www.youtube.com/watch?v=UndaXuS9-Ws">تماشا در یوتیوب</a></p>
