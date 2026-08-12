@@ -450,6 +450,20 @@ docker compose logs xray   # the xhttp profile runs the xray service
 
 > The `521` / `525` / `1016` response-code diagnosis lives in [DNS → Troubleshooting](DNS.md#troubleshooting); the Cloudflare settings it refers to are in [DNS → CDN mode](DNS.md#cdn-mode).
 
+!!! tip "A `404` from a browser or a plain `curl` is the healthy answer"
+
+    The CDN WebSocket path is a random secret like `/api/v3/storage/download/update-bundle-9f2a1c.bin`, so any other path — `/`, `/x`, `/test` — will never match and sing-box correctly returns `404`. Getting `404` means Cloudflare, your Origin Rule, port 2082 and sing-box are **all working**. Only `521`, `522`, `525` or a timeout indicate a broken path to the origin.
+
+    To test the real endpoint, use the path from your own config: `404` means the path is wrong, `400` means you reached the right endpoint without WebSocket headers — which is a pass.
+
+**The config used to work and now doesn't?** The WebSocket path is rotated away from the old `/ws` default on bootstrap, and CDN is the only protocol whose link carries a path — so every other protocol keeps working while already-distributed CDN configs start returning `404`. Compare the `path=` in the client config against the server's:
+
+```bash
+docker run --rm -v moav_moav_state:/state alpine cat /state/keys/cdn.env
+```
+
+If they differ, reissue the bundle: `moav user package <username>`.
+
 **No CDN config in the bundle at all?** Check `ENABLE_CDN` in `.env` — it is `false` by default, and no CDN links are generated until it is `true`. `moav doctor dns` reports whether CDN is enabled, whether the record resolves, and whether it is actually proxied.
 
 **DNS lookup failure:**
