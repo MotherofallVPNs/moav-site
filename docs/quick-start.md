@@ -32,6 +32,9 @@ When it finishes it prints your dashboard URLs and the DNS records to add.
 </video>
 <span class="moav-demo-caption">The install, start to finish — 14s. Nothing downloads until you press play (808 KB).</span>
 
+!!! tip "Prefer to watch someone do it?"
+    A community walkthrough covers the whole path end to end — see [Video Tutorials](video-tutorials.md). Farsi only for now.
+
 ## 2. Create your first user
 
 Two ways. Use whichever you prefer — they do the same thing.

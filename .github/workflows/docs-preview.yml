@@ -33,6 +33,11 @@ on:
       - 'mkdocs.yml'
       - 'requirements.txt'
       - '.github/workflows/docs-preview.yml'
+      # These GENERATE docs content at build time (the funding table,
+      # llms-full.txt), so changing them changes the site without touching
+      # docs/ -- which is why PR #13 got no preview and its rendered table
+      # went unreviewed.
+      - 'scripts/**'
 
 permissions:
   contents: read

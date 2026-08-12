@@ -57,6 +57,7 @@ nav:
     - VPS Deployment: DEPLOY.md
     - Run MoaV with an AI agent: ai-agent.md
   - User Guides:
+    - Video Tutorials: video-tutorials.md
     - Client Apps: CLIENTS.md
     - MoaV Client: client.md
     - MahsaNG Import: mahsanet.md
@@ -101,6 +102,7 @@ plugins:
           nav_translations:
             Home: خانه
             Quick Start: شروع سریع
+            Video Tutorials: آموزش‌های ویدیویی
         - locale: ru
           name: Русский
           build: true
