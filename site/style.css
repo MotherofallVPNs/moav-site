@@ -1122,6 +1122,16 @@ body.modal-open {
 
 .donate-options {
     display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+}
+
+/* Fixed rows rather than one wrapping row: the grouping carries meaning
+   (platforms / everyday coins / the rest) and a wide screen would otherwise
+   flatten all nine into a single line. */
+.donate-row {
+    display: flex;
     flex-wrap: wrap;
     justify-content: center;
     align-items: center;
@@ -1151,18 +1161,7 @@ body.modal-open {
     transform: translateY(-2px);
 }
 
-.donate-btn.primary {
-    color: #fff;
-    background: var(--gradient-primary);
-    border-color: transparent;
-    font-weight: 600;
-    font-size: 14px;
-}
 
-.donate-btn.primary:hover {
-    color: #fff;
-    box-shadow: var(--glow-purple);
-}
 
 .client-note {
     margin-top: 12px;
@@ -1197,14 +1196,70 @@ body.modal-open {
     transition: fill 0.18s ease;
 }
 
-.crypto-btn:hover .donate-icon svg,
-.crypto-btn:focus-visible .donate-icon svg {
+.coin-btn:hover .donate-icon svg,
+.coin-btn:focus-visible .donate-icon svg {
     fill: var(--coin-hover, var(--accent-cyan));
 }
 
+.coin-btn:hover,
+.coin-btn:focus-visible {
+    border-color: var(--coin-hover, var(--accent-cyan));
+}
+
+/* Copy hint. Replaces the native title tooltip, which took ~1s to appear and
+   could only show one line of plain text -- the address is the useful half. */
+.copy-hint {
+    position: absolute;
+    top: calc(100% + 8px);
+    left: 50%;
+    transform: translate(-50%, -4px);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+    padding: 6px 10px;
+    border: 1px solid var(--coin-hover, var(--accent-cyan));
+    border-radius: var(--border-radius-sm);
+    background: var(--bg-tertiary);
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.45);
+    white-space: nowrap;
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    z-index: 4;
+    transition: opacity 90ms ease, transform 90ms ease, visibility 90ms;
+}
+
+.copy-hint-label {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.copy-hint-addr {
+    font-family: var(--font-mono, ui-monospace, monospace);
+    font-size: 11px;
+    color: var(--coin-hover, var(--accent-cyan));
+}
+
+/* The lift transform makes the button a stacking context, so the hint's own
+   z-index can't clear the next row -- raise the whole button instead. */
 .crypto-btn:hover,
 .crypto-btn:focus-visible {
-    border-color: var(--coin-hover, var(--accent-cyan));
+    z-index: 5;
+}
+
+.crypto-btn:hover .copy-hint,
+.crypto-btn:focus-visible .copy-hint {
+    opacity: 1;
+    visibility: visible;
+    transform: translate(-50%, 0);
+}
+
+/* Once copied, the hint would contradict the "Copied!" badge. */
+.crypto-btn.copied .copy-hint {
+    opacity: 0;
+    visibility: hidden;
 }
 
 /* The copied state owns the whole button, so it must beat the hover rule above
