@@ -64,6 +64,13 @@ jobs:
       # links on the homepage, so building with the production site_url makes
       # those links 404 on the preview -- the switcher would send a reviewer to
       # /docs/fa/, which does not exist here.
+      - name: Refresh the donation table (same as deploy)
+        # Without this the preview renders the COMMITTED table, so a reviewer sees
+        # stale addresses and cannot tell what production will publish -- exactly
+        # how the new Monero and Lightning entries looked "missing" on PR #14.
+        # Best effort: on a fetch failure the committed table stands, as in deploy.
+        run: ./scripts/build-funding.sh || true
+
       - name: Build (strict)
         env:
           SITE_URL: https://pr-${{ github.event.pull_request.number }}.moav-docs-preview.pages.dev/

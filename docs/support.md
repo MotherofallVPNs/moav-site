@@ -73,7 +73,7 @@ Funds go to infrastructure the project actually needs — test servers for the e
     **Bitcoin (BTC)**
 
     ```text
-    bc1qkfq3hg5kpzgy7muc8m3pmh6zemhv820a0ndqgg
+    bc1p6rpwzkgrlvpkre0n94fqayafpw47kl2j5lmvhvl0rfrtzm94wvvsmd3w5s
     ```
 
     **Ethereum (ETH)** — works on **all EVM chains** at this same address: Ethereum mainnet and every L2 (Arbitrum, Optimism, Base, Polygon, Gnosis, zkSync, and so on), plus **any ERC-20 token** such as USDC, USDT or DAI.
@@ -82,10 +82,28 @@ Funds go to infrastructure the project actually needs — test servers for the e
     0xB4D06BDb0C2f1D81E0b0b805Ed813F4ffe960aE2
     ```
 
+    **Monero (XMR)**
+
+    ```text
+    8BmduJgZLok9xiaX8FboSWBBbzYAugqLxUts7eZNsF2x9QDhk3Ua7iwQufBBNB8VFzcMEMAE1Uo6PjQvAYNYHmXsBRbqQqG
+    ```
+
     **Zcash (ZEC)**
 
     ```text
     u1pclheucppc87qlffh9m8wjfw87w2nka40w9nxjuqnyppj0kx9xp7z9rg6wx556662y5f8dtfyeynmm2lnz5aqvaqzmnpajlq0mnmkntdqzqqegk8lwv09cnudf3ttzm3878p3030j3lwupj257rmmv9p3ea32hgwsuf3jdh8ycv7q587
+    ```
+
+    **Lightning**
+
+    ```text
+    lno1zrxq8pjw7qjlm68mtp7e3yvxee4y5xrgjhhyf2fxhlphpckrvevh50u0q0zdgjjahpdv7tnd9vstumyrw43snsmfmlzv0pgkqrjkgy48tsne6qsr0k64d8rz4k394pmre2rgnmstdxqsfj0w4dsmq2ec73ssek5wzqtqqv7argu9ptk09h9vfvvvham5xnwe306zjw6lptxx0d2yfk5rlvznjwefmsrmmpu8qnkqmghe0v96c8qy3m3nqgm977ay8f5p6k2d2ll2j3knnc8c4s6haufe203jx4ufy8z25tsscqqseg8jzh2qykejnc9sp2v4qm3z2q
+    ```
+
+    **Lightning Address**
+
+    ```text
+    shayan@bitrefill.me
     ```
 
     **Tron** — accepts TRX and **TRC-20 tokens** (USDT, USDC). Tron has its own address format, so this one is not interchangeable with the EVM address above.
