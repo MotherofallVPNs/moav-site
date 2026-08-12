@@ -1182,6 +1182,45 @@ body.modal-open {
 
 .donate-icon {
     font-size: 16px;
+    display: inline-flex;
+    align-items: center;
+}
+
+/* Crypto marks. Each button carries its own --coin (a desaturated brand hue that
+   sits in the site's register) and --coin-hover (the real brand colour). At rest
+   the row reads as one family; on hover the coin becomes itself. Six saturated
+   brand colours at rest would pull the section out of the palette entirely. */
+.donate-icon svg {
+    width: 17px;
+    height: 17px;
+    fill: var(--coin, currentColor);
+    transition: fill 0.18s ease;
+}
+
+.crypto-btn:hover .donate-icon svg,
+.crypto-btn:focus-visible .donate-icon svg {
+    fill: var(--coin-hover, var(--accent-cyan));
+}
+
+.crypto-btn:hover,
+.crypto-btn:focus-visible {
+    border-color: var(--coin-hover, var(--accent-cyan));
+}
+
+/* The copied state owns the whole button, so it must beat the hover rule above
+   -- otherwise the border stays the coin colour while the text turns green. */
+.crypto-btn.copied,
+.crypto-btn.copied:hover {
+    border-color: var(--accent-green);
+}
+
+.crypto-btn.copied .donate-icon svg,
+.crypto-btn.copied:hover .donate-icon svg {
+    fill: var(--accent-green);
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .donate-icon svg { transition: none; }
 }
 
 /* Crypto button specific */
