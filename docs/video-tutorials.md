@@ -5,7 +5,9 @@ Community-made walkthroughs of installing and running MoaV.
 !!! info "No English tutorial yet — one in Farsi"
     Switch the language in the top bar (**فارسی**) for a full server walkthrough by [@iaghapour](https://x.com/iaghapour).
 
-    **Made one, or thinking about it?** Open an issue or a PR and we will link it. A recording of a real install is worth more than any amount of prose, and it finds bugs the maintainers never hit — several fixes in [2.1.0](https://github.com/MotherofallVPNs/MoaV/releases/tag/v2.1.0) came from watching the Farsi one. Credit stays with the author; we link rather than re-host.
+    **Made one, or thinking about it?** The fastest way in is the **✏️ edit button** in the corner of this page — it opens this file straight in GitHub, so you can add your video and send a PR without cloning anything. Or just [open an issue](https://github.com/MotherofallVPNs/moav-site/issues/new) with the link and we will add it.
+
+    A recording of a real install is worth more than any amount of prose, and it finds bugs the maintainers never hit — several fixes in [2.1.0](https://github.com/MotherofallVPNs/MoaV/releases/tag/v2.1.0) came from watching the Farsi one. Credit stays with the author; we link rather than re-host. (The docs live in [moav-site](https://github.com/MotherofallVPNs/moav-site), separate from the main MoaV repo.)
 
 Prefer reading? [Quick Start](quick-start.md) is the same path in about ten minutes.
 
