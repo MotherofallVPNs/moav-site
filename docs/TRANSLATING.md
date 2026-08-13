@@ -6,6 +6,8 @@ This page is everything you need to translate a page. No prior work on MoaV requ
 
 **Currently open:** Farsi (فارسی) and Russian (Русский). Want to add another language? [Open an issue](https://github.com/MotherofallVPNs/moav-site/issues) and we'll set it up.
 
+<img src="https://raw.githubusercontent.com/MotherofallVPNs/MoaV/refs/heads/chart/translation-coverage.svg" alt="Documentation translation coverage by language" loading="lazy">
+
 ## Pick a page
 
 Start at the top. These are ordered by how many people they reach.
