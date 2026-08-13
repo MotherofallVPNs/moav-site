@@ -58,9 +58,13 @@ The deep guide for anyone — human or AI agent — working in the repo is [`AGE
 
 Two layers, and they answer different questions.
 
+<a href="https://github.com/MotherofallVPNs/MoaV/tree/main/tests">
+  <img src="https://raw.githubusercontent.com/MotherofallVPNs/MoaV/refs/heads/chart/test-suites.svg" alt="MoaV test suites in CI over time" loading="lazy">
+</a>
+
 ### CI — fast, on every push
 
-Runs on GitHub-hosted runners in a couple of minutes: `shellcheck`, a parse check on every script, `docker compose config`, Go tests for the DNS router, and **22 bash suites**.
+Runs on GitHub-hosted runners in a couple of minutes: `shellcheck`, a parse check on every script, `docker compose config`, Go tests for the DNS router, and the **bash suites charted above** — over forty of them.
 
 Each suite is named after the bug class it pins rather than the file it tests — `reality-desync-test`, `wg-keygen-fallback-test`, `entrypoint-strict-test`, `state-perms-test`, `uuid-capture-test`. That naming is deliberate: the suite reads as a list of ways MoaV has broken before and can't break again.
 

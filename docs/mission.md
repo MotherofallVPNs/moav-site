@@ -4,6 +4,18 @@ MoaV, Mother of all VPNs, is open-source resilient connectivity infrastructure f
 
 MoaV is not trying to be another commercial VPN brand. It is a public-interest deployment stack for people who need the open internet to keep working under pressure.
 
+## The talk
+
+**Rage-coding the Mother of all VPNs** — [Shayan Eskandari](https://github.com/shayanb) at DappCon 2026, Berlin. Why MoaV exists, what it takes to keep sixteen protocols working under pressure, and what was learned building it.
+
+<!-- referrerpolicy must not be no-referrer: YouTube reads the origin to load
+     a public embed and answers Error 153 without it. -->
+<div class="moav-embed">
+  <iframe src="https://www.youtube.com/embed/uYygWN1MZDE" title="Rage-coding the Mother of all VPNs — Shayan Eskandari, DappCon 2026" loading="lazy" referrerpolicy="strict-origin-when-cross-origin" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+</div>
+
+<p><a href="https://www.youtube.com/watch?v=uYygWN1MZDE">Watch on YouTube</a></p>
+
 ## Why MoaV exists
 
 Internet shutdowns and protocol blocking are now routine tools of control. During protests, crackdowns, elections, and conflicts, governments can throttle bandwidth, block popular apps, fingerprint VPN protocols, and isolate people from the outside world.
