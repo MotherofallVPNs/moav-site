@@ -354,72 +354,24 @@ None of this says where anyone went. It is the same information you would need t
 - **DNS queries per user.**
 - **Message, packet, or payload contents.** MoaV never sees inside a tunnel.
 
-Until 2.2.0 one exception existed and was not intentional: a third-party exporter shipped in the monitoring profile stored `client IP × destination hostname` for the full retention window. It is dropped before storage as of 2.2.0. If you ran monitoring on an earlier version, that data is on disk until it ages out — see [Purging old monitoring data](#purging-old-monitoring-data).
+Until 2.2.0 one exception existed and was not intentional: a third-party monitoring exporter stored `client IP × destination hostname` (389,324 series, 83% of the database, on every monitored server), and sing-box logged the same pairing to disk. Both are fixed at the source in 2.2.0 — the exporter is removed, and destinations are stripped from the log before it is written. Audit and decisions: [MoaV#297](https://github.com/MotherofallVPNs/MoaV/issues/297); implementation: [MoaV#298](https://github.com/MotherofallVPNs/MoaV/pull/298). If you ran monitoring earlier, that data is on disk until it ages out — see [Purging old monitoring data](#purging-old-monitoring-data).
 
 ### Optional: site analytics
 
-!!! info "Why these settings exist"
-    These switches were added in 2.2.0 after an audit found the monitoring stack
-    was storing **client IP x destination hostname** — 389,324 series, 83% of the
-    metrics database, kept for 15 days, on every server running the monitoring
-    profile. No dashboard ever read it; it was the default behaviour of a
-    third-party exporter MoaV shipped. The same pairing was also in sing-box's
-    own log, on *every* server.
-
-    Both are fixed at the source, and the settings below are the deliberate,
-    opt-in replacement: they answer *what is this proxy used for* without ever
-    producing a client identifier.
-
-    Full audit and decisions: [MoaV#297](https://github.com/MotherofallVPNs/MoaV/issues/297) ·
-    implementation: [MoaV#298](https://github.com/MotherofallVPNs/MoaV/pull/298)
-
-Off unless you set `ENABLE_SITE_ANALYTICS=true`. It answers *what is this proxy used for* without touching who did it:
+`ENABLE_SITE_ANALYTICS=true` answers *what is this proxy used for* without recording who did it:
 
 - domains only, folded to the registrable name (`edge-42.example-cdn.net` → `example-cdn.net`)
-- a domain is named only after **at least 5 distinct clients** have reached it in the hour; everything below that is counted under `other`
-- ranked by how many people used a domain, not by bytes
-- **no client identifier is ever emitted** — not dropped afterwards, never produced
+- a domain is named only after `SITE_ANALYTICS_MIN_CLIENTS` (5) distinct clients have reached it in a bucket; below that it counts under `other`
+- ranked by distinct clients, not bytes
+- no client identifier is ever produced — not filtered afterwards, never created
+- counters advance once per bucket (`SITE_ANALYTICS_BUCKET_SECONDS`, default 1h), so the timeline cannot be aligned against the per-user connection counts published every scrape
+- destination country comes from resolving each named domain through sing-box's own DNS cache, then a local GeoIP lookup; only threshold-clearing domains are resolved and no query goes anywhere the traffic had not already gone. `other` is never resolved, so it shows as `unknown`.
 
-Measured on a real server, that threshold discards 94% of *domains* while still attributing about 89% of *traffic* — because the median domain is visited by exactly one person, and that one-person domain is the part that identifies them.
+`ENABLE_SITE_ANALYTICS_RESEARCH=true` adds destination port and protocol. Separate switch: a rare port is more identifying than a popular domain.
 
-**The limit worth understanding:** on a server with very few active users, even aggregates leak. If three people are online, "someone reached this domain" narrows to three. Small populations cannot be anonymised by thresholds alone. That is why this is opt-in rather than default.
+**Why k≥5 and hourly buckets:** the median domain has exactly one client, so a lower threshold or a per-scrape timeline would name individuals — a site spike lined up against one user's connection count re-links them to that destination. Measured on a real server, k≥5 drops 94% of domains while still attributing ~89% of traffic. On a server with very few users even aggregates leak, so this is opt-in.
 
-`ENABLE_SITE_ANALYTICS_RESEARCH=true` additionally records destination port and protocol. It is a separate switch because a rare port identifies far more than a popular domain does.
-
-#### Why the chart steps once an hour
-
-The exporter sees traffic continuously but **deliberately does not expose it that way**.
-
-Per-user connection counts *are* published every scrape — operators need them for quota and abuse handling. If site traffic were published at the same resolution, the two could be lined up: a spike on `example.com` at 03:14:22 next to a spike on one user's connections at 03:14:22 re-links that user to that destination, which is exactly what this whole design removes. On a quiet server with one active user, the match is unambiguous.
-
-So the counters advance once per bucket, after the k-anonymity gate has been applied to the finished bucket. The staircase is the guarantee made visible, not a rendering artifact.
-
-`SITE_ANALYTICS_BUCKET_SECONDS` controls it. Shortening it buys timeline resolution and costs twice: correlation gets easier, and fewer distinct clients accumulate per bucket so more sites fall under the threshold into `other`.
-
-#### If too much lands under "other"
-
-Widen the bucket; do not lower the threshold.
-
-`SITE_ANALYTICS_MIN_CLIENTS` is the anonymity guarantee — lowering it to 3 means three people's shared browsing is enough to name a domain, and on a small server that is close to naming an individual.
-
-`SITE_ANALYTICS_BUCKET_SECONDS` costs nothing in anonymity. A longer bucket gathers more distinct clients per site, so more sites clear the *same* threshold, and every named site is still backed by at least that many people. The only cost is timeline resolution: the chart steps once per bucket.
-
-The **Threshold Cost** panel tells you whether it would help. It reports how many sites were folded and the largest client count among them; if that sits just under the threshold, a wider bucket will name those sites without weakening anything.
-
-Measured on two live servers at 1-hour buckets, roughly a quarter to a third of bytes land under `other`. That is the threshold working, not a fault.
-
-#### Where the destination country comes from
-
-The chart of destination countries needs an IP, and sing-box reports one only when the client dialed an IP literal rather than a name — a small minority of connections. So once an hour MoaV asks **sing-box's own resolver** for the address of each domain that already cleared the threshold, and looks that address up in the local GeoIP file.
-
-What that means in practice:
-
-- **Only threshold-clearing domains are ever looked up.** At least 5 distinct clients reached them, so the list of names resolved points at no individual. Everything under `other` is never resolved and shows as `unknown`.
-- **Nothing new is exposed.** sing-box resolved these same names moments earlier to carry the traffic, through the same resolver, and answers come from its cache. No lookup reveals a domain the server did not already visit on a user's behalf.
-- **At most 25 new lookups per hour**, cached for the life of the process. In steady state it is zero.
-- **The GeoIP lookup itself is a local file read.** The database is refreshed monthly by `geoip-updater`; that is the only outbound request, and it is unrelated to any lookup.
-
-The `unknown` slice is the honest coverage gap, not missing data. And a CDN's country is where its nearest edge sits, not where the service lives.
+**Tuning:** if too much lands under `other`, widen `SITE_ANALYTICS_BUCKET_SECONDS`, don't lower `SITE_ANALYTICS_MIN_CLIENTS`. A longer bucket gathers more distinct clients per site, so more sites clear the same threshold with no loss of anonymity; the only cost is timeline resolution. The **Threshold Cost** panel shows how many sites were folded and how close the nearest miss came.
 
 ### How long anything survives
 
