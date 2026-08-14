@@ -1,5 +1,10 @@
 # MoaV Monitoring Stack
 
+!!! info "What gets recorded"
+
+    Monitoring keeps per-user **volume and liveness** — never which sites anyone visited. Site analytics are a separate, opt-in switch with a k-anonymity threshold. See [What MoaV Records](OPSEC.md#what-moav-records) before enabling this on a server with real users.
+
+
 Real-time observability for your MoaV deployment with Grafana dashboards.
 
 <video class="moav-demo" controls preload="none" poster="https://moav.sh/demos/grafana-dashboards.jpg">

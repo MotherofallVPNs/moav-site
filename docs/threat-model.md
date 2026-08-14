@@ -4,6 +4,8 @@ MoaV is useful because it improves access resilience. It does not make every use
 
 This page explains what MoaV is designed to protect, what it does not protect, and what operators should assume before deploying it.
 
+**What the server stores about users:** volume and liveness per user, never a link between a user and a destination. The full policy, including what an operator can optionally switch on and the limits of anonymising a small population, is in [What MoaV Records](OPSEC.md#what-moav-records).
+
 ## Who MoaV is meant to help
 
 MoaV is designed for:

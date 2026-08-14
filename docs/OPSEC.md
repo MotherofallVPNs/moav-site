@@ -323,6 +323,86 @@ moav doctor net   # sysctl + packet drops + PMTU + CGNAT + per-interface MTU
 
 ---
 
+## What MoaV Records
+
+The most reliable protection for your users is data that was never written down. A server cannot be compelled to hand over, and an attacker cannot steal, a link that does not exist on it.
+
+This is what MoaV keeps, what it refuses to keep, and how long any of it survives.
+
+### The rule
+
+**No metric, log, or label ever links a user to a destination.** A user identifier means a client IP, username, public key, UUID, or session ID. A destination means a hostname, IP, or the port they reached.
+
+This holds regardless of retention period, aggregation, or who is asking.
+
+### Recorded by default
+
+Monitoring, when you enable it, keeps **volume and liveness per user**:
+
+| recorded | example | why an operator needs it |
+|---|---|---|
+| username, public key | `alice`, `k8U6+…` | matching a bundle to a person you issued it to |
+| bytes up / down | `4.2 GB` | quotas, spotting an account being resold |
+| last handshake, active state | `2m ago` | is this user connected right now |
+| country of the **user's** connection | `IR` | which networks your server is reaching |
+
+None of this says where anyone went. It is the same information you would need to run any VPN responsibly.
+
+### Never recorded
+
+- **Which sites a user visited.** No metric pairs a user with a destination.
+- **DNS queries per user.**
+- **Message, packet, or payload contents.** MoaV never sees inside a tunnel.
+
+Until 2.2.0 one exception existed and was not intentional: a third-party exporter shipped in the monitoring profile stored `client IP × destination hostname` for the full retention window. It is dropped before storage as of 2.2.0. If you ran monitoring on an earlier version, that data is on disk until it ages out — see [Purging old monitoring data](#purging-old-monitoring-data).
+
+### Optional: site analytics
+
+Off unless you set `ENABLE_SITE_ANALYTICS=true`. It answers *what is this proxy used for* without touching who did it:
+
+- domains only, folded to the registrable name (`edge-42.example-cdn.net` → `example-cdn.net`)
+- a domain is named only after **at least 5 distinct clients** have reached it in the hour; everything below that is counted under `other`
+- ranked by how many people used a domain, not by bytes
+- **no client identifier is ever emitted** — not dropped afterwards, never produced
+
+Measured on a real server, that threshold discards 94% of *domains* while still attributing about 89% of *traffic* — because the median domain is visited by exactly one person, and that one-person domain is the part that identifies them.
+
+**The limit worth understanding:** on a server with very few active users, even aggregates leak. If three people are online, "someone reached this domain" narrows to three. Small populations cannot be anonymised by thresholds alone. That is why this is opt-in rather than default.
+
+`ENABLE_SITE_ANALYTICS_RESEARCH=true` additionally records destination port and protocol. It is a separate switch because a rare port identifies far more than a popular domain does.
+
+### How long anything survives
+
+| data | retention |
+|---|---|
+| Prometheus metrics | 15 days, or 2 GB, whichever comes first |
+| Container logs | 10 MB per container, 3 files |
+| systemd journal | capped at 200 MB (see below) |
+| User bundles in `outputs/` | until you delete them — they contain working credentials |
+
+The journal is not capped by default on most distributions; it grows to 10% of the disk. On a small VPS:
+
+```bash
+sudo sed -i 's/^#\?SystemMaxUse=.*/SystemMaxUse=200M/' /etc/systemd/journald.conf
+sudo systemctl restart systemd-journald
+sudo journalctl --vacuum-size=200M
+```
+
+### Purging old monitoring data
+
+If you ran monitoring before 2.2.0 and would rather not wait 15 days:
+
+```bash
+cd /opt/moav
+docker compose stop prometheus
+docker volume rm moav_moav_prometheus     # deletes ALL metrics history
+docker compose up -d prometheus
+```
+
+This drops every metric, not only the sensitive one — dashboards start from empty. Waiting for the retention window to expire achieves the same thing without losing your history.
+
+---
+
 ## For Users
 
 ### Device Security
