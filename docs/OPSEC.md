@@ -371,12 +371,47 @@ Measured on a real server, that threshold discards 94% of *domains* while still 
 
 `ENABLE_SITE_ANALYTICS_RESEARCH=true` additionally records destination port and protocol. It is a separate switch because a rare port identifies far more than a popular domain does.
 
+#### Why the chart steps once an hour
+
+The exporter sees traffic continuously but **deliberately does not expose it that way**.
+
+Per-user connection counts *are* published every scrape — operators need them for quota and abuse handling. If site traffic were published at the same resolution, the two could be lined up: a spike on `example.com` at 03:14:22 next to a spike on one user's connections at 03:14:22 re-links that user to that destination, which is exactly what this whole design removes. On a quiet server with one active user, the match is unambiguous.
+
+So the counters advance once per bucket, after the k-anonymity gate has been applied to the finished bucket. The staircase is the guarantee made visible, not a rendering artifact.
+
+`SITE_ANALYTICS_BUCKET_SECONDS` controls it. Shortening it buys timeline resolution and costs twice: correlation gets easier, and fewer distinct clients accumulate per bucket so more sites fall under the threshold into `other`.
+
+#### If too much lands under "other"
+
+Widen the bucket; do not lower the threshold.
+
+`SITE_ANALYTICS_MIN_CLIENTS` is the anonymity guarantee — lowering it to 3 means three people's shared browsing is enough to name a domain, and on a small server that is close to naming an individual.
+
+`SITE_ANALYTICS_BUCKET_SECONDS` costs nothing in anonymity. A longer bucket gathers more distinct clients per site, so more sites clear the *same* threshold, and every named site is still backed by at least that many people. The only cost is timeline resolution: the chart steps once per bucket.
+
+The **Threshold Cost** panel tells you whether it would help. It reports how many sites were folded and the largest client count among them; if that sits just under the threshold, a wider bucket will name those sites without weakening anything.
+
+Measured on two live servers at 1-hour buckets, roughly a quarter to a third of bytes land under `other`. That is the threshold working, not a fault.
+
+#### Where the destination country comes from
+
+The chart of destination countries needs an IP, and sing-box reports one only when the client dialed an IP literal rather than a name — a small minority of connections. So once an hour MoaV asks **sing-box's own resolver** for the address of each domain that already cleared the threshold, and looks that address up in the local GeoIP file.
+
+What that means in practice:
+
+- **Only threshold-clearing domains are ever looked up.** At least 5 distinct clients reached them, so the list of names resolved points at no individual. Everything under `other` is never resolved and shows as `unknown`.
+- **Nothing new is exposed.** sing-box resolved these same names moments earlier to carry the traffic, through the same resolver, and answers come from its cache. No lookup reveals a domain the server did not already visit on a user's behalf.
+- **At most 25 new lookups per hour**, cached for the life of the process. In steady state it is zero.
+- **The GeoIP lookup itself is a local file read.** The database is refreshed monthly by `geoip-updater`; that is the only outbound request, and it is unrelated to any lookup.
+
+The `unknown` slice is the honest coverage gap, not missing data. And a CDN's country is where its nearest edge sits, not where the service lives.
+
 ### How long anything survives
 
 | data | retention |
 |---|---|
-| Prometheus metrics | 15 days, or 2 GB, whichever comes first |
-| Container logs | 10 MB per container, 3 files |
+| Prometheus metrics | `PROMETHEUS_RETENTION_TIME` (90 days) or `PROMETHEUS_RETENTION_SIZE` (2 GB), whichever comes first |
+| Container logs | `LOG_MAX_SIZE` x `LOG_MAX_FILES` per container (10 MB x 3) |
 | systemd journal | capped at 200 MB (see below) |
 | User bundles in `outputs/` | until you delete them — they contain working credentials |
 
