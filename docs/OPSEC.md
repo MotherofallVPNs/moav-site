@@ -358,6 +358,21 @@ Until 2.2.0 one exception existed and was not intentional: a third-party exporte
 
 ### Optional: site analytics
 
+!!! info "Why these settings exist"
+    These switches were added in 2.2.0 after an audit found the monitoring stack
+    was storing **client IP x destination hostname** — 389,324 series, 83% of the
+    metrics database, kept for 15 days, on every server running the monitoring
+    profile. No dashboard ever read it; it was the default behaviour of a
+    third-party exporter MoaV shipped. The same pairing was also in sing-box's
+    own log, on *every* server.
+
+    Both are fixed at the source, and the settings below are the deliberate,
+    opt-in replacement: they answer *what is this proxy used for* without ever
+    producing a client identifier.
+
+    Full audit and decisions: [MoaV#297](https://github.com/MotherofallVPNs/MoaV/issues/297) ·
+    implementation: [MoaV#298](https://github.com/MotherofallVPNs/MoaV/pull/298)
+
 Off unless you set `ENABLE_SITE_ANALYTICS=true`. It answers *what is this proxy used for* without touching who did it:
 
 - domains only, folded to the registrable name (`edge-42.example-cdn.net` → `example-cdn.net`)

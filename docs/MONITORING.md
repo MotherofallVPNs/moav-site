@@ -2,7 +2,7 @@
 
 !!! info "What gets recorded"
 
-    Monitoring keeps per-user **volume and liveness** — never which sites anyone visited. Site analytics are a separate, opt-in switch with a k-anonymity threshold. See [What MoaV Records](OPSEC.md#what-moav-records) before enabling this on a server with real users.
+    Monitoring keeps per-user **volume and liveness** — never which sites anyone visited. Site analytics are a separate, opt-in switch with a k-anonymity threshold. See [What MoaV Records](OPSEC.md#what-moav-records) before enabling this on a server with real users. The reason these switches exist is [MoaV#297](https://github.com/MotherofallVPNs/MoaV/issues/297) — an audit that found the monitoring stack storing client IP against destination hostname.
 
 
 Real-time observability for your MoaV deployment with Grafana dashboards.
