@@ -64,7 +64,7 @@ CDN mode fronts VLESS+WebSocket behind a CDN, so the client appears to talk to C
 How you express those two facts differs per provider, which is the next section. Verifying it works is the same everywhere: see [CDN returns 521 / 525](#troubleshooting).
 
 !!! note "CDN links are off until you turn them on"
-    `ENABLE_CDN=false` is the default, because a CDN link generated before the CDN is actually fronting traffic looks valid to the user and cannot connect. Set `ENABLE_CDN=true` in `.env` once the steps below are done, then confirm with `moav doctor dns` — it checks the record is *proxied*, not merely resolving.
+    `ENABLE_CDN=false` is the default, because a CDN link generated before the CDN is actually fronting traffic looks valid to the user and cannot connect. Set `ENABLE_CDN=true` in `.env` once the steps below are done. On Cloudflare, `moav doctor dns` confirms the record is *proxied*, not merely resolving; on CloudFront use the `curl` verify in that tab instead (`moav doctor dns` does not recognise CloudFront yet).
 
 ## Provider setup
 
@@ -83,9 +83,18 @@ The records are the same everywhere; only the UI differs. Cloudflare additionall
 === "AWS CloudFront"
     An alternative CDN that **needs no domain** — you get a `*.cloudfront.net` name automatically. CloudFront rejects bare-IP origins, so use free wildcard DNS: `YOUR_IP.sslip.io` (pure DNS, no traffic passes through it).
 
+    **First, confirm the origin is reachable.** CloudFront connects to your server over the public internet on 2082, so that has to work before AWS is in the picture:
+    ```bash
+    curl -so /dev/null -w "%{http_code}\n" http://YOUR_IP:2082/x
+    ```
+    `400` or `404` means sing-box is answering — proceed. A timeout or refused means a firewall or cloud security-group is blocking 2082; fix that first, or CloudFront will just report the origin down.
+
     ??? example "Create the distribution (console or CLI)"
         **Origin:** `YOUR_IP.sslip.io`, HTTP only, port **2082**.
         **Behavior:** viewer protocol **HTTPS only**; methods **GET,HEAD,OPTIONS,PUT,POST,PATCH,DELETE**; **CachePolicy = CachingDisabled**, **OriginRequestPolicy = AllViewer** (these two forward the WebSocket upgrade headers — omitting them causes `bad "Sec-WebSocket-Key" header`). `PriceClass_200`+ includes Middle East / Asia edges.
+
+        !!! warning "The console's Review screen hides the origin port"
+            This is the single most common mistake. The **Review and create** page shows the origin domain but **not** its protocol or port, and the console defaults a custom origin to **HTTPS / 443**. Your origin is plain **HTTP on 2082**. Before creating (or via the origin's **Edit** afterward), confirm **Protocol: HTTP only** and **HTTP port: 2082**. Left at 443, CloudFront gets connection-refused and every request returns `502`.
 
         CLI create (replace the IP); the same two policy IDs also fix an existing distribution that's missing them:
         ```bash
@@ -110,7 +119,19 @@ The records are the same everywhere; only the UI differs. Cloudflare additionall
     CDN_SNI=d123.cloudfront.net
     CDN_TRANSPORT=ws
     ```
-    `moav bootstrap`, then verify: `curl -so /dev/null -w "%{http_code}" https://d123.cloudfront.net/x` → `400`. AWS blocked domain fronting in 2018, so the SNI must be your distribution/CNAME. You can run Cloudflare **and** CloudFront together for redundancy.
+    `moav bootstrap`, then wait for the distribution to finish deploying (~10-15 min — the console shows a timestamp instead of *Deploying*; testing earlier gives misleading errors) and verify:
+    ```bash
+    curl -so /dev/null -w "%{http_code}\n" https://d123.cloudfront.net/x
+    ```
+    `400` **or** `404` means it works end to end (CloudFront → origin:2082 → sing-box; `/x` is just not the secret path). `502`/`504` means CloudFront can't reach the origin — recheck the origin port (see the warning above) and the firewall. `403` means the SNI does not match the distribution: AWS blocked domain fronting in 2018, so `CDN_SNI` must be your `*.cloudfront.net` name (or a CNAME you attached), never the root domain.
+
+    !!! note "`moav doctor dns` does not recognise CloudFront yet"
+        Its CDN check looks for a Cloudflare `cf-ray` header and reports **NOT proxied** for anything else — so it false-fails a working CloudFront setup. Ignore that one line for CloudFront and trust the `curl` above; the rest of `moav doctor dns` is still accurate. ([tracking issue](https://github.com/MotherofallVPNs/MoaV/issues))
+
+    You can run Cloudflare **and** CloudFront together for redundancy.
+
+    !!! info "Origin exposure"
+        With CloudFront the origin's `2082` is reachable directly on the public internet, and the CloudFront-to-origin leg is plain HTTP. User traffic stays safe (VLESS encrypts inside the WebSocket), but the *existence* of a WS endpoint on `2082` is visible to a scanner. To hide it, restrict inbound `2082` to [CloudFront's origin-facing IP ranges](https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/LocationsOfEdgeServers.html) in your cloud security group.
 
 ## Verify
 
