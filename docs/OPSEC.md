@@ -323,6 +323,88 @@ moav doctor net   # sysctl + packet drops + PMTU + CGNAT + per-interface MTU
 
 ---
 
+## What MoaV Records
+
+The most reliable protection for your users is data that was never written down. A server cannot be compelled to hand over, and an attacker cannot steal, a link that does not exist on it.
+
+This is what MoaV keeps, what it refuses to keep, and how long any of it survives.
+
+### The rule
+
+**No metric, log, or label ever links a user to a destination.** A user identifier means a client IP, username, public key, UUID, or session ID. A destination means a hostname, IP, or the port they reached.
+
+This holds regardless of retention period, aggregation, or who is asking.
+
+### Recorded by default
+
+Monitoring, when you enable it, keeps **volume and liveness per user**:
+
+| recorded | example | why an operator needs it |
+|---|---|---|
+| username, public key | `alice`, `k8U6+…` | matching a bundle to a person you issued it to |
+| bytes up / down | `4.2 GB` | quotas, spotting an account being resold |
+| last handshake, active state | `2m ago` | is this user connected right now |
+| country of the **user's** connection | `IR` | which networks your server is reaching |
+
+None of this says where anyone went. It is the same information you would need to run any VPN responsibly.
+
+### Never recorded
+
+- **Which sites a user visited.** No metric pairs a user with a destination.
+- **DNS queries per user.**
+- **Message, packet, or payload contents.** MoaV never sees inside a tunnel.
+
+Until 2.2.0 one exception existed and was not intentional: a third-party monitoring exporter stored `client IP × destination hostname` (389,324 series, 83% of the database, on every monitored server), and sing-box logged the same pairing to disk. Both are fixed at the source in 2.2.0 — the exporter is removed, and destinations are stripped from the log before it is written. Audit and decisions: [MoaV#297](https://github.com/MotherofallVPNs/MoaV/issues/297); implementation: [MoaV#298](https://github.com/MotherofallVPNs/MoaV/pull/298). If you ran monitoring earlier, that data is on disk until it ages out — see [Purging old monitoring data](#purging-old-monitoring-data).
+
+### Optional: site analytics
+
+`ENABLE_SITE_ANALYTICS=true` answers *what is this proxy used for* without recording who did it:
+
+- domains only, folded to the registrable name (`edge-42.example-cdn.net` → `example-cdn.net`)
+- a domain is named only after `SITE_ANALYTICS_MIN_CLIENTS` (5) distinct clients have reached it in a bucket; below that it counts under `other`
+- ranked by distinct clients, not bytes
+- no client identifier is ever produced — not filtered afterwards, never created
+- counters advance once per bucket (`SITE_ANALYTICS_BUCKET_SECONDS`, default 1h), so the timeline cannot be aligned against the per-user connection counts published every scrape
+- destination country comes from resolving each named domain through sing-box's own DNS cache, then a local GeoIP lookup; only threshold-clearing domains are resolved and no query goes anywhere the traffic had not already gone. `other` is never resolved, so it shows as `unknown`.
+
+`ENABLE_SITE_ANALYTICS_RESEARCH=true` adds destination port and protocol. Separate switch: a rare port is more identifying than a popular domain.
+
+**Why k≥5 and hourly buckets:** the median domain has exactly one client, so a lower threshold or a per-scrape timeline would name individuals — a site spike lined up against one user's connection count re-links them to that destination. Measured on a real server, k≥5 drops 94% of domains while still attributing ~89% of traffic. On a server with very few users even aggregates leak, so this is opt-in.
+
+**Tuning:** if too much lands under `other`, widen `SITE_ANALYTICS_BUCKET_SECONDS`, don't lower `SITE_ANALYTICS_MIN_CLIENTS`. A longer bucket gathers more distinct clients per site, so more sites clear the same threshold with no loss of anonymity; the only cost is timeline resolution. The **Threshold Cost** panel shows how many sites were folded and how close the nearest miss came.
+
+### How long anything survives
+
+| data | retention |
+|---|---|
+| Prometheus metrics | `PROMETHEUS_RETENTION_TIME` (90 days) or `PROMETHEUS_RETENTION_SIZE` (2 GB), whichever comes first |
+| Container logs | `LOG_MAX_SIZE` x `LOG_MAX_FILES` per container (10 MB x 3) |
+| systemd journal | capped at 200 MB (see below) |
+| User bundles in `outputs/` | until you delete them — they contain working credentials |
+
+The journal is not capped by default on most distributions; it grows to 10% of the disk. On a small VPS:
+
+```bash
+sudo sed -i 's/^#\?SystemMaxUse=.*/SystemMaxUse=200M/' /etc/systemd/journald.conf
+sudo systemctl restart systemd-journald
+sudo journalctl --vacuum-size=200M
+```
+
+### Purging old monitoring data
+
+If you ran monitoring before 2.2.0 and would rather not wait 15 days:
+
+```bash
+cd /opt/moav
+docker compose stop prometheus
+docker volume rm moav_moav_prometheus     # deletes ALL metrics history
+docker compose up -d prometheus
+```
+
+This drops every metric, not only the sensitive one — dashboards start from empty. Waiting for the retention window to expire achieves the same thing without losing your history.
+
+---
+
 ## For Users
 
 ### Device Security
