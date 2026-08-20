@@ -100,6 +100,8 @@ Point your domain to your server **before** running setup.
 
 **Important:** For Cloudflare users, the main `@` record must be **DNS only** (gray cloud). Only the `cdn` record should be **Proxied** (orange cloud).
 
+**CDN mode** (fronting VLESS+WebSocket behind Cloudflare or AWS CloudFront) has its own full walkthrough — including the CloudFront distribution setup — in [DNS → CDN mode](DNS.md#cdn-mode). It is off by default (`ENABLE_CDN=false`).
+
 See [DNS.md](DNS.md) for provider-specific instructions.
 
 **Verify DNS is working:**
