@@ -107,6 +107,7 @@ plugins:
             Home: خانه
             Quick Start: شروع سریع
             Video Tutorials: آموزش‌های ویدیویی
+            Supported Protocols: پروتکل‌های پشتیبانی‌شده
         - locale: ru
           name: Русский
           build: true
