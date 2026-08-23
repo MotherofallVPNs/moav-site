@@ -76,5 +76,6 @@ See the [Supported Protocols](protocols.md) reference for what each one is and w
 
 Full documentation — configuration reference, architecture, plugin rules, and per-protocol dial details — lives in the repo:
 
+- **[The moav:// bundle](moav-bundle.md)** — the compact subscription the client imports.
 - **Repository:** [github.com/MotherofallVPNs/moav-client](https://github.com/MotherofallVPNs/moav-client)
 - **README:** install, config, and CLI reference (available in [English](https://github.com/MotherofallVPNs/moav-client/blob/main/README.md) and [فارسی](https://github.com/MotherofallVPNs/moav-client/blob/main/README-fa.md))
