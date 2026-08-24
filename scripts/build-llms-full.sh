@@ -26,6 +26,7 @@ PAGES=(
   video-tutorials.md
   CLIENTS.md
   client.md
+  moav-bundle.md
   mahsanet.md
   CLI.md
   MONITORING.md
