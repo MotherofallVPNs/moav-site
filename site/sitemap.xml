@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Sitemap index: the landing page + the MkDocs-generated docs sitemap.
+     Submit this single URL (https://moav.sh/sitemap.xml) in Search Console. -->
+<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <sitemap>
+    <loc>https://moav.sh/sitemap-pages.xml</loc>
+  </sitemap>
+  <sitemap>
+    <loc>https://moav.sh/docs/sitemap.xml</loc>
+  </sitemap>
+</sitemapindex>

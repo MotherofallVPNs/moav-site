@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Hand-maintained sitemap for the landing page (the docs pages live in
+     /docs/sitemap.xml, referenced from sitemap.xml). -->
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url>
+    <loc>https://moav.sh/</loc>
+    <lastmod>2026-08-26</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+  </url>
+</urlset>

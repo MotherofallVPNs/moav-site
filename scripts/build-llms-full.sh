@@ -32,6 +32,7 @@ PAGES=(
   MONITORING.md
   TROUBLESHOOTING.md
   OPSEC.md
+  decoy.md
   support.md
   development.md
   TRANSLATING.md
