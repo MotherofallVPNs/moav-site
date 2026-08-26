@@ -162,9 +162,10 @@
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <!-- display=optional: the browser shows the metric-matched fallback and does
-         NOT swap the webfont in mid-view, which removes the on-load layout shift. -->
-    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Inter:wght@300;400;500;600;700&display=optional" rel="stylesheet">
+    <!-- display=swap so JetBrains Mono reliably loads (the ASCII diagram needs its
+         crisp box-drawing). The metric-matched Inter fallback below keeps the swap
+         from shifting layout. -->
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
     <link rel="stylesheet" href="style.css">
 </head>
@@ -694,9 +695,9 @@ nano .env  # Set DOMAIN, ACME_EMAIL, ADMIN_PASSWORD
                                 <button class="copy-btn" data-target="step2-code">Copy</button>
                             </div>
                             <pre id="step2-code">moav                   # Interactive menu
-moav start             # Start services
-moav user add joe      # Add a user
-moav update            # Update MoaV</pre>
+moav status            # Service status &amp; health
+moav doctor            # Diagnose common issues
+moav help              # All commands</pre>
                         </div>
                         <p class="step-note">After installation, use <code>moav</code> from anywhere. Run <code>moav help</code> for all commands.</p>
                     </div>

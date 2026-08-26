@@ -19,8 +19,17 @@ document.addEventListener('DOMContentLoaded', () => {
 function initSupportFab() {
     const fab = document.querySelector('.support-fab');
     if (!fab) return;
+    const support = document.getElementById('support');
     const onScroll = () => {
-        fab.classList.toggle('visible', window.scrollY > window.innerHeight * 0.9);
+        const pastFirstScreen = window.scrollY > window.innerHeight * 0.9;
+        // hide it once you actually reach the Support section, so it doesn't
+        // sit on top of the thing it points to
+        let atSupport = false;
+        if (support) {
+            const r = support.getBoundingClientRect();
+            atSupport = r.top < window.innerHeight * 0.6 && r.bottom > 0;
+        }
+        fab.classList.toggle('visible', pastFirstScreen && !atSupport);
     };
     window.addEventListener('scroll', onScroll, { passive: true });
     onScroll();

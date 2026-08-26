@@ -147,6 +147,7 @@ body {
 
 .hero-content {
     text-align: center;
+    width: 100%;
     max-width: 900px;
     position: relative;
     z-index: 1;
@@ -956,10 +957,12 @@ body.modal-open {
     margin: 0 auto;
     -webkit-overflow-scrolling: touch;
     overscroll-behavior-x: contain;
-    /* keep the box-drawing grid crisp and aligned: no ligatures, no kerning */
+    /* keep the box-drawing grid crisp and aligned: no ligatures, no kerning,
+       and snap to the pixel grid so vertical lines don't drift on mobile */
     font-variant-ligatures: none;
     font-feature-settings: "liga" 0, "calt" 0;
     font-kerning: none;
+    text-rendering: optimizeSpeed;
 }
 
 /* Diagram colour coding */
@@ -1249,68 +1252,91 @@ body.modal-open {
     background: var(--gradient-bg);
 }
 
+/* Same separated-tile treatment as the Why cards */
 .support-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 24px;
-    margin-bottom: 48px;
+    grid-template-columns: repeat(3, 1fr);
+    align-items: stretch;
+    gap: 16px;
+    max-width: 1040px;
+    margin: 0 auto 48px;
 }
 
-.support-card {
-    background: var(--bg-card);
-    border: 1px solid rgba(255, 255, 255, 0.05);
+.support-card,
+.support-card.action {
+    position: relative;
+    display: grid;
+    grid-template-columns: 40px 1fr;
+    column-gap: 14px;
+    row-gap: 8px;
+    align-content: start;
+    padding: 22px 20px;
+    background: var(--bg-secondary);
+    border: 1px solid rgba(255, 255, 255, 0.06);
     border-radius: var(--border-radius);
-    padding: 32px;
-    text-align: center;
+    text-align: left;
     text-decoration: none;
     color: inherit;
-    transition: var(--transition);
+    transition: transform var(--transition), box-shadow var(--transition), border-color var(--transition), background var(--transition);
 }
 
 .support-card:hover {
-    border-color: rgba(255, 255, 255, 0.1);
-    transform: translateY(-2px);
+    transform: scale(1.04);
+    z-index: 2;
+    background: var(--bg-tertiary);
+    border-color: rgba(0, 212, 255, 0.3);
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.45);
+}
+
+.support-card::after {
+    content: '\2197';
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    font-size: 14px;
+    line-height: 1;
+    color: var(--accent-cyan);
+    opacity: 0;
+    transform: translateX(-3px);
+    transition: opacity var(--transition), transform var(--transition);
+}
+
+.support-card:hover::after {
+    opacity: 0.9;
+    transform: translateX(0);
 }
 
 .support-icon {
-    width: 64px;
-    height: 64px;
-    border-radius: 50%;
+    grid-row: span 2;
+    align-self: start;
+    width: 40px;
+    height: 40px;
+    border-radius: var(--border-radius-sm);
     display: flex;
     align-items: center;
     justify-content: center;
-    margin: 0 auto 20px;
+    margin: 0;
 }
 
-/* Action card icon colors */
-.support-icon.share {
-    background: linear-gradient(135deg, var(--accent-cyan), #00a8cc);
-    color: white;
-}
+.support-icon svg { width: 20px; height: 20px; }
 
-.support-icon.code {
-    background: linear-gradient(135deg, var(--accent-purple), #5a3fd6);
-    color: white;
-}
-
-.support-icon.test {
-    background: linear-gradient(135deg, var(--accent-green), #00cc88);
-    color: var(--bg-primary);
-}
-
-.support-card.action {
-    display: block;
-}
+/* keep the per-action colour cue, but as a quiet tint */
+.support-icon.share { background: var(--accent-cyan-dim); color: var(--accent-cyan); }
+.support-icon.code  { background: var(--accent-purple-dim); color: var(--accent-purple); }
+.support-icon.test  { background: rgba(0, 255, 136, 0.12); color: var(--accent-green); }
 
 .support-card h3 {
-    font-size: 18px;
-    margin-bottom: 8px;
+    grid-column: 2;
+    align-self: center;
+    font-size: 15px;
+    margin-bottom: 0;
 }
 
 .support-card p {
-    font-size: 14px;
+    grid-column: 2;
+    font-size: 13px;
     color: var(--text-secondary);
-    line-height: 1.6;
+    line-height: 1.55;
 }
 
 /* Donate section - compact inline style */
@@ -1495,6 +1521,7 @@ body.modal-open {
 @media (prefers-reduced-motion: reduce) {
     .donate-icon svg { transition: none; }
     .why-card:hover,
+    .support-card:hover,
     .ar-row:hover .ar-ico { transform: none; }
 }
 
