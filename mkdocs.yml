@@ -71,6 +71,7 @@ nav:
     - Troubleshooting: TROUBLESHOOTING.md
   - Security:
     - OPSEC Guide: OPSEC.md
+    - The Decoy Website: decoy.md
   - Support MoaV: support.md
 
   - Developer:

@@ -9,7 +9,22 @@ document.addEventListener('DOMContentLoaded', () => {
     initTypingAnimation();
     initDemoVideos();
     initDemoModal();
+    initSupportFab();
 });
+
+/* =============================================================================
+   Floating "Support the project" button: reveal after the first screen
+   ============================================================================= */
+
+function initSupportFab() {
+    const fab = document.querySelector('.support-fab');
+    if (!fab) return;
+    const onScroll = () => {
+        fab.classList.toggle('visible', window.scrollY > window.innerHeight * 0.9);
+    };
+    window.addEventListener('scroll', onScroll, { passive: true });
+    onScroll();
+}
 
 /* =============================================================================
    Network Background Animation

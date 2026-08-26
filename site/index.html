@@ -216,13 +216,17 @@
             </div>
 
             <div class="cta-buttons">
-                <a href="https://github.com/MotherofallVPNs/moav" class="btn btn-primary">
+                <a href="https://github.com/MotherofallVPNs/moav" class="btn btn-primary" target="_blank" rel="noopener">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
                         <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
                     </svg>
                     View on GitHub
                 </a>
-                <a href="/docs/" class="btn btn-secondary">
+                <a href="/docs/" class="btn btn-secondary" target="_blank" rel="noopener">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/>
+                        <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>
+                    </svg>
                     Documentation
                 </a>
             </div>
@@ -636,7 +640,12 @@
             <p class="section-subtitle">From zero to running in minutes. Use the one-liner or manual setup.</p>
 
             <div class="ai-hint">
-                <span>Or let an AI agent do it:</span>
+                <a class="ai-hint-lead" href="https://moav.sh/docs/ai-agent/">
+                    <svg class="ai-hint-ico" width="15" height="15" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M12 2l1.8 5.4a2 2 0 0 0 1.3 1.3L20.5 10.5l-5.4 1.8a2 2 0 0 0-1.3 1.3L12 19l-1.8-5.4a2 2 0 0 0-1.3-1.3L3.5 10.5l5.4-1.8a2 2 0 0 0 1.3-1.3z"/>
+                    </svg>
+                    Or let an AI agent do it
+                </a>
                 <code id="ai-prompt">Set up MoaV on my Linux server. Guide: moav.sh/llms.txt</code>
                 <button class="copy-btn" data-target="ai-prompt" title="Copy prompt">
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -644,7 +653,6 @@
                         <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
                     </svg>
                 </button>
-                <a class="ai-hint-link" href="https://moav.sh/docs/ai-agent/">Learn more</a>
             </div>
 
             <div class="steps">
@@ -783,19 +791,19 @@ moav update            # Update MoaV</pre>
                 <div class="ar-group">Stealth &amp; proxy</div>
 
                 <div class="ar-row">
-                    <div class="ar-name"><span class="ar-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M12 8v4M12 16h.01"/></svg></span>sing-box</div>
-                    <div class="ar-desc">Reality (VLESS), Trojan, AnyTLS, Hysteria2 and Shadowsocks-2022 in one engine. Traffic mimics real TLS or QUIC and resists active probing; Reality and Shadowsocks need no domain, and CDN mode fronts through Cloudflare or AWS CloudFront when the server IP is blocked.</div>
+                    <div class="ar-name"><span class="ar-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M12 8v4M12 16h.01"/></svg></span><a class="ar-link" href="https://github.com/SagerNet/sing-box" target="_blank" rel="noopener">sing-box</a></div>
+                    <div class="ar-desc">The universal proxy platform. Reality (VLESS), Trojan, AnyTLS, Hysteria2 and Shadowsocks-2022 in one engine. Traffic mimics real TLS or QUIC; CDN mode routes traffic through Cloudflare or AWS CloudFront.</div>
                     <div class="ar-ports"><code>443/tcp</code><code>443/udp</code><code>8443/tcp</code><code>8445/tcp</code><code>8388/tcp+udp</code><code>CDN</code></div>
                 </div>
 
                 <div class="ar-row">
-                    <div class="ar-name"><span class="ar-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 4h20M2 10h20M2 16h20"/><path d="M12 2v20"/></svg></span>Xray</div>
-                    <div class="ar-desc">VLESS over the XHTTP transport with Reality TLS camouflage. Multiplexed HTTP requests look like ordinary web browsing, and no domain is required.</div>
+                    <div class="ar-name"><span class="ar-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 4h20M2 10h20M2 16h20"/><path d="M12 2v20"/></svg></span><a class="ar-link" href="https://github.com/XTLS/Xray-core" target="_blank" rel="noopener">Xray</a></div>
+                    <div class="ar-desc">Penetrates Everything. VLESS over the XHTTP transport with Reality TLS camouflage, and more.</div>
                     <div class="ar-ports"><code>2096/tcp</code><code>Xray-core</code></div>
                 </div>
 
                 <div class="ar-row">
-                    <div class="ar-name"><span class="ar-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/><path d="M8 10h8M8 14h4"/></svg></span>Telegram MTProxy</div>
+                    <div class="ar-name"><span class="ar-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/><path d="M8 10h8M8 14h4"/></svg></span><a class="ar-link" href="https://github.com/telemt/telemt" target="_blank" rel="noopener">Telegram MTProxy</a></div>
                     <div class="ar-desc">Fake-TLS V2 proxy for direct Telegram access when it is blocked. Emulates real TLS on the IMAPS port, with 17+ anti-DPI tuning knobs and no domain needed.</div>
                     <div class="ar-ports"><code>993/tcp</code></div>
                 </div>
@@ -803,19 +811,19 @@ moav update            # Update MoaV</pre>
                 <div class="ar-group">Full VPN</div>
 
                 <div class="ar-row">
-                    <div class="ar-name"><span class="ar-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2a10 10 0 1 0 10 10H12V2z"/><path d="M20 12a8 8 0 0 0-8-8"/></svg></span>WireGuard</div>
+                    <div class="ar-name"><span class="ar-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2a10 10 0 1 0 10 10H12V2z"/><path d="M20 12a8 8 0 0 0-8-8"/></svg></span><a class="ar-link" href="https://www.wireguard.com/" target="_blank" rel="noopener">WireGuard</a></div>
                     <div class="ar-desc">Fast kernel-level WireGuard. Direct UDP, or tunneled over WebSocket (wss/TLS) with wstunnel when UDP is blocked.</div>
                     <div class="ar-ports"><code>51820/udp</code><code>8080/tcp</code></div>
                 </div>
 
                 <div class="ar-row">
-                    <div class="ar-name"><span class="ar-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2a10 10 0 1 0 10 10H12V2z"/><path d="M20 12a8 8 0 0 0-8-8"/><path d="M8 12h8M12 8v8" stroke-width="1" opacity="0.5"/></svg></span>AmneziaWG</div>
+                    <div class="ar-name"><span class="ar-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2a10 10 0 1 0 10 10H12V2z"/><path d="M20 12a8 8 0 0 0-8-8"/><path d="M8 12h8M12 8v8" stroke-width="1" opacity="0.5"/></svg></span><a class="ar-link" href="https://github.com/amnezia-vpn/amneziawg-go" target="_blank" rel="noopener">AmneziaWG</a></div>
                     <div class="ar-desc">Obfuscated WireGuard that defeats DPI with junk packets, randomized handshake timing and modified headers. Same speed, no fingerprint.</div>
                     <div class="ar-ports"><code>51821/udp</code></div>
                 </div>
 
                 <div class="ar-row">
-                    <div class="ar-name"><span class="ar-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M9 12l2 2 4-4"/></svg></span>TrustTunnel</div>
+                    <div class="ar-name"><span class="ar-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M9 12l2 2 4-4"/></svg></span><a class="ar-link" href="https://github.com/TrustTunnel/TrustTunnel" target="_blank" rel="noopener">TrustTunnel</a></div>
                     <div class="ar-desc">Full tunnel over HTTP/2 and HTTP/3 (QUIC). Carries all traffic while looking exactly like normal HTTPS to deep packet inspection.</div>
                     <div class="ar-ports"><code>4443/tcp+udp</code></div>
                 </div>
@@ -823,13 +831,13 @@ moav update            # Update MoaV</pre>
                 <div class="ar-group">Last-resort tunnels</div>
 
                 <div class="ar-row">
-                    <div class="ar-name"><span class="ar-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></span>DNS Tunnels</div>
+                    <div class="ar-name"><span class="ar-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></span><a class="ar-link" href="https://moav.sh/docs/protocols/#dns-tunnels" target="_blank" rel="noopener">DNS Tunnels</a></div>
                     <div class="ar-desc">Four tunnels (dnstt, Slipstream, MasterDNS, XDNS) share port 53 via dns-router, routed by subdomain. Slow but resilient, they keep messaging alive during shutdowns when DNS is all that still resolves.</div>
                     <div class="ar-ports"><code>53/udp</code><code>dns-router</code></div>
                 </div>
 
                 <div class="ar-row">
-                    <div class="ar-name"><span class="ar-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></span><span class="ar-title">GooseRelay<span class="ar-tag">Experimental</span></span></div>
+                    <div class="ar-name"><span class="ar-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></span><span class="ar-title"><a class="ar-link" href="https://github.com/kianmhz/GooseRelayVPN" target="_blank" rel="noopener">GooseRelay</a><span class="ar-tag">Experimental</span></span></div>
                     <div class="ar-desc">SOCKS5 domain-fronted through a Google Apps Script you deploy, so it looks like traffic to google.com. AES-256-GCM end to end. Survives when the server IP is blocked but Google is reachable.</div>
                     <div class="ar-ports"><code>8444/tcp</code><code>via Google</code></div>
                 </div>
@@ -837,19 +845,19 @@ moav update            # Update MoaV</pre>
                 <div class="ar-group" id="donate">Donate bandwidth</div>
 
                 <div class="ar-row">
-                    <div class="ar-name"><span class="ar-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg></span>Psiphon Conduit</div>
+                    <div class="ar-name"><span class="ar-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg></span><a class="ar-link" href="https://github.com/Psiphon-Inc/conduit" target="_blank" rel="noopener">Psiphon Conduit</a></div>
                     <div class="ar-desc">Donate bandwidth to the Psiphon network. Psiphon app users worldwide, including in Iran, are brokered through your server automatically.</div>
                     <div class="ar-ports"><code>Psiphon Network</code></div>
                 </div>
 
                 <div class="ar-row">
-                    <div class="ar-name"><span class="ar-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="3"/><path d="M12 1v6M12 17v6M4.22 4.22l4.24 4.24M15.54 15.54l4.24 4.24M1 12h6M17 12h6M4.22 19.78l4.24-4.24M15.54 8.46l4.24-4.24"/></svg></span>Tor Snowflake</div>
+                    <div class="ar-name"><span class="ar-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="3"/><path d="M12 1v6M12 17v6M4.22 4.22l4.24 4.24M15.54 15.54l4.24 4.24M1 12h6M17 12h6M4.22 19.78l4.24-4.24M15.54 8.46l4.24-4.24"/></svg></span><a class="ar-link" href="https://snowflake.torproject.org/" target="_blank" rel="noopener">Tor Snowflake</a></div>
                     <div class="ar-desc">Run a Snowflake proxy and donate bandwidth to Tor, helping users in censored regions reach the Tor network.</div>
                     <div class="ar-ports"><code>Tor Network</code></div>
                 </div>
 
                 <div class="ar-row">
-                    <div class="ar-name"><span class="ar-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></span>MahsaNet</div>
+                    <div class="ar-name"><span class="ar-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></span><a class="ar-link" href="https://www.mahsaserver.com/" target="_blank" rel="noopener">MahsaNet</a></div>
                     <div class="ar-desc">Donate your MoaV configs (Reality, Hysteria2, Trojan, CDN) to the MahsaNG network, reaching Mahsa VPN's 12M+ users.</div>
                     <div class="ar-ports"><code>config donation</code></div>
                 </div>
@@ -999,7 +1007,7 @@ moav update            # Update MoaV</pre>
                 <div class="footer-links">
                     <a href="https://github.com/MotherofallVPNs/moav">GitHub</a>
                     <a href="https://moav.sh/docs/">Docs</a>
-                    <a href="https://moav.sh/docs/client/">Client</a>
+                    <a href="https://github.com/MotherofallVPNs/moav-client">Client</a>
                     <a href="https://x.com/motherofallvpns" target="_blank" rel="noopener">X</a>
                     <a href="https://t.me/motherofallvpns" target="_blank" rel="noopener">Telegram</a>
                     <a href="https://github.com/MotherofallVPNs/moav/blob/main/LICENSE">License</a>
@@ -1031,6 +1039,12 @@ moav update            # Update MoaV</pre>
             </video>
         </div>
     </div>
+
+    <!-- Floating support button: appears after the first screen -->
+    <a class="support-fab" href="#support" aria-label="Support the project" title="Support the project">
+        <img src="assets/logo.png" alt="">
+        <span class="support-fab-label">Support the project</span>
+    </a>
 
     <script src="script.js"></script>
 </body>
