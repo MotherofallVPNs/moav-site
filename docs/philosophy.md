@@ -99,7 +99,7 @@ Three of the donation paths MoaV bundles are not for you. They are for everyone 
 
 **[Tor Snowflake](https://snowflake.torproject.org/)** does the same for Tor. Your server becomes a Tor bridge, a relay that Tor users can connect to when the public ones are blocked. You're not an exit node; you're handling the first step for someone who otherwise can't reach the network at all.
 
-**[MahsaNet](mahsanet.md)** is the MahsaNG peer network, and it's worth understanding what makes it different. It's not just a relay pool, it's a distribution channel. When you donate your server config to MahsaNet, you're publishing your server's address and credentials to a network that MahsaNG users can query directly from the app. No diaspora contact required. No Telegram group to find. The app discovers your server automatically, the moment it's needed. MahsaNG has its own distribution infrastructure that already reaches the 2 million+ people using the app.
+**[MahsaNet](mahsanet.md)** is the MahsaNG peer network, and it's worth understanding what makes it different. It's not just a relay pool, it's a distribution channel. When you donate your server config to MahsaNet, you're publishing your server's address and credentials to a network that MahsaNG users can query directly from the app. No diaspora contact required. No Telegram group to find. The app discovers your server automatically, the moment it's needed. MahsaNG has its own distribution infrastructure that already reaches the 12 million+ people using the app.
 
 The marginal cost is bandwidth, a few dollars a month at most on a standard VPS plan. The marginal impact is someone being able to say they're alive.
 
@@ -138,7 +138,7 @@ If you have a VPS and want to help:
 1. **[Deploy MoaV](quick-start.md)** and share access with people who need it.
 2. **[Enable Conduit](support.md#donate-bandwidth-instead-of-users)** to relay bandwidth for Psiphon users worldwide.
 3. **[Enable Snowflake](support.md#donate-bandwidth-instead-of-users)** to relay bandwidth for Tor users.
-4. **[Donate configs to MahsaNet](mahsanet.md)** so 2M+ MahsaNG users discover your server automatically.
+4. **[Donate configs to MahsaNet](mahsanet.md)** so 12M+ MahsaNG users discover your server automatically.
 5. **[Contribute code](https://github.com/MotherofallVPNs/moav)**: fix bugs, add protocols, improve documentation.
 
 ## Sources & Further Reading

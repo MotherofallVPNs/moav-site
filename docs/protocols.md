@@ -244,7 +244,7 @@ Bandwidth donation to the Tor network. Acts as a Snowflake proxy, helping Tor us
 
 ### MahsaNet
 
-Config donation to [MahsaServer.com](https://www.mahsaserver.com/), a decentralized VPN config sharing platform for the [Mahsa VPN](https://www.mahsaserver.com/) app. With over 2 million users in Iran, Mahsa VPN connects to donated VPN configurations from servers worldwide. Unlike Conduit and Snowflake (which donate bandwidth), MahsaNet donates your server's VPN config links — Mahsa VPN users then connect directly to your server.
+Config donation to [MahsaServer.com](https://www.mahsaserver.com/), a decentralized VPN config sharing platform for the [Mahsa VPN](https://www.mahsaserver.com/) app. With over 12 million users in Iran, Mahsa VPN connects to donated VPN configurations from servers worldwide. Unlike Conduit and Snowflake (which donate bandwidth), MahsaNet donates your server's VPN config links — Mahsa VPN users then connect directly to your server.
 
 - **Supported protocols:** Reality (VLESS), Hysteria2, Trojan, CDN (VLESS+WS)
 - **Clients:** [Mahsa VPN](https://www.mahsaserver.com/) app (Android, iOS)

@@ -3,6 +3,18 @@
    Theme: Dark, futuristic, freedom-focused
    ============================================================================= */
 
+/* Metric-matched fallback for Inter: the fallback occupies the same space as
+   Inter, so when the webfont swaps in there is no reflow (no layout jump on
+   load). Values from the standard Inter/Arial size-adjust set. */
+@font-face {
+    font-family: 'Inter Fallback';
+    src: local('Arial');
+    ascent-override: 90.00%;
+    descent-override: 22.43%;
+    line-gap-override: 0.00%;
+    size-adjust: 107.40%;
+}
+
 /* Screen-reader only: visible to crawlers/LLMs but not to users */
 .sr-only {
     position: absolute;
@@ -40,7 +52,7 @@
 
     /* Typography */
     --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
-    --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    --font-sans: 'Inter', 'Inter Fallback', -apple-system, BlinkMacSystemFont, sans-serif;
 
     /* Spacing */
     --container-width: 1200px;
@@ -365,47 +377,36 @@ section {
 .arsenal {
     max-width: 900px;
     margin: 0 auto;
-    border: 1px solid rgba(255, 255, 255, 0.07);
-    border-radius: var(--border-radius);
-    overflow: hidden;
-    background: var(--bg-card);
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
 }
 
+/* each protocol is its own slightly-separated card */
 .ar-row {
-    position: relative;
     display: flex;
     align-items: flex-start;
     gap: 24px;
-    padding: 16px 24px;
-    border-top: 1px solid rgba(255, 255, 255, 0.05);
-    transition: background var(--transition);
+    padding: 16px 22px;
+    background: var(--bg-card);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: var(--border-radius-sm);
+    transition: background var(--transition), border-color var(--transition);
 }
 
-.ar-row:first-child { border-top: none; }
-
-/* left accent bar grows in on hover */
-.ar-row::before {
-    content: '';
-    position: absolute;
-    left: 0;
-    top: 0;
-    bottom: 0;
-    width: 2px;
-    background: var(--accent-cyan);
-    transform: scaleY(0);
-    transition: transform var(--transition);
+.ar-row:hover {
+    background: var(--bg-tertiary);
+    border-color: rgba(0, 212, 255, 0.30);
 }
 
-.ar-row:hover { background: rgba(255, 255, 255, 0.02); }
-.ar-row:hover::before { transform: scaleY(1); }
-
+/* column labels and group headings are plain labels, not cards */
 .ar-head {
+    padding: 2px 22px 0;
     font-family: var(--font-mono);
     font-size: 11px;
     letter-spacing: 0.06em;
     text-transform: uppercase;
     color: var(--text-muted);
-    background: rgba(255, 255, 255, 0.015);
 }
 
 .ar-group {
@@ -414,15 +415,19 @@ section {
     letter-spacing: 0.08em;
     text-transform: uppercase;
     color: var(--accent-cyan);
-    padding: 15px 24px 9px;
-    border-top: 1px solid rgba(255, 255, 255, 0.05);
-    background: rgba(0, 212, 255, 0.03);
+    padding: 8px 22px 0;
 }
 
-.ar-head::before,
-.ar-cta::before { display: none; }
-.ar-head:hover,
-.ar-cta:hover { background: none; }
+.ar-head,
+.ar-head:hover {
+    background: none;
+    border-color: transparent;
+}
+
+.ar-cta:hover {
+    background: rgba(123, 92, 255, 0.08);
+    border-color: rgba(123, 92, 255, 0.4);
+}
 
 .ar-name {
     flex: 0 0 208px;
@@ -553,7 +558,7 @@ section {
 .why-grid {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
-    align-items: start;
+    align-items: stretch;
     gap: 16px;
     max-width: 1040px;
     margin: 0 auto;
