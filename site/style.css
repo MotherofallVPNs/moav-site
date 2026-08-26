@@ -940,7 +940,6 @@ body.modal-open {
     font-variant-ligatures: none;
     font-feature-settings: "liga" 0, "calt" 0;
     font-kerning: none;
-    text-rendering: optimizeSpeed;
     -webkit-text-size-adjust: 100%;
     text-size-adjust: 100%;
 }
