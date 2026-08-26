@@ -202,7 +202,9 @@ function initCopyButtons() {
 
             if (!targetElement) return;
 
-            const text = targetElement.textContent.trim();
+            // Prefer the stored full command so copy works even while the
+            // terminal is still typing it out.
+            const text = (targetElement.dataset.fullCmd || targetElement.textContent).trim();
 
             try {
                 await navigator.clipboard.writeText(text);
@@ -272,6 +274,9 @@ function initTypingAnimation() {
     const fullText = commandElement.textContent;
     const typingSpeed = 50; // ms per character
     const startDelay = 1000; // Wait before starting
+
+    // Stash the full command so the copy button always copies all of it.
+    commandElement.dataset.fullCmd = fullText;
 
     // Clear and prepare for animation
     commandElement.textContent = '';
