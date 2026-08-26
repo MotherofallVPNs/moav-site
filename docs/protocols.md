@@ -101,15 +101,47 @@ Fast kernel-level VPN. Simple, audited, and widely supported. Direct UDP connect
 - **Port:** 51820/udp
 - **Engine:** [sing-box](https://github.com/SagerNet/sing-box) + [wstunnel](https://github.com/erebe/wstunnel)
 - **Clients:** WireGuard app (all platforms)
-- **Note:** Easily fingerprinted by DPI. Use AmneziaWG or wstunnel variant in censored networks.
+- **Note:** Easily fingerprinted by DPI, so in a censored network it typically **fails to connect at all**. Use [AmneziaWG](#amneziawg) (obfuscation) or the wstunnel variant (UDP blocked) instead.
 
 ### AmneziaWG
 
-Obfuscated WireGuard variant designed to resist common DPI signatures. Adds junk packets, changes handshake timing, and modifies header fields to avoid detection.
+Obfuscated WireGuard variant designed to resist DPI. It keeps WireGuard's speed and cryptography but disguises the traffic so it no longer looks like WireGuard on the wire. This is the protocol to reach for when plain WireGuard is fingerprinted and blocked.
 
 - **Port:** 51821/udp
-- **Engine:** [amneziawg-tools](https://github.com/amnezia-vpn/amneziawg-tools)
-- **Clients:** AmneziaVPN (iOS, Android, macOS, Windows, Linux)
+- **Engine:** [amneziawg-go](https://github.com/amnezia-vpn/amneziawg-go) (userspace) + [amneziawg-tools](https://github.com/amnezia-vpn/amneziawg-tools)
+- **Clients:** the dedicated **[AmneziaWG app](https://docs.amnezia.org/documentation/amnezia-wg/)** (recommended — supports every obfuscation parameter) or the **AmneziaVPN** app. Import the `.conf` from your user bundle or scan its QR.
+
+#### How the obfuscation works
+
+Plain WireGuard is trivial to fingerprint: fixed handshake sizes (148/92 bytes), a static message-type header, and clockwork timing. AmneziaWG erases those tells in two layers.
+
+**Layer 1 — always on.** This is what makes the traffic *not look like WireGuard*, and it defeats the large majority of signature-based blocking:
+
+- `Jc` / `Jmin` / `Jmax` — junk packets sent *before* the handshake, so the first packet is no longer a recognizable WireGuard handshake.
+- `S1` / `S2` — random junk prepended to the handshake init/response, so they are no longer the tell-tale 148/92 bytes.
+- `H1`–`H4` — the four fixed WireGuard message-type headers replaced with random values.
+
+**Layer 2 — optional (`AMNEZIAWG_HEADER_PROTECTION`, default off).** A newer set that protects *every* packet, aimed at aggressive statistical/ML DPI rather than simple signatures:
+
+- `HeaderProtectionKey` — encrypts the header of every packet (data included), removing the per-packet fingerprint that survives Layer 1.
+- `ContentPaddingAddition` / `RandomTrailers` — pad payloads and append random trailing bytes so packet sizes don't form a recognizable distribution.
+
+> **Compatibility trade-off.** Layer 2 only works if the client supports it. The dedicated AmneziaWG app does; the **AmneziaVPN app's `.conf` importer currently drops these keys**, so a bundle imported there **connects but relays no traffic**. MoaV keeps Layer 2 **off by default** — both apps work, and Layer 1 already defeats most DPI. Turn it on only when every client uses the AmneziaWG app:
+>
+> ```bash
+> # .env
+> AMNEZIAWG_HEADER_PROTECTION=true
+> ```
+>
+> One interface has a single obfuscation profile, so after changing this you must re-issue bundles (`moav regenerate-users`) — otherwise client and server disagree on the wire format and every tunnel goes silent.
+
+**Which layer do I need?**
+
+- *No / light censorship:* Layer 1 is already more than enough.
+- *Signature-based VPN blocking (most censored networks):* Layer 1 — the sweet spot.
+- *Aggressive DPI (active probing + traffic-shape analysis):* Layer 2, with the AmneziaWG app on every client.
+
+If the app says **Connected** but nothing loads, that is almost always a Layer 2 mismatch — see [AmneziaWG connects but no traffic](TROUBLESHOOTING.md#amneziawg-connects-but-no-traffic).
 
 ### WireGuard (wstunnel)
 
