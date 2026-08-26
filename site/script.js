@@ -417,22 +417,35 @@ function initDemoVideos() {
     demoBoxes.forEach(box => {
         const video = box.querySelector('.demo-video');
         const container = box.querySelector('.demo-video-container');
-
         if (!video || !container) return;
 
-        // Check if video can be loaded
-        video.addEventListener('loadeddata', () => {
-            container.classList.add('video-loaded');
-        });
-
-        video.addEventListener('error', () => {
-            // Video failed to load, placeholder will show
-            container.classList.remove('video-loaded');
-        });
-
-        // Try to load the video
-        video.load();
+        // Show the poster straight away (hides the "coming soon" placeholder);
+        // the actual .webm is only fetched once the box scrolls into view.
+        container.classList.add('video-loaded');
+        video.addEventListener('error', () => container.classList.remove('video-loaded'));
     });
+
+    // Defer the heavy .webm files: play only while a demo is on screen, pause
+    // otherwise. Nothing downloads until you scroll to the "See It In Action"
+    // section, which keeps the initial (mobile) page load light.
+    if (!('IntersectionObserver' in window)) return;
+    const io = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            const video = entry.target.querySelector('.demo-video');
+            if (!video) return;
+            if (entry.isIntersecting) {
+                // set the real source the first time the demo comes into view
+                if (!video.src && video.dataset.src) {
+                    video.src = video.dataset.src;
+                }
+                video.play().catch(() => {});
+            } else {
+                video.pause();
+            }
+        });
+    }, { rootMargin: '200px 0px' });
+
+    demoBoxes.forEach(box => io.observe(box));
 }
 
 /* =============================================================================
