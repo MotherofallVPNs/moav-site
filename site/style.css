@@ -442,6 +442,14 @@ section {
 .ar-head .ar-name,
 .ar-head .ar-ports { font-weight: 400; color: var(--text-muted); }
 
+/* name + tag stacked, so the tag never widens the column or shifts the desc */
+.ar-title {
+    display: inline-flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 5px;
+}
+
 .ar-tag {
     font-family: var(--font-mono);
     font-size: 9px;
