@@ -234,11 +234,11 @@
             <p class="section-subtitle">Internet access is a human right. MoaV exists because censorship shouldn't.</p>
 
             <div class="why-intro">
-                <p>When governments shut down the internet, people lose access to news, banking, healthcare, and contact with family. MoaV provides <strong>16+ fallback protocols</strong> so when some are blocked, others keep working. <br>Run your own server, share with trusted people, or donate bandwidth for a global internet access.</p>
+                <p>When a government throttles or shuts down the internet, people lose access to news, banking, healthcare, and family. MoaV turns a single server into a censorship-resistant gateway that runs <strong>16+ circumvention protocols</strong> at once, so the moment one is blocked, traffic fails over to another automatically. <br>Run it for yourself, share access with people you trust, or donate spare bandwidth to networks that reach millions living under shutdowns.</p>
             </div>
 
             <div class="why-grid">
-                <div class="why-card">
+                <a class="why-card" href="#quickstart">
                     <div class="why-icon">
                         <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
                             <path d="M18 8h1a4 4 0 0 1 0 8h-1M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8zM6 1v3M10 1v3M14 1v3"/>
@@ -246,7 +246,7 @@
                     </div>
                     <h3>Deploy in Minutes</h3>
                     <p>Single command setup. Docker Compose handles the rest. No manual configuration needed.</p>
-                </div>
+                </a>
 
                 <div class="why-card">
                     <div class="why-icon">
@@ -260,6 +260,30 @@
                     <p>Create, revoke, and manage users independently. Each user gets unique credentials.</p>
                 </div>
 
+                <a class="why-card" href="#architecture">
+                    <div class="why-icon">
+                        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                            <polygon points="12 2 2 7 12 12 22 7 12 2"/>
+                            <polyline points="2 17 12 22 22 17"/>
+                            <polyline points="2 12 12 17 22 12"/>
+                        </svg>
+                    </div>
+                    <h3>Protocol Fallback</h3>
+                    <p>If one protocol is blocked, others automatically take over. Multiple layers of redundancy.</p>
+                </a>
+
+                <a class="why-card" href="#clients">
+                    <div class="why-icon">
+                        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                            <rect x="2" y="3" width="20" height="14" rx="2" ry="2"/>
+                            <line x1="8" y1="21" x2="16" y2="21"/>
+                            <line x1="12" y1="17" x2="12" y2="21"/>
+                        </svg>
+                    </div>
+                    <h3>Cross-Platform</h3>
+                    <p>Works with popular clients on iOS, Android, macOS, Windows, and Linux.</p>
+                </a>
+
                 <div class="why-card">
                     <div class="why-icon">
                         <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
@@ -272,31 +296,7 @@
                     <p>All traffic looks like normal HTTPS, WebSocket, DNS, or IMAPS. Decoy website included.</p>
                 </div>
 
-                <div class="why-card">
-                    <div class="why-icon">
-                        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-                            <polygon points="12 2 2 7 12 12 22 7 12 2"/>
-                            <polyline points="2 17 12 22 22 17"/>
-                            <polyline points="2 12 12 17 22 12"/>
-                        </svg>
-                    </div>
-                    <h3>Protocol Fallback</h3>
-                    <p>If one protocol is blocked, others automatically take over. Multiple layers of redundancy.</p>
-                </div>
-
-                <div class="why-card">
-                    <div class="why-icon">
-                        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-                            <rect x="2" y="3" width="20" height="14" rx="2" ry="2"/>
-                            <line x1="8" y1="21" x2="16" y2="21"/>
-                            <line x1="12" y1="17" x2="12" y2="21"/>
-                        </svg>
-                    </div>
-                    <h3>Cross-Platform</h3>
-                    <p>Works with popular clients on iOS, Android, macOS, Windows, and Linux.</p>
-                </div>
-
-                <div class="why-card">
+                <a class="why-card" href="https://github.com/MotherofallVPNs/moav" target="_blank" rel="noopener">
                     <div class="why-icon">
                         <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
                             <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/>
@@ -305,7 +305,7 @@
                     </div>
                     <h3>Open Source</h3>
                     <p>Fully transparent. Audit the code, contribute, or fork. MIT licensed.</p>
-                </div>
+                </a>
 
                 <div class="why-card">
                     <div class="why-icon">
@@ -578,7 +578,7 @@
             </div>
 
             <!-- Architecture Diagram -->
-            <div class="architecture-box">
+            <div class="architecture-box" id="architecture">
                 <h3>Architecture Overview</h3>
                 <div class="demo-placeholder large">
                     <pre class="architecture-ascii">
@@ -771,40 +771,40 @@ moav update            # Update MoaV</pre>
                 <div class="ar-group">Stealth &amp; proxy</div>
 
                 <div class="ar-row">
-                    <div class="ar-name"><span class="ar-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M12 8v4M12 16h.01"/></svg></span>Stealth Proxies (sing-box)</div>
-                    <div class="ar-desc">Reality (VLESS), Hysteria2, Trojan, AnyTLS, Shadowsocks-2022. Look like normal HTTPS or random bytes, active-probing resistant. CDN mode routes through Cloudflare when the IP is blocked.</div>
-                    <div class="ar-ports"><code>443/tcp</code><code>443/udp</code><code>8443/tcp</code><code>8388/tcp+udp</code><code>CDN</code></div>
+                    <div class="ar-name"><span class="ar-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M12 8v4M12 16h.01"/></svg></span>sing-box</div>
+                    <div class="ar-desc">Reality (VLESS), Trojan, AnyTLS, Hysteria2 and Shadowsocks-2022 in one engine. Traffic mimics real TLS or QUIC and resists active probing; Reality and Shadowsocks need no domain, and CDN mode fronts through Cloudflare or AWS CloudFront when the server IP is blocked.</div>
+                    <div class="ar-ports"><code>443/tcp</code><code>443/udp</code><code>8443/tcp</code><code>8445/tcp</code><code>8388/tcp+udp</code><code>CDN</code></div>
                 </div>
 
                 <div class="ar-row">
-                    <div class="ar-name"><span class="ar-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 4h20M2 10h20M2 16h20"/><path d="M12 2v20"/></svg></span>XHTTP (Xray)</div>
-                    <div class="ar-desc">Multiplexed HTTP requests with Reality TLS camouflage. Traffic looks like regular web browsing. No domain needed.</div>
+                    <div class="ar-name"><span class="ar-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 4h20M2 10h20M2 16h20"/><path d="M12 2v20"/></svg></span>Xray</div>
+                    <div class="ar-desc">VLESS over the XHTTP transport with Reality TLS camouflage. Multiplexed HTTP requests look like ordinary web browsing, and no domain is required.</div>
                     <div class="ar-ports"><code>2096/tcp</code><code>Xray-core</code></div>
                 </div>
 
                 <div class="ar-row">
                     <div class="ar-name"><span class="ar-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/><path d="M8 10h8M8 14h4"/></svg></span>Telegram MTProxy</div>
-                    <div class="ar-desc">Fake-TLS V2 proxy for direct Telegram access. Mimics IMAPS traffic, works without a domain.</div>
+                    <div class="ar-desc">Fake-TLS V2 proxy for direct Telegram access when it is blocked. Emulates real TLS on the IMAPS port, with 17+ anti-DPI tuning knobs and no domain needed.</div>
                     <div class="ar-ports"><code>993/tcp</code></div>
                 </div>
 
                 <div class="ar-group">Full VPN</div>
 
                 <div class="ar-row">
-                    <div class="ar-name"><span class="ar-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2a10 10 0 1 0 10 10H12V2z"/><path d="M20 12a8 8 0 0 0-8-8"/></svg></span>WireGuard VPN</div>
-                    <div class="ar-desc">Full VPN mode. Direct UDP, or tunneled over WebSocket (wstunnel) when UDP is blocked.</div>
+                    <div class="ar-name"><span class="ar-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2a10 10 0 1 0 10 10H12V2z"/><path d="M20 12a8 8 0 0 0-8-8"/></svg></span>WireGuard</div>
+                    <div class="ar-desc">Fast kernel-level WireGuard. Direct UDP, or tunneled over WebSocket (wss/TLS) with wstunnel when UDP is blocked.</div>
                     <div class="ar-ports"><code>51820/udp</code><code>8080/tcp</code></div>
                 </div>
 
                 <div class="ar-row">
                     <div class="ar-name"><span class="ar-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2a10 10 0 1 0 10 10H12V2z"/><path d="M20 12a8 8 0 0 0-8-8"/><path d="M8 12h8M12 8v8" stroke-width="1" opacity="0.5"/></svg></span>AmneziaWG</div>
-                    <div class="ar-desc">Obfuscated WireGuard that defeats deep packet inspection. Same speed, invisible to DPI filters.</div>
+                    <div class="ar-desc">Obfuscated WireGuard that defeats DPI with junk packets, randomized handshake timing and modified headers. Same speed, no fingerprint.</div>
                     <div class="ar-ports"><code>51821/udp</code></div>
                 </div>
 
                 <div class="ar-row">
                     <div class="ar-name"><span class="ar-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M9 12l2 2 4-4"/></svg></span>TrustTunnel</div>
-                    <div class="ar-desc">Full tunnel over HTTP/2 and QUIC. Carries all traffic while looking exactly like normal HTTPS to deep packet inspection.</div>
+                    <div class="ar-desc">Full tunnel over HTTP/2 and HTTP/3 (QUIC). Carries all traffic while looking exactly like normal HTTPS to deep packet inspection.</div>
                     <div class="ar-ports"><code>4443/tcp+udp</code></div>
                 </div>
 
@@ -812,33 +812,33 @@ moav update            # Update MoaV</pre>
 
                 <div class="ar-row">
                     <div class="ar-name"><span class="ar-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></span>DNS Tunnels</div>
-                    <div class="ar-desc">Last resort when everything else is blocked. Four tunnels (dnstt, Slipstream, MasterDNS, XDNS) run at once on port 53, fanned out by subdomain via dns-router.</div>
+                    <div class="ar-desc">Four tunnels (dnstt, Slipstream, MasterDNS, XDNS) share port 53 via dns-router, routed by subdomain. Slow but resilient, they keep messaging alive during shutdowns when DNS is all that still resolves.</div>
                     <div class="ar-ports"><code>53/udp</code><code>dns-router</code></div>
                 </div>
 
                 <div class="ar-row">
                     <div class="ar-name"><span class="ar-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></span>GooseRelay</div>
-                    <div class="ar-desc">SOCKS5 tunneled through a Google Apps Script you deploy in your own account, fronted as google.com. Survives when the server IP is blocked but Google is reachable. Opt-in.</div>
-                    <div class="ar-ports"><code>via Google</code><code>MahsaNG v16</code></div>
+                    <div class="ar-desc">SOCKS5 domain-fronted through a Google Apps Script you deploy, so it looks like traffic to google.com. AES-256-GCM end to end. Survives when the server IP is blocked but Google is reachable.</div>
+                    <div class="ar-ports"><code>8444/tcp</code><code>via Google</code></div>
                 </div>
 
                 <div class="ar-group">Donate bandwidth</div>
 
                 <div class="ar-row">
                     <div class="ar-name"><span class="ar-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg></span>Psiphon Conduit</div>
-                    <div class="ar-desc">Donate bandwidth to help others bypass censorship. Supports the global anti-censorship network.</div>
+                    <div class="ar-desc">Donate bandwidth to the Psiphon network. Psiphon app users worldwide, including in Iran, are brokered through your server automatically.</div>
                     <div class="ar-ports"><code>Psiphon Network</code></div>
                 </div>
 
                 <div class="ar-row">
                     <div class="ar-name"><span class="ar-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="3"/><path d="M12 1v6M12 17v6M4.22 4.22l4.24 4.24M15.54 15.54l4.24 4.24M1 12h6M17 12h6M4.22 19.78l4.24-4.24M15.54 8.46l4.24-4.24"/></svg></span>Tor Snowflake</div>
-                    <div class="ar-desc">Donate bandwidth to the Tor network. Help Tor users bypass censorship worldwide.</div>
+                    <div class="ar-desc">Run a Snowflake proxy and donate bandwidth to Tor, helping users in censored regions reach the Tor network.</div>
                     <div class="ar-ports"><code>Tor Network</code></div>
                 </div>
 
                 <div class="ar-row">
                     <div class="ar-name"><span class="ar-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></span>MahsaNet</div>
-                    <div class="ar-desc">Donate your MoaV configs to the MahsaNG network, reaching Mahsa VPN's 12M+ users in Iran. One command: <code>moav donate</code>.</div>
+                    <div class="ar-desc">Donate your MoaV configs (Reality, Hysteria2, Trojan, CDN) to the MahsaNG network, reaching Mahsa VPN's 12M+ users.</div>
                     <div class="ar-ports"><code>config donation</code></div>
                 </div>
 
@@ -981,15 +981,17 @@ moav update            # Update MoaV</pre>
             <div class="footer-content">
                 <div class="footer-brand">
                     <span class="footer-logo">MoaV</span>
-                    <p>Your network. Your rules.</p>
+                    <p>Be the infrastructure</p>
                 </div>
 
                 <div class="footer-links">
                     <a href="https://github.com/MotherofallVPNs/moav">GitHub</a>
-                    <a href="https://github.com/MotherofallVPNs/moav#documentation">Docs</a>
+                    <a href="https://moav.sh/docs/">Docs</a>
+                    <a href="https://x.com/motherofallvpns" target="_blank" rel="noopener">X</a>
                     <a href="https://t.me/motherofallvpns" target="_blank" rel="noopener">Telegram</a>
-                    <a href="https://github.com/MotherofallVPNs/moav/blob/main/CHANGELOG.md">Changelog</a>
                     <a href="https://github.com/MotherofallVPNs/moav/blob/main/LICENSE">License</a>
+                    <a href="https://moav.sh/llms.txt">llms.txt</a>
+                    <a href="https://moav.sh/llms-full.txt">llms-full.txt</a>
                 </div>
             </div>
 

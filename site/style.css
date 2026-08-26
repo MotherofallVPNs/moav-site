@@ -587,6 +587,31 @@ section {
     box-shadow: 0 12px 30px rgba(0, 0, 0, 0.45);
 }
 
+/* Cards that link somewhere: no underline, and a quiet arrow affordance */
+a.why-card {
+    text-decoration: none;
+    color: inherit;
+    cursor: pointer;
+}
+
+.why-card[href]::after {
+    content: '\2192';
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    font-size: 14px;
+    line-height: 1;
+    color: var(--accent-purple);
+    opacity: 0;
+    transform: translateX(-3px);
+    transition: opacity var(--transition), transform var(--transition);
+}
+
+.why-card[href]:hover::after {
+    opacity: 0.9;
+    transform: translateX(0);
+}
+
 .why-icon {
     grid-row: span 2;
     align-self: start;
