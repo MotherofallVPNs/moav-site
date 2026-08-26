@@ -162,7 +162,9 @@
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- display=optional: the browser shows the metric-matched fallback and does
+         NOT swap the webfont in mid-view, which removes the on-load layout shift. -->
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Inter:wght@300;400;500;600;700&display=optional" rel="stylesheet">
 
     <link rel="stylesheet" href="style.css">
 </head>
@@ -303,8 +305,8 @@
                             <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>
                         </svg>
                     </div>
-                    <h3>Open Source</h3>
-                    <p>Fully transparent. Audit the code, contribute, or fork. MIT licensed.</p>
+                    <h3>Open Source &amp; Self-Hosted</h3>
+                    <p>Fully transparent and self-hosted. Audit the code, fork it, or run your own; no third-party services, no data collection.</p>
                 </a>
 
                 <div class="why-card">
@@ -320,13 +322,11 @@
                 <div class="why-card">
                     <div class="why-icon">
                         <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-                            <rect x="2" y="7" width="20" height="14" rx="2"/>
-                            <path d="M16 7V4a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v3"/>
-                            <circle cx="12" cy="14" r="3"/>
+                            <path d="M18.178 8C19.732 8 21 9.343 21 11s-1.268 3-2.822 3c-1.14 0-2.02-.727-2.906-1.767L12 9l-3.272 3.233C7.842 13.273 6.962 14 5.822 14 4.268 14 3 12.657 3 11s1.268-3 2.822-3c1.14 0 2.02.727 2.906 1.767L12 13l3.272-3.233C16.158 8.727 17.038 8 18.178 8z"/>
                         </svg>
                     </div>
-                    <h3>Self-Hosted Freedom</h3>
-                    <p>Your server, your rules. No third-party services, no subscriptions, no data collection. Full control.</p>
+                    <h3>Forever Free</h3>
+                    <p>Free for everyone, always. No subscriptions, no accounts, no paywalls. MIT licensed.</p>
                 </div>
             </div>
         </div>
@@ -635,6 +635,18 @@
             <h2 class="section-title">Quick Start</h2>
             <p class="section-subtitle">From zero to running in minutes. Use the one-liner or manual setup.</p>
 
+            <div class="ai-hint">
+                <span>Or let an AI agent do it:</span>
+                <code id="ai-prompt">Set up MoaV on my Linux server. Guide: moav.sh/llms.txt</code>
+                <button class="copy-btn" data-target="ai-prompt" title="Copy prompt">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                        <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                    </svg>
+                </button>
+                <a class="ai-hint-link" href="https://moav.sh/docs/ai-agent/">Learn more</a>
+            </div>
+
             <div class="steps">
                 <div class="step">
                     <div class="step-number">1</div>
@@ -817,7 +829,7 @@ moav update            # Update MoaV</pre>
                 </div>
 
                 <div class="ar-row">
-                    <div class="ar-name"><span class="ar-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></span>GooseRelay</div>
+                    <div class="ar-name"><span class="ar-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></span>GooseRelay <span class="ar-tag">Experimental</span></div>
                     <div class="ar-desc">SOCKS5 domain-fronted through a Google Apps Script you deploy, so it looks like traffic to google.com. AES-256-GCM end to end. Survives when the server IP is blocked but Google is reachable.</div>
                     <div class="ar-ports"><code>8444/tcp</code><code>via Google</code></div>
                 </div>
@@ -987,6 +999,7 @@ moav update            # Update MoaV</pre>
                 <div class="footer-links">
                     <a href="https://github.com/MotherofallVPNs/moav">GitHub</a>
                     <a href="https://moav.sh/docs/">Docs</a>
+                    <a href="https://moav.sh/docs/client/">Client</a>
                     <a href="https://x.com/motherofallvpns" target="_blank" rel="noopener">X</a>
                     <a href="https://t.me/motherofallvpns" target="_blank" rel="noopener">Telegram</a>
                     <a href="https://github.com/MotherofallVPNs/moav/blob/main/LICENSE">License</a>

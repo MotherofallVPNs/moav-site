@@ -192,6 +192,32 @@ function initNetworkBackground() {
    Copy to Clipboard
    ============================================================================= */
 
+// Copy that also works on plain-HTTP origins (e.g. a LAN IP), where
+// navigator.clipboard is undefined. Falls back to a hidden-textarea + execCommand.
+async function copyToClipboard(text) {
+    if (navigator.clipboard && window.isSecureContext) {
+        try {
+            await navigator.clipboard.writeText(text);
+            return true;
+        } catch (err) { /* fall through to the legacy path */ }
+    }
+    try {
+        const ta = document.createElement('textarea');
+        ta.value = text;
+        ta.setAttribute('readonly', '');
+        ta.style.position = 'fixed';
+        ta.style.top = '-9999px';
+        document.body.appendChild(ta);
+        ta.select();
+        ta.setSelectionRange(0, text.length);
+        const ok = document.execCommand('copy');
+        ta.remove();
+        return ok;
+    } catch (err) {
+        return false;
+    }
+}
+
 function initCopyButtons() {
     const copyButtons = document.querySelectorAll('.copy-btn');
 
@@ -206,30 +232,30 @@ function initCopyButtons() {
             // terminal is still typing it out.
             const text = (targetElement.dataset.fullCmd || targetElement.textContent).trim();
 
-            try {
-                await navigator.clipboard.writeText(text);
-
-                // Visual feedback
-                button.classList.add('copied');
-                const originalContent = button.innerHTML;
-
-                if (button.textContent.trim() === 'Copy') {
-                    button.textContent = 'Copied!';
-                } else {
-                    button.innerHTML = `
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <polyline points="20 6 9 17 4 12"></polyline>
-                        </svg>
-                    `;
-                }
-
-                setTimeout(() => {
-                    button.classList.remove('copied');
-                    button.innerHTML = originalContent;
-                }, 2000);
-            } catch (err) {
-                console.error('Failed to copy:', err);
+            const ok = await copyToClipboard(text);
+            if (!ok) {
+                console.error('Failed to copy');
+                return;
             }
+
+            // Visual feedback
+            button.classList.add('copied');
+            const originalContent = button.innerHTML;
+
+            if (button.textContent.trim() === 'Copy') {
+                button.textContent = 'Copied!';
+            } else {
+                button.innerHTML = `
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polyline points="20 6 9 17 4 12"></polyline>
+                    </svg>
+                `;
+            }
+
+            setTimeout(() => {
+                button.classList.remove('copied');
+                button.innerHTML = originalContent;
+            }, 2000);
         });
     });
 }
@@ -247,18 +273,17 @@ function initCryptoButtons() {
 
             if (!address) return;
 
-            try {
-                await navigator.clipboard.writeText(address);
-
-                // Visual feedback
-                button.classList.add('copied');
-
-                setTimeout(() => {
-                    button.classList.remove('copied');
-                }, 2000);
-            } catch (err) {
-                console.error('Failed to copy:', err);
+            const ok = await copyToClipboard(address);
+            if (!ok) {
+                console.error('Failed to copy');
+                return;
             }
+
+            // Visual feedback
+            button.classList.add('copied');
+            setTimeout(() => {
+                button.classList.remove('copied');
+            }, 2000);
         });
     });
 }

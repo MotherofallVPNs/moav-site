@@ -9,10 +9,10 @@
 @font-face {
     font-family: 'Inter Fallback';
     src: local('Arial');
-    ascent-override: 90.00%;
-    descent-override: 22.43%;
+    ascent-override: 89.00%;
+    descent-override: 22.00%;
     line-gap-override: 0.00%;
-    size-adjust: 107.40%;
+    size-adjust: 108.70%;
 }
 
 /* Screen-reader only: visible to crawlers/LLMs but not to users */
@@ -441,6 +441,20 @@ section {
 
 .ar-head .ar-name,
 .ar-head .ar-ports { font-weight: 400; color: var(--text-muted); }
+
+.ar-tag {
+    font-family: var(--font-mono);
+    font-size: 9px;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    font-weight: 500;
+    color: var(--accent-yellow);
+    background: rgba(255, 208, 0, 0.1);
+    border: 1px solid rgba(255, 208, 0, 0.3);
+    border-radius: 4px;
+    padding: 1px 6px;
+    white-space: nowrap;
+}
 
 .ar-ico {
     width: 30px;
@@ -947,6 +961,45 @@ body.modal-open {
 
 .quickstart {
     background: var(--bg-primary);
+}
+
+/* Subtle "let an AI agent do it" hint with a copyable prompt */
+.ai-hint {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 8px 12px;
+    max-width: 680px;
+    margin: -34px auto 56px;
+    padding: 0 16px;
+    font-size: 13px;
+    color: var(--text-muted);
+}
+
+.ai-hint code {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--accent-cyan);
+    background: var(--accent-cyan-dim);
+    padding: 5px 10px;
+    border-radius: 6px;
+}
+
+.ai-hint .copy-btn {
+    padding: 6px;
+}
+
+.ai-hint-link {
+    color: var(--text-secondary);
+    text-decoration: none;
+    border-bottom: 1px solid transparent;
+    transition: var(--transition);
+}
+
+.ai-hint-link:hover {
+    color: var(--accent-cyan);
+    border-bottom-color: var(--accent-cyan);
 }
 
 .steps {
