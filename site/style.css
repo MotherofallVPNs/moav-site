@@ -110,32 +110,6 @@ body {
     z-index: 1;
 }
 
-/* Language Nav */
-.lang-nav {
-    position: fixed;
-    top: 24px;
-    right: 24px;
-    z-index: 100;
-    font-family: var(--font-mono);
-    font-size: 14px;
-}
-
-.lang-nav a {
-    color: var(--text-secondary);
-    text-decoration: none;
-    padding: 8px 12px;
-    transition: var(--transition);
-}
-
-.lang-nav a:hover,
-.lang-nav a.active {
-    color: var(--accent-cyan);
-}
-
-.lang-nav .divider {
-    color: var(--text-muted);
-}
-
 /* =============================================================================
    Hero Section
    ============================================================================= */
@@ -1601,42 +1575,6 @@ body.modal-open {
     }
 }
 
-.contribute-cta {
-    text-align: center;
-    padding-top: 32px;
-    border-top: 1px solid rgba(255, 255, 255, 0.05);
-}
-
-.contribute-cta p {
-    color: var(--text-secondary);
-    margin-bottom: 20px;
-}
-
-.contribute-options {
-    display: flex;
-    justify-content: center;
-    gap: 24px;
-    flex-wrap: wrap;
-}
-
-.contribute-link {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    color: var(--text-secondary);
-    text-decoration: none;
-    font-size: 14px;
-    padding: 10px 16px;
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: var(--border-radius-sm);
-    transition: var(--transition);
-}
-
-.contribute-link:hover {
-    color: var(--accent-cyan);
-    border-color: var(--accent-cyan);
-}
-
 /* =============================================================================
    Footer
    ============================================================================= */
@@ -1765,7 +1703,6 @@ body.modal-open {
         font-size: 16px;
     }
 
-    .protocol-grid,
     .why-grid,
     .demo-grid,
     .support-grid {
@@ -1793,15 +1730,6 @@ body.modal-open {
         justify-content: center;
     }
 
-    .contribute-options {
-        flex-direction: column;
-        align-items: center;
-    }
-
-    .lang-nav {
-        top: 16px;
-        right: 16px;
-    }
 }
 
 @media (max-width: 480px) {
