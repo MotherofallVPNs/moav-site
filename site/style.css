@@ -75,6 +75,10 @@
 
 html {
     scroll-behavior: smooth;
+    /* stop iOS Safari from auto-inflating text, which desyncs the monospace
+       box-drawing grid in the architecture diagram (the "wiggly lines") */
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
 }
 
 body {
@@ -963,6 +967,8 @@ body.modal-open {
     font-feature-settings: "liga" 0, "calt" 0;
     font-kerning: none;
     text-rendering: optimizeSpeed;
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
 }
 
 /* Diagram colour coding */
@@ -1342,18 +1348,27 @@ body.modal-open {
 /* Donate section - compact inline style */
 .donate-section {
     text-align: center;
-    margin-top: 48px;
+    max-width: 1040px;
+    margin: 48px auto 0;
     padding: 40px 32px;
-    background: linear-gradient(135deg, var(--accent-purple-dim), var(--accent-cyan-dim));
-    border: 1px solid rgba(123, 92, 255, 0.3);
+    background: var(--bg-secondary);
+    border: 1px solid rgba(255, 255, 255, 0.06);
     border-radius: var(--border-radius);
 }
 
 .donate-title {
-    font-size: 26px;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 24px;
     font-weight: 700;
     margin-bottom: 8px;
     color: var(--text-primary);
+}
+
+.donate-heart {
+    color: var(--accent-purple);
+    flex-shrink: 0;
 }
 
 .donate-intro {
@@ -1848,9 +1863,9 @@ body.modal-open {
     color: var(--text-primary);
     overflow: hidden;
     opacity: 0;
-    transform: translateY(14px) scale(0.9);
+    transform: translateY(12px) scale(0.94);
     pointer-events: none;
-    transition: opacity 0.35s ease, transform 0.35s ease, border-color 0.25s ease, box-shadow 0.25s ease;
+    transition: opacity 0.55s ease, transform 0.55s ease, border-color 0.25s ease, box-shadow 0.25s ease;
 }
 
 .support-fab.visible {
@@ -1895,7 +1910,7 @@ body.modal-open {
 
 @media (prefers-reduced-motion: reduce) {
     .support-fab img { animation: none; }
-    .support-fab { transition: opacity 0.2s ease; transform: none; }
+    .support-fab { transition: opacity 0.45s ease; transform: none; }
 }
 
 @media (max-width: 600px) {
