@@ -188,7 +188,7 @@ docker compose exec amneziawg awg show awg0 latest-handshakes
 # every value 0 (or "never") = no client is handshaking
 ```
 
-**Most common cause: the client dropped the Layer 2 parameters.** MoaV's [AmneziaWG header protection](protocols.md#how-the-obfuscation-works) (`HeaderProtectionKey`, `ContentPaddingAddition`, `RandomTrailers`) has to match on both sides. The **AmneziaVPN app's `.conf` importer silently drops these keys**, so against a server that has them enabled it connects and relays nothing. You can confirm from the client log — it keeps printing `Handshake did not complete after 5 seconds, retrying`.
+**Most common cause: the client dropped the Layer 2 parameters.** MoaV's [AmneziaWG header protection](protocols.md#amneziawg) (`HeaderProtectionKey`, `ContentPaddingAddition`, `RandomTrailers`) has to match on both sides. The **AmneziaVPN app's `.conf` importer silently drops these keys**, so against a server that has them enabled it connects and relays nothing. You can confirm from the client log — it keeps printing `Handshake did not complete after 5 seconds, retrying`.
 
 Fix, in order of preference:
 
@@ -199,7 +199,7 @@ Fix, in order of preference:
    ```
    One interface has a single obfuscation profile, so a client whose config still carries the old parameters must **re-download its bundle** after this.
 
-See [AmneziaWG obfuscation](protocols.md#how-the-obfuscation-works) for what each layer does and when to enable Layer 2.
+See [AmneziaWG obfuscation](protocols.md#amneziawg) for what each layer does and when to enable Layer 2.
 
 ### Slow connection
 
@@ -344,7 +344,7 @@ Cannot connect to tcp endpoint SERVER:8080 due to timeout
 
 ### AmneziaWG not connecting
 
-> **Which symptom?** If the app shows **Connected** but nothing loads, that's a handshake/parameter mismatch — see [AmneziaWG connects but no traffic](#amneziawg-connects-but-no-traffic). This section is for when the tunnel **never comes up** — usually a blocked port, a server that isn't running, or (on a censored network) the underlying WireGuard being fingerprinted before AmneziaWG's obfuscation can help. See [how the obfuscation works](protocols.md#how-the-obfuscation-works).
+> **Which symptom?** If the app shows **Connected** but nothing loads, that's a handshake/parameter mismatch — see [AmneziaWG connects but no traffic](#amneziawg-connects-but-no-traffic). This section is for when the tunnel **never comes up** — usually a blocked port, a server that isn't running, or (on a censored network) the underlying WireGuard being fingerprinted before AmneziaWG's obfuscation can help. See [how the obfuscation works](protocols.md#amneziawg).
 
 **Check container is running:**
 ```bash
@@ -360,7 +360,7 @@ docker compose logs amneziawg
    ```
 
 2. **Config mismatch:**
-   - Obfuscation parameters (`Jc`, `S1`-`S4`, `H1`-`H4`, and any Layer 2 keys) must match between server and client — see [how the obfuscation works](protocols.md#how-the-obfuscation-works)
+   - Obfuscation parameters (`Jc`, `S1`-`S4`, `H1`-`H4`, and any Layer 2 keys) must match between server and client — see [how the obfuscation works](protocols.md#amneziawg)
    - Re-download the user bundle if parameters are wrong (always re-download after `moav regenerate-users`)
 
 3. **Client app / tools:**
