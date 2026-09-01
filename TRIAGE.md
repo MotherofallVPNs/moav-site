@@ -10,19 +10,20 @@ open a PR, or close an issue.
    first; never invent a label). For a docs site the usual fits are
    `documentation` (typo / broken / missing / unclear content), `bug` (the site
    itself is broken — build, layout, dead link at runtime), `enhancement` (new
-   page or section), `question`, or `duplicate`.
+   page or section), a translation request/fix (use a `translation` label if the
+   repo has one, else `documentation`), `question`, or `duplicate`.
 2. Apply the fitting label(s) — 1–3 at most. Add `good first issue` for small,
    well-scoped doc fixes. Leave `invalid` / `wontfix` for a human.
 3. Post **one concise triage comment**: restate the ask in a line, name the
-   likely area, and say what's still needed (which page/URL, EN or FA, a repro
-   for a build/layout bug).
+   likely area, and say what's still needed (which page/URL, which language, a
+   repro for a build/layout bug).
 4. If it's a duplicate, link the original. If the answer is already in the docs,
    link the page.
 
 ## Areas (name these in the comment, not as labels)
 
 - **English docs** — `docs/*.md`
-- **Farsi docs** — `docs/fa/*.md` (translation requests/fixes)
+- **Translated docs** — `docs/<locale>/*.md` (`fa`, and Russian/Chinese as they land); translation requests/fixes
 - **Landing page** — `site/`
 - **Build / config** — `mkdocs.yml`, strict-build failures
 

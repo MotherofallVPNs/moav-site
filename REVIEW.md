@@ -2,9 +2,11 @@
 
 Instructions for the automated PR reviewer (Claude Code `code-review` plugin).
 This is the MoaV documentation site: MkDocs (Material), English under `docs/*.md`
-and Persian under `docs/fa/*.md`, plus the landing page in `site/`. CI already
-runs `mkdocs build --strict`, so **broken links and missing anchors already fail
-the build** — spend review effort on what the strict build cannot check.
+and translations in per-locale folders under `docs/` (`docs/fa/`, with Russian
+and Chinese landing), plus the landing page in `site/`. Untranslated pages fall
+back to English. CI already runs `mkdocs build --strict`, so **broken links and
+missing anchors already fail the build** — spend review effort on what the strict
+build cannot check.
 
 ## Output
 
@@ -45,21 +47,27 @@ Self-contained on purpose, so each can later become its own review agent.
 Strict build catches most of this, but two things bite repeatedly:
 
 - **Cross-language anchors.** A link like `protocols.md#some-anchor` is resolved
-  by the i18n plugin against BOTH `docs/protocols.md` and `docs/fa/protocols.md`.
-  If the target heading (hence its slug) exists in one language but not the
-  other, the strict build fails — flag any new cross-doc anchor link whose target
-  may be missing in the Farsi copy (this exact case broke a past PR).
+  by the i18n plugin against the English page AND every translated copy
+  (`docs/fa/`, `docs/ru/`, `docs/zh/`, …). If the target heading (hence its slug)
+  exists in one language but not another, the strict build fails — flag any new
+  cross-doc anchor link whose target may be missing in a translated copy (this
+  exact case broke a past PR).
 - New pages are wired into the nav (`mkdocs.yml`) if they should appear.
 
-## 3. Translation consistency (EN <-> FA)
+## 3. Translation consistency (English <-> all locales)
 
-- A meaningful change to an English page should have a matching change in its
-  `docs/fa/` counterpart, or the PR should note the FA update is deferred.
-- Farsi pages keep the same section structure and English-slug anchors the
-  English pages use (so shared links resolve).
-- Flag FA text that has drifted from the current EN meaning, and obvious machine
-  -translation artifacts. Don't grade Persian fluency line-by-line — surface
-  divergences and gaps, not stylistic nitpicks.
+Locales live in folders under `docs/` (`fa`, and Russian/Chinese as they land);
+untranslated pages fall back to English, so partial translation is fine — flag
+gaps and drift, not incompleteness.
+
+- A meaningful change to an English page should be mirrored in each translated
+  counterpart (`docs/<locale>/…`), or the PR should note the translation is
+  deferred.
+- Translated pages keep the same section structure and English-slug anchors the
+  English pages use, so shared links resolve in every locale.
+- Flag translated text that has drifted from the current English meaning, and
+  obvious machine-translation artifacts. Don't grade fluency line-by-line —
+  surface divergences and gaps, not stylistic nitpicks.
 
 ## 4. Security & privacy
 
