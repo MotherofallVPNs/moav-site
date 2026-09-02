@@ -15,7 +15,7 @@ Complete guide to deploy MoaV on a VPS or home server.
 **Domain (Optional but Recommended):**
 
 - Required for: Trojan, AnyTLS, Hysteria2, TrustTunnel, CDN mode, DNS tunnels (dnstt, Slipstream, MasterDNS, XDNS)
-- Not required for: Reality, XHTTP, Shadowsocks-2022, WireGuard, AmneziaWG, Telegram MTProxy, Admin dashboard, Conduit, Snowflake
+- Not required for: Reality, XHTTP, Shadowsocks-2022, Snell, WireGuard, AmneziaWG, Telegram MTProxy, Admin dashboard, Conduit, Snowflake
 - Per-protocol checklist: [Do I need a domain?](DNS.md#do-i-need-a-domain)
 - See [Domainless Mode](#domainless-mode) if you don't have a domain
 
@@ -28,6 +28,7 @@ Complete guide to deploy MoaV on a VPS or home server.
 | 8443/tcp | TCP | Trojan | Yes |
 | 8445/tcp | TCP | AnyTLS | Yes |
 | 8388/tcp+udp | TCP+UDP | Shadowsocks-2022 | No |
+| 8389/tcp | TCP | Snell (off by default) | No |
 | 4443/tcp+udp | TCP+UDP | TrustTunnel | Yes |
 | 2082/tcp | TCP | CDN WebSocket | Yes (Cloudflare) or No (CloudFront) |
 | 51820/udp | UDP | WireGuard | No |
@@ -271,6 +272,7 @@ ufw allow 443/udp    # Hysteria2
 ufw allow 8443/tcp   # Trojan
 ufw allow 8445/tcp   # AnyTLS
 ufw allow 8388       # Shadowsocks-2022
+ufw allow 8389/tcp   # Snell (only if ENABLE_SNELL=true)
 
 # TrustTunnel
 ufw allow 4443/tcp   # HTTP/2
@@ -327,6 +329,7 @@ ls outputs/bundles/
 - `trojan.txt` - Trojan share link
 - `anytls.txt` - AnyTLS share link (if `ENABLE_ANYTLS=false`)
 - `shadowsocks.txt` / `shadowsocks-qr.png` - Shadowsocks-2022 `ss://` URI + QR
+- `snell.txt` / `snell-qr.png` - Snell config (Surge + Clash.Meta; only if `ENABLE_SNELL=true`)
 - `hysteria2.txt` - Hysteria2 share link
 - `cdn-vless.txt` - CDN share link (if CDN_DOMAIN set)
 - `wireguard.conf` - WireGuard config + QR code

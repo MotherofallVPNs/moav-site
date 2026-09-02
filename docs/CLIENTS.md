@@ -19,6 +19,7 @@ Everything below arrives in the bundle you were sent. Opening its **`README.html
 | [Trojan](https://trojan-gfw.github.io/trojan/) | 8443/tcp | HTTPS mimicry, battle-tested |
 | [AnyTLS](https://github.com/anytls/anytls-go) | 8445/tcp | Resists TLS-in-TLS fingerprinting, high stealth against the filtering techniques it targets |
 | [Shadowsocks-2022](https://github.com/shadowsocks/shadowsocks-org/blob/main/docs/doc/sip022.md) | 8388/tcp+udp | AEAD-2022 anti-active-probing; same protocol Outline VPN uses |
+| [Snell](https://manual.nssurge.com/others/snell.html) | 8389/tcp | Lightweight TCP proxy with HTTP obfs. Needs a Snell **v5** client (Surge 5+, Stash, recent Mihomo/Clash.Meta) |
 | [Hysteria2](https://v2.hysteria.network/) | 443/udp | QUIC-based, fast on lossy networks |
 | CDN (VLESS+WS) | 443 via Cloudflare | When server IP is blocked |
 | [TrustTunnel](https://trusttunnel.org/) | 4443/tcp+udp | HTTP/2 & QUIC, looks like HTTPS |
@@ -301,6 +302,14 @@ Pick your platform. Every path is the same three steps: install an app, import t
 ## Protocol-specific notes
 
 Most protocols just work once the subscription is imported. These have quirks worth knowing.
+
+??? note "Snell"
+    Snell has **no share-link or subscription** — it isn't part of the V2Ray subscription. Your bundle ships `snell.txt` with a **Surge** proxy line and a **Clash.Meta / Mihomo** YAML block; paste whichever your client uses.
+
+    It requires a client that supports **Snell v5**: **Surge 5+**, **Stash**, or a **recent Mihomo / Clash.Meta**. Apps that only speak Snell v1–v4 cannot connect. Snell is off by default — the operator turns it on with `ENABLE_SNELL=true`.
+
+    - **Surge (iOS/macOS):** open the config, add the `MoaV-Snell-*` line under `[Proxy]`, then select that proxy.
+    - **Stash / Mihomo / Clash.Meta:** add the YAML block under `proxies:` and select `MoaV-Snell-*`.
 
 ??? note "WireGuard"
     MoaV provides two WireGuard connection methods:
