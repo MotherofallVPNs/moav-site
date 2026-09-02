@@ -450,18 +450,29 @@ Creates bundle in `outputs/bundles/USERNAME/` containing:
 - README.html with instructions
 
 #### `moav user revoke`
-Revoke a user from all services.
+Revoke one user, several users, or everyone from all services.
 
 ```bash
-moav user revoke john         # Revoke user 'john'
+moav user revoke john              # Revoke user 'john'
+moav user revoke john jane bob     # Revoke several users at once
+moav user revoke --all             # Revoke every user (asks to confirm)
+moav user revoke --all --yes       # Revoke every user, skip the prompt
 ```
 
-Removes user from:
+Removes each user from:
 
 - sing-box config (Reality, Trojan, Hysteria2, CDN)
 - WireGuard config
 - TrustTunnel credentials
-- Deletes user bundle
+- Deletes the user bundle
+
+When you revoke more than one user (or use `--all`), the proxy services are
+reset **once at the end** instead of once per user, so bulk revokes are fast and
+don't drop live tunnels repeatedly. `--all` enumerates users from
+`outputs/bundles/` and asks for confirmation unless you pass `--yes`.
+
+Revoking is irreversible: a revoked user must be re-added with `moav user add`
+and issued a fresh bundle.
 
 #### `moav user package`
 Create distributable zip for an existing user.

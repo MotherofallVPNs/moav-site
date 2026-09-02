@@ -708,6 +708,22 @@ SSH-tunnel apps that require an SSH account behind dnstt are **not supported** â
 
 The stack itself: containers, certificates, disk, the dashboard.
 
+### Revoking many users is slow / drops live tunnels
+
+Revoking one user reloads sing-box and restarts xray/trusttunnel, which briefly
+interrupts existing connections. If you pass several usernames at once, or use
+`--all`, MoaV batches the revokes and resets the proxy services **once at the
+end** instead of once per user, so a bulk revoke is a single reset:
+
+```bash
+moav user revoke alice bob carol   # one reset at the end
+moav user revoke --all             # revoke everyone, confirm, one reset
+moav user revoke --all --yes       # same, no confirmation prompt (scripted)
+```
+
+Prefer this over a shell loop that calls `moav user revoke <name>` per user â€”
+that form pays the full reload/restart cost for every user.
+
 ### Services won't start
 
 > **Quick check:** Run `moav doctor services` to see which services are enabled vs running.
