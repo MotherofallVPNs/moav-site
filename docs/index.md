@@ -35,7 +35,7 @@ Read the concise [Mission](mission.md), the project's [Impact](impact.md) model,
 - **[Threat Model](threat-model.md)**: Honest limits, adversaries, metadata risks, and safety assumptions
 - **[OPSEC Guide](OPSEC.md)**: Security best practices for operators
 - **[Mission & Philosophy](philosophy.md)**: The longer manifesto behind the project
-- **[Supported Protocols](protocols.md)**: All 16+ circumvention transports and fallback paths, plus optional Psiphon, Tor and MahsaNet donation integrations, including the [DNS tunnels](protocols.md#dns-tunnels) that can remain usable where ordinary traffic is blocked but recursive DNS still resolves
+- **[Supported Protocols](protocols.md)**: All 18 circumvention transports and fallback paths, plus optional Psiphon, Tor and MahsaNet donation integrations, including the [DNS tunnels](protocols.md#dns-tunnels) that can remain usable where ordinary traffic is blocked but recursive DNS still resolves
 
 ## Support the project
 
