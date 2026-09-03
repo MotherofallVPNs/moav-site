@@ -1,6 +1,6 @@
 # Supported Protocols
 
-MoaV deploys 16+ circumvention transports and fallback paths, plus optional Psiphon, Tor and MahsaNet donation integrations. Each has different stealth characteristics, speed profiles, and network requirements. This diversity ensures that when one protocol is blocked, others remain available.
+MoaV deploys 18+ circumvention transports and fallback paths, plus optional Psiphon, Tor and MahsaNet donation integrations. Each has different stealth characteristics, speed profiles, and network requirements. This diversity ensures that when one protocol is blocked, others remain available.
 
 ## Protocol Overview
 
