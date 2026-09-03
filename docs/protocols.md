@@ -12,6 +12,7 @@ MoaV deploys 16+ circumvention transports and fallback paths, plus optional Psip
 | [AnyTLS](#anytls) | 8445/tcp | Very High | High | Yes |
 | [Hysteria2](#hysteria2) | 443/udp | High | Very High | Yes |
 | [Shadowsocks-2022](#shadowsocks-2022) | 8388/tcp+udp | High | Very High | No |
+| [Snell](#snell) | 8389/tcp | High | Very High | No |
 | [CDN (VLESS+WS)](#cdn-vlessws) | 443 via CDN | Very High | Medium | Cloudflare: yes · CloudFront: no |
 | [TrustTunnel](#trusttunnel) | 4443/tcp+udp | Very High | High | Yes |
 | [WireGuard](#wireguard) | 51820/udp | Medium | Very High | No |
@@ -31,6 +32,8 @@ MoaV deploys 16+ circumvention transports and fallback paths, plus optional Psip
 
 ## Protocols in Detail
 
+Each protocol lists its **MoaV settings** — the `.env` keys that turn it on/off (`ENABLE_*`), set its port (`PORT_*`), and tune anything protocol-specific. Secrets (keys, passwords, PSKs) are **auto-generated** into `state/` on first bootstrap, not set by hand. After changing a setting: `moav restart <service>` for a port/tuning change, `moav bootstrap` for a structural one, then `moav regenerate-users` to refresh user bundles. Full reference: [Setup](SETUP.md) and `.env.example`.
+
 ### Reality (VLESS)
 
 **Primary protocol.** VLESS with Reality makes your proxy traffic resemble a real TLS connection to a legitimate website (e.g., `dl.google.com`). The server presents a genuine TLS certificate from the target site, passing even active probing.
@@ -38,6 +41,7 @@ MoaV deploys 16+ circumvention transports and fallback paths, plus optional Psip
 - **Port:** 443/tcp
 - **Engine:** [sing-box](https://github.com/SagerNet/sing-box)
 - **Clients:** Streisand, Hiddify, v2rayNG, v2rayN, NekoBox
+- **MoaV settings:** `ENABLE_REALITY=true` · `PORT_HTTPS=443` · `REALITY_TARGET=dl.google.com:443` (the real site the TLS handshake mimics — pick a large, always-up HTTPS host). Reality keypair + short IDs are auto-generated.
 
 ### Trojan
 
@@ -46,6 +50,7 @@ Password-authenticated TLS proxy. Traffic looks like normal HTTPS. Uses your dom
 - **Port:** 8443/tcp
 - **Engine:** [sing-box](https://github.com/SagerNet/sing-box)
 - **Clients:** Streisand, Hiddify, v2rayNG, v2rayN, Shadowrocket
+- **MoaV settings:** `ENABLE_TROJAN=true` · `PORT_TROJAN=8443`. Requires a domain (uses the Let's Encrypt certificate). Per-user passwords auto-generated.
 
 ### AnyTLS
 
@@ -54,7 +59,8 @@ Password-authenticated TLS proxy designed to resist **TLS-in-TLS fingerprinting*
 - **Port:** 8445/tcp
 - **Engine:** [sing-box](https://github.com/SagerNet/sing-box) (1.13.x)
 - **Clients:** Hiddify, sing-box (SFA/SFI), NekoBox/NekoRay, Mihomo Party, Shadowrocket 2.2.65+
-- **Note:** Opt-in — enable with `ENABLE_ANYTLS=true`. Requires a domain (TLS). Client support is narrower than VLESS/Trojan; older or Clash-only clients (v2rayNG, Streisand, V2Box, Clash Verge) do **not** support AnyTLS.
+- **MoaV settings:** `ENABLE_ANYTLS=false` (opt-in) · `PORT_ANYTLS=8445`. Requires a domain (TLS).
+- **Note:** Client support is narrower than VLESS/Trojan; older or Clash-only clients (v2rayNG, Streisand, V2Box, Clash Verge) do **not** support AnyTLS.
 
 ### Hysteria2
 
@@ -63,6 +69,8 @@ QUIC-based protocol optimized for high throughput on lossy networks. Includes bu
 - **Port:** 443/udp
 - **Engine:** [sing-box](https://github.com/SagerNet/sing-box)
 - **Clients:** Streisand, Hiddify, v2rayNG, v2rayN
+- **MoaV settings:** `ENABLE_HYSTERIA2=true` · `PORT_HTTPS=443` (UDP) · `HYSTERIA2_OBFS_TYPE=salamander`. The obfs password is auto-generated. Requires a domain (TLS).
+- **Obfuscation (salamander vs gecko):** the QUIC packets are wrapped so DPI can't fingerprint them. `salamander` (default) is universal — every Hysteria2 client supports it. sing-box 1.14 adds **`gecko`**, which additionally fragments the QUIC handshake into random-sized padded chunks and resists Iran/CN/RU DPI better. Set `HYSTERIA2_OBFS_TYPE=gecko` to use it — but gecko needs a client whose core is **sing-box ≥ 1.14 or Hysteria ≥ 2.9.2** (older apps can't connect), so re-issue bundles with `moav regenerate-users` and confirm your users' apps before switching.
 - **Note:** Requires UDP. Blocked in some censored networks that drop all non-DNS UDP.
 - **Congestion control:** `up_mbps`/`down_mbps` are left unset and `ignore_client_bandwidth: true` is set, keeping both ends on BBR and stopping a client-advertised bandwidth from switching the link to Brutal (which can saturate a low-RAM VPS). This BBR is Hysteria2's own QUIC-layer controller inside sing-box — unrelated to the kernel `tcp_bbr` module, so it has no host dependency.
 
@@ -73,7 +81,18 @@ AEAD-2022 Shadowsocks (`2022-blake3-aes-128-gcm`), the modern Shadowsocks genera
 - **Port:** 8388/tcp + 8388/udp
 - **Engine:** [sing-box](https://github.com/SagerNet/sing-box)
 - **Clients:** Outline (iOS/Android/desktop), NekoBox/NekoRay, Hiddify, Streisand, sing-box — via the standard `ss://` URI
-- **Note:** On by default (`ENABLE_SS=true`). If port 8388 is fingerprinted by your ISP, change `PORT_SS` in `.env` to a less-conspicuous port and `moav restart sing-box`.
+- **MoaV settings:** `ENABLE_SS=true` · `PORT_SS=8388` · `SS_METHOD=2022-blake3-aes-128-gcm`. Server + per-user PSKs auto-generated.
+- **Note:** If port 8388 is fingerprinted by your ISP, change `PORT_SS` in `.env` to a less-conspicuous port and `moav restart sing-box`.
+
+### Snell
+
+Lightweight TCP proxy from the Surge ecosystem, with optional HTTP obfuscation. No TLS or domain needed, so it works in domainless mode. **Shared-key:** unlike the other proxies, Snell is *not* per-user — every user connects with the one server PSK (like the DNS tunnels). Off by default.
+
+- **Port:** 8389/tcp
+- **Engine:** [sing-box](https://github.com/SagerNet/sing-box) (Snell v5)
+- **Clients:** [Surge 5](https://apps.apple.com/us/app/surge-5/id1442620678) or Stash (iOS), [Clash Mi](https://apps.apple.com/us/app/clash-mi/id6744321968) or Mihomo (iOS), Clash Meta for Android / FlClash. **v2rayNG, Hiddify, NekoBox and sing-box apps do NOT support Snell.**
+- **MoaV settings:** `ENABLE_SNELL=false` (opt-in) · `PORT_SNELL=8389` · `SNELL_OBFS=http` (or `none`). The shared PSK is auto-generated.
+- **Note:** Shared-key means **no per-user revocation** — revoking a user does not remove Snell access; to fully revoke you rotate the key (delete `state/keys/snell-server.psk`, re-bootstrap) and re-issue bundles. sing-box only serves Snell v5, and its multi-user mode has no compatible client, so MoaV runs Snell single-user.
 
 ### CDN (VLESS+WS)
 
@@ -93,6 +112,7 @@ Modern VPN protocol that looks like regular HTTPS traffic. Supports both HTTP/2 
 - **Port:** 4443/tcp + 4443/udp
 - **Engine:** [TrustTunnel](https://github.com/TrustTunnel/TrustTunnel) (server) / [TrustTunnelClient](https://github.com/TrustTunnel/TrustTunnelClient) (client)
 - **Clients:** TrustTunnel app (iOS, Android, macOS, Windows, Linux)
+- **MoaV settings:** `ENABLE_TRUSTTUNNEL=true` · `PORT_TRUSTTUNNEL=4443` (TCP+UDP). Requires a domain (TLS).
 
 ### WireGuard
 
@@ -101,6 +121,7 @@ Fast kernel-level VPN. Simple, audited, and widely supported. Direct UDP connect
 - **Port:** 51820/udp
 - **Engine:** [sing-box](https://github.com/SagerNet/sing-box) + [wstunnel](https://github.com/erebe/wstunnel)
 - **Clients:** WireGuard app (all platforms)
+- **MoaV settings:** `ENABLE_WIREGUARD=true` · `PORT_WIREGUARD=51820` (UDP). Keys auto-generated per user.
 - **Note:** Easily fingerprinted by DPI, so in a censored network it typically **fails to connect at all**. Use [AmneziaWG](#amneziawg) (obfuscation) or the wstunnel variant (UDP blocked) instead.
 
 ### AmneziaWG
@@ -110,6 +131,7 @@ Obfuscated WireGuard variant designed to resist DPI. It keeps WireGuard's speed 
 - **Port:** 51821/udp
 - **Engine:** [amneziawg-go](https://github.com/amnezia-vpn/amneziawg-go) (userspace) + [amneziawg-tools](https://github.com/amnezia-vpn/amneziawg-tools)
 - **Clients:** the dedicated **[AmneziaWG app](https://docs.amnezia.org/documentation/amnezia-wg/)** (recommended — supports every obfuscation parameter) or the **AmneziaVPN** app. Import the `.conf` from your user bundle or scan its QR.
+- **MoaV settings:** `ENABLE_AMNEZIAWG=true` · `PORT_AMNEZIAWG=51821` (UDP) · `AMNEZIAWG_HEADER_PROTECTION=false` (opt-in layer-2 obfuscation — see below; leave off for AmneziaVPN-app compatibility).
 
 #### How the obfuscation works
 
@@ -150,6 +172,7 @@ WireGuard tunneled through WebSocket (TCP). Works when UDP is completely blocked
 - **Port:** 8080/tcp
 - **Engine:** [wstunnel](https://github.com/erebe/wstunnel) wrapping the WireGuard container
 - **Clients:** WireGuard app + wstunnel binary
+- **MoaV settings:** `PORT_WSTUNNEL=8080`. Rides on WireGuard (`ENABLE_WIREGUARD=true`); the HTTP-upgrade path secret is auto-generated.
 - **Note:** After upgrading an existing install, rebuild the image (`moav build wstunnel`) and re-bootstrap to generate the path secret and enable `wss://`; older bundles keep working over `ws://` until re-issued.
 
 ### Telegram MTProxy
@@ -159,6 +182,7 @@ Telegram-specific proxy with Fake-TLS V2. Emulates real TLS connections, includi
 - **Port:** 993/tcp (IMAPS port for stealth)
 - **Engine:** [telemt](https://github.com/telemt/telemt)
 - **Clients:** Telegram app (built-in proxy settings)
+- **MoaV settings:** `ENABLE_TELEMT=true` · `PORT_TELEMT=993` · `TELEMT_TLS_DOMAIN=dl.google.com` (Fake-TLS SNI) · `TELEMT_MAX_TCP_CONNS=100` · `TELEMT_MAX_UNIQUE_IPS=10`.
 
 ??? note "Anti-DPI Tuning Settings"
 
@@ -210,6 +234,7 @@ SOCKS5 tunnelled through a **Google Apps Script** web app that the user deploys 
 - **Port:** `${PORT_GOOSE}`/tcp (default 8444 on the host → 8443 in the container; 8443 on the host is Trojan's)
 - **Engine:** [GooseRelayVPN](https://github.com/kianmhz/GooseRelayVPN) (Go), server built from source
 - **Clients:** MahsaNG v16+, or the standalone GooseRelay client + a user-deployed Apps Script forwarder
+- **MoaV settings:** `ENABLE_GOOSERELAY=false` (opt-in) · `PORT_GOOSE=8444`.
 - **Encryption:** AES-256-GCM, shared 64-hex `tunnel_key` (in each user's `gooserelay-instructions.txt`)
 - **Requires:** No domain. `PORT_GOOSE` must be reachable from Google's network. The user sets `RELAY_URLS = ['http://SERVER_IP:PORT_GOOSE/tunnel']` in their Apps Script.
 - **Note:** Opt-in — set `ENABLE_GOOSERELAY=true` in `.env`. Egress is routed through sing-box. Real-time apps (Telegram/X) drain the Apps Script quota fast; add more deployments under different Google accounts for capacity.
@@ -221,7 +246,7 @@ SOCKS5 tunnelled through a **Google Apps Script** web app that the user deploys 
 - **Port:** 2096/tcp
 - **Engine:** [Xray-core](https://github.com/XTLS/Xray-core)
 - **Clients:** V2rayNG, Hiddify, Streisand, V2Box, V2rayN, V2rayU, NekoBox
-- **Note:** Uses Xray-core (separate from sing-box). Disable with `ENABLE_XHTTP=false` in `.env`.
+- **MoaV settings:** `ENABLE_XHTTP=true` · `PORT_XHTTP=2096`. Uses Xray-core (separate from sing-box).
 
 ### Psiphon Conduit
 
@@ -368,6 +393,7 @@ Encodes a TCP stream inside DNS queries using KCP + Noise. Extremely hard to blo
 - **Port:** 53/udp *(subdomain `t`)* · **Engine:** [dnstt](https://www.bamsoftware.com/software/dnstt/)
 - **Clients:** standalone dnstt client on 25+ platforms
 - **Requires:** domain + NS delegation
+- **MoaV settings:** `ENABLE_DNSTT=true` · `DNSTT_SUBDOMAIN=t`.
 
 ### Slipstream
 
@@ -375,6 +401,7 @@ The same idea over **QUIC**, which buys real throughput — typically 1.5–5× 
 
 - **Port:** 53/udp *(subdomain `s`)* · **Engine:** [slipstream-rust](https://github.com/Mygod/slipstream-rust) · [pre-built binaries](https://github.com/net2share/slipstream-rust-build/releases)
 - **Requires:** domain + NS delegation
+- **MoaV settings:** `ENABLE_SLIPSTREAM=true` · `SLIPSTREAM_SUBDOMAIN=s`.
 
 ### MasterDNS
 
