@@ -57,7 +57,7 @@ Password-authenticated TLS proxy. Traffic looks like normal HTTPS. Uses your dom
 Password-authenticated TLS proxy designed to resist **TLS-in-TLS fingerprinting**. By varying record sizes and padding, AnyTLS removes the tell-tale TLS-inside-TLS pattern that DPI uses to detect TLS-tunneling proxies, giving it high stealth against the filtering techniques it targets. Reuses the same sing-box engine, the Trojan TLS certificate, and your server domain.
 
 - **Port:** 8445/tcp
-- **Engine:** [sing-box](https://github.com/SagerNet/sing-box) (1.13.x)
+- **Engine:** [sing-box](https://github.com/SagerNet/sing-box) (1.14.x)
 - **Clients:** Hiddify, sing-box (SFA/SFI), NekoBox/NekoRay, Mihomo Party, Shadowrocket 2.2.65+
 - **MoaV settings:** `ENABLE_ANYTLS=false` (opt-in) · `PORT_ANYTLS=8445`. Requires a domain (TLS).
 - **Note:** Client support is narrower than VLESS/Trojan; older or Clash-only clients (v2rayNG, Streisand, V2Box, Clash Verge) do **not** support AnyTLS.
