@@ -1,0 +1,187 @@
+/* ============================================================================
+   MoaV blog — the marketing site's operator-console look on top of MkDocs.
+   Scoped to [data-moav-section="blog"] (set in overrides/main.html), so the docs
+   are untouched. Palette + type mirror site/style.css so the blog reads as an
+   extension of moav.sh, not the docs. Dark only, like the site. The blog is
+   hand-built (see mkdocs.yml), so cards use our own .blog-* classes.
+   ========================================================================== */
+
+[data-moav-section="blog"] {
+  /* Palette lifted from site/style.css :root */
+  --bg-primary:   #0a0a0f;
+  --bg-secondary: #12121a;
+  --bg-card:      #15151f;
+  --text-primary: #ffffff;
+  --text-secondary: #a0a0b0;
+  --text-muted:   #606070;
+  --accent-cyan:  #00d4ff;
+  --accent-purple:#7b5cff;
+  --grad: linear-gradient(135deg, var(--accent-cyan), var(--accent-purple));
+  --glow-cyan: 0 0 24px rgba(0,212,255,.18);
+  --radius: 12px;
+  --radius-sm: 8px;
+  --font-mono: "JetBrains Mono", "Fira Code", ui-monospace, monospace;
+  --font-sans: "Inter", system-ui, -apple-system, sans-serif;
+
+  /* Retune Material's own tokens so its components inherit the palette. */
+  --md-default-bg-color: var(--bg-primary);
+  --md-default-fg-color: var(--text-primary);
+  --md-default-fg-color--light:   var(--text-secondary);
+  --md-default-fg-color--lighter: var(--text-muted);
+  --md-default-fg-color--lightest: rgba(255,255,255,.06);
+  --md-typeset-color: var(--text-secondary);
+  --md-typeset-a-color: var(--accent-cyan);
+  --md-accent-fg-color: var(--accent-purple);
+  --md-code-bg-color: #0d0d15;
+  --md-code-fg-color: #d7d7e0;
+  --md-primary-fg-color: var(--bg-secondary);
+}
+
+/* Page ground: the site's radial glow instead of a flat docs page. */
+[data-moav-section="blog"] .md-main,
+[data-moav-section="blog"] .md-container {
+  background: radial-gradient(ellipse at top, #1a1a2e 0%, var(--bg-primary) 55%) no-repeat;
+  background-attachment: fixed;
+}
+[data-moav-section="blog"],
+[data-moav-section="blog"] .md-typeset {
+  font-family: var(--font-sans);
+  color: var(--text-secondary);
+}
+
+/* Header: dark glass with the cyan mark, not a solid cyan bar. */
+[data-moav-section="blog"] .md-header {
+  background: rgba(10,10,15,.85);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid rgba(255,255,255,.06);
+  color: var(--text-primary);
+  box-shadow: none;
+}
+[data-moav-section="blog"] .md-tabs { background: transparent; }
+
+/* Headings in Inter; the page title washed with the brand gradient. */
+[data-moav-section="blog"] .md-typeset h1,
+[data-moav-section="blog"] .md-typeset h2,
+[data-moav-section="blog"] .md-typeset h3,
+[data-moav-section="blog"] .md-typeset h4 {
+  font-family: var(--font-sans);
+  color: var(--text-primary);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+[data-moav-section="blog"] .md-typeset h1 {
+  font-size: 2.5rem;
+  line-height: 1.08;
+  background: var(--grad);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+[data-moav-section="blog"] .md-typeset a:hover { color: var(--accent-purple); }
+[data-moav-section="blog"] .md-typeset strong { color: var(--text-primary); }
+
+/* Code: dark card, mono; inline code tinted cyan. */
+[data-moav-section="blog"] .md-typeset code,
+[data-moav-section="blog"] .md-typeset pre > code { font-family: var(--font-mono); }
+[data-moav-section="blog"] .md-typeset pre > code {
+  border: 1px solid rgba(255,255,255,.07);
+  border-radius: var(--radius-sm);
+}
+[data-moav-section="blog"] .md-typeset :not(pre) > code {
+  background: rgba(0,212,255,.1);
+  color: #8fe9ff;
+  border-radius: 4px;
+}
+
+/* Admonitions: flat dark cards with a gradient edge, not the docs pastel. */
+[data-moav-section="blog"] .md-typeset .admonition,
+[data-moav-section="blog"] .md-typeset details {
+  background: var(--bg-card);
+  border: 1px solid rgba(255,255,255,.08);
+  border-left: 3px solid var(--accent-cyan);
+  border-radius: var(--radius-sm);
+  box-shadow: none;
+}
+[data-moav-section="blog"] .md-typeset blockquote {
+  border-left: 3px solid var(--accent-purple);
+  color: var(--text-secondary);
+}
+
+/* Tabbed content (install tabs). */
+[data-moav-section="blog"] .md-typeset .tabbed-labels > label { color: var(--text-muted); }
+[data-moav-section="blog"] .md-typeset .tabbed-labels > input:checked + label { color: var(--accent-cyan); }
+
+/* ---- Hero + hand-built card index ----------------------------------------- */
+[data-moav-section="blog"] .blog-hero { margin: .5rem 0 2.8rem; }
+[data-moav-section="blog"] .blog-eyebrow {
+  font-family: var(--font-mono);
+  font-size: .72rem; text-transform: uppercase; letter-spacing: .18em;
+  color: var(--accent-cyan); margin: 0 0 .3rem;
+}
+[data-moav-section="blog"] .blog-lede {
+  font-size: 1.06rem; color: var(--text-secondary); max-width: 44rem;
+}
+
+[data-moav-section="blog"] .blog-list { display: grid; gap: 1.4rem; }
+[data-moav-section="blog"] .blog-card {
+  display: block;
+  background: var(--bg-card);
+  border: 1px solid rgba(255,255,255,.07);
+  border-radius: var(--radius);
+  padding: 1.5rem 1.8rem 1.3rem;
+  transition: transform .28s ease, border-color .28s ease, box-shadow .28s ease;
+}
+[data-moav-section="blog"] .blog-card:hover {
+  transform: translateY(-4px);
+  border-color: rgba(0,212,255,.4);
+  box-shadow: 0 16px 40px rgba(0,0,0,.4), var(--glow-cyan);
+}
+[data-moav-section="blog"] .blog-card__meta,
+[data-moav-section="blog"] .post-meta {
+  font-family: var(--font-mono);
+  font-size: .7rem; text-transform: uppercase; letter-spacing: .07em;
+  color: var(--text-muted);
+}
+/* Markdown wraps the bare meta <span> in a <p>; drop its margin so the card reads tight. */
+[data-moav-section="blog"] .blog-card > p:first-child { margin: 0; }
+[data-moav-section="blog"] .blog-card h3 { margin: .35rem 0 .5rem; font-size: 1.32rem; }
+[data-moav-section="blog"] .blog-card h3 a { color: var(--text-primary); }
+[data-moav-section="blog"] .blog-card:hover h3 a {
+  background: var(--grad); -webkit-background-clip: text; background-clip: text; color: transparent;
+}
+[data-moav-section="blog"] .blog-card .headerlink { display: none; }
+[data-moav-section="blog"] .blog-card p { color: var(--text-secondary); margin: 0 0 .9rem; }
+[data-moav-section="blog"] .blog-card__more {
+  font-family: var(--font-mono); font-size: .78rem; font-weight: 500;
+  color: var(--accent-cyan);
+}
+[data-moav-section="blog"] .blog-card:hover .blog-card__more { color: var(--accent-purple); }
+
+/* Meta line under a post title. */
+[data-moav-section="blog"] .post-meta { margin: 0 0 1.4rem; }
+[data-moav-section="blog"] .post-meta a { color: var(--accent-cyan); }
+
+/* ---- Scroll reveals (asymmetric) ------------------------------------------
+   Base = hidden + offset; blog-anim.js adds .is-visible on scroll-in. Cards
+   alternate slide side; article blocks fade up, staggered via --reveal-delay.
+   Transform/opacity only — cheap on the metered devices these pages are read on. */
+[data-moav-section="blog"] .reveal {
+  opacity: 0;
+  transform: translateY(26px);
+  transition:
+    opacity .7s cubic-bezier(.2,.75,.2,1),
+    transform .7s cubic-bezier(.2,.75,.2,1);
+  transition-delay: var(--reveal-delay, 0ms);
+  will-change: opacity, transform;
+}
+[data-moav-section="blog"] .reveal-left  { transform: translateX(-42px); }
+[data-moav-section="blog"] .reveal-right { transform: translateX(42px); }
+[data-moav-section="blog"] .reveal.is-visible { opacity: 1; transform: none; }
+
+@media (prefers-reduced-motion: reduce) {
+  [data-moav-section="blog"] .reveal {
+    opacity: 1 !important; transform: none !important; transition: none !important;
+  }
+  [data-moav-section="blog"] .md-main,
+  [data-moav-section="blog"] .md-container { background-attachment: scroll; }
+}

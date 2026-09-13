@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+
+{#
+  Blog pages adopt the marketing site's operator-console look (dark ground,
+  cyan/purple accents, Inter + JetBrains Mono), distinct from the docs. We flag
+  the document synchronously in <head> so blog.css can scope to
+  [data-moav-section="blog"] with no flash of docs styling, and we pull the site
+  fonts only on blog pages, not on every docs page.
+#}
+{% block extrahead %}
+  {{ super() }}
+  {% if page and page.url and "blog/" in page.url %}
+  <script>document.documentElement.setAttribute("data-moav-section", "blog");</script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  {% endif %}
+{% endblock %}
