@@ -99,3 +99,42 @@
   .md-content__button.md-icon { transition: none; }
   .md-content__button.md-icon:hover { transform: none; }
 }
+
+/* ---- Brand alignment (subtle) ---------------------------------------------
+   Nudge the docs' accents toward MoaV's cyan/purple so the docs read as the same
+   family as the landing page and the blog, WITHOUT adopting the marketing
+   treatment: no dark ground, no display type, no motion. Layout, fonts and the
+   header are untouched -- only link/accent colour, inline code, and the
+   text-selection tint change.
+
+   Scheme-aware on purpose: the bright brand cyan (#00d4ff) only has enough
+   contrast on the dark scheme; light mode uses a deeper cyan so links and inline
+   code stay legible (WCAG-AA) on white. */
+:root {
+  --moav-cyan: #00d4ff;
+  --moav-cyan-ink: #00758f;   /* deep cyan — legible on white */
+  --moav-purple: #7b5cff;
+}
+
+/* Light (default) scheme */
+[data-md-color-scheme="default"] {
+  --md-typeset-a-color: var(--moav-cyan-ink);
+  --md-accent-fg-color: var(--moav-purple);
+}
+[data-md-color-scheme="default"] .md-typeset :not(pre) > code {
+  background-color: rgba(0, 212, 255, 0.09);
+  color: #0a5a6e;
+}
+
+/* Dark (slate) scheme — the bright brand cyan reads well here */
+[data-md-color-scheme="slate"] {
+  --md-typeset-a-color: var(--moav-cyan);
+  --md-accent-fg-color: #9a80ff;   /* lifted purple for dark contrast */
+}
+[data-md-color-scheme="slate"] .md-typeset :not(pre) > code {
+  background-color: rgba(0, 212, 255, 0.12);
+  color: #9fe9ff;
+}
+
+/* A whisper of brand in the text-selection highlight. Zero readability cost. */
+::selection { background: rgba(0, 212, 255, 0.28); }
