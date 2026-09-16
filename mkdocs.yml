@@ -87,6 +87,7 @@ nav:
 # out of the nav tree without tripping the --strict "not in nav" check.
 not_in_nav: |
   blog/posts/*
+  blog/how-to-test.md
 
 # Fail loudly on links that point at a heading which no longer exists. The DNS
 # rewrite silently broke 9 inbound anchors (other pages linked to headings that
