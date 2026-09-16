@@ -161,6 +161,30 @@ sudo ufw-docker allow moav-admin 8443/tcp from YOUR_IP
 4. **Match payment to your threat model** — don't assume cryptocurrency is anonymous; many blockchains create permanent public transaction records
 5. **Separate domain from identity** — don't use a domain linked to your name
 
+### Burned domains: why a fresh IP still gets filtered
+
+A common and confusing failure: you rent a **clean** IP (it tests 4/4 on a reachability checker), point your domain at it, run `moav bootstrap`, and the IP is filtered **mid-install, before a single config is created or used**. You change the IP; it happens again. And again, across different providers and regions.
+
+**The IP is not the problem. The domain is.** If a domain was used for circumvention before and got flagged, it is on the censor's blocklist. Every clean IP you place behind that domain inherits its reputation, so swapping IPs never helps.
+
+Why it lands *during* bootstrap, before any traffic:
+
+1. To obtain a TLS certificate, the domain's **A record must first point at the server** — so the flagged domain now resolves to your fresh IP, which a censor watching DNS for known-bad domains can see immediately.
+2. `bootstrap` then obtains a **Let's Encrypt certificate**, and every publicly-trusted certificate is published to **Certificate Transparency (CT) logs** in near real time. Censors, Iran's included, monitor CT. The certificate re-announces the domain publicly at the exact moment of issuance.
+3. The censor resolves that domain to the current IP and blocks the IP **by association** — no proxy, no traffic, nothing on the wire to fingerprint.
+
+A reachability check ("4/4 clean") only tells you the IP is currently routable from a few nodes. It cannot tell you the domain you are about to serve is already burned.
+
+**Confirm it in five minutes.** Point the same domain's DNS at a *different* clean IP — even a bare server with **no MoaV installed at all** — and wait. If that IP also gets filtered without you installing anything, the domain is conclusively the cause, not the install and not the IP.
+
+**Fixes:**
+
+1. **Use a fresh domain and never reuse a burned one.** This is the single most important step. The registration OPSEC above is about identity; this is about *reputation* — a domain that has served circumvention before will keep burning IPs no matter how clean they are.
+2. **Hide the origin behind Cloudflare** (`ENABLE_CDN`, with the subdomain proxied). The public A record then points at Cloudflare, not your server, breaking the domain-to-origin mapping the censor relies on.
+3. **Run domainless.** Reality (which borrows the TLS certificate of its `REALITY_TARGET`, a real CDN), Shadowsocks, Snell, WireGuard/AmneziaWG, and the DNS tunnels need no domain and no certificate — so there is **no Let's Encrypt issuance, no CT-log entry, and nothing publicly binding a domain to your IP** during bootstrap. For a burned-domain situation, domainless Reality is often the safest path.
+
+Cleanest combinations: **a fresh domain fronted through Cloudflare**, or **domainless Reality** if you want to avoid domains and certificates entirely.
+
 ### Reality fallback target (`REALITY_TARGET`)
 
 > How to pick one, with candidate targets and the trade-offs, is in [Setup → Choosing a Reality Target](SETUP.md#choosing-a-reality-target-sni). This section covers why the choice matters for your threat model.
@@ -318,6 +342,8 @@ moav doctor net   # sysctl + packet drops + PMTU + CGNAT + per-interface MTU
    moav migrate-ip NEW_IP
    moav start
    ```
+
+   If a new IP **does not** help — the fresh IP gets filtered too, often mid-install — the **domain** is burned, not the IP. Changing IP behind a flagged domain will not work; see [Burned domains: why a fresh IP still gets filtered](#burned-domains-why-a-fresh-ip-still-gets-filtered).
 
 5. **Donate bandwidth** — even if your server is blocked for your users, it can still serve millions through Psiphon Conduit, Tor Snowflake, and MahsaNet
 

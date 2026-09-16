@@ -304,12 +304,12 @@ Pick your platform. Every path is the same three steps: install an app, import t
 Most protocols just work once the subscription is imported. These have quirks worth knowing.
 
 ??? note "Snell"
-    Snell has **no share-link or subscription** — it isn't part of the V2Ray subscription. Your bundle ships `snell.txt` with a **Surge** proxy line and a **Clash.Meta / Mihomo** YAML block; paste whichever your client uses.
+    Snell has **no share-link or subscription** — it isn't part of the V2Ray subscription. Your bundle ships `snell.txt` with a **Surge** proxy line and a **Clash.Meta / Mihomo** YAML block; paste whichever your client uses. It is **shared-key** — everyone uses the same PSK (not per-user).
 
-    It requires a client that supports **Snell v5**: **Surge 5+**, **Stash**, or a **recent Mihomo / Clash.Meta**. Apps that only speak Snell v1–v4 cannot connect. Snell is off by default — the operator turns it on with `ENABLE_SNELL=true`.
+    It requires a **Snell v5** client: **[Surge 5](https://apps.apple.com/us/app/surge-5/id1442620678)** or **Stash** (iOS), **[Clash Mi](https://apps.apple.com/us/app/clash-mi/id6744321968)** or **Mihomo** (iOS), or **Clash Meta for Android / FlClash** (Android). **v2rayNG, Hiddify, NekoBox and sing-box apps do not support Snell.** Off by default — the operator turns it on with `ENABLE_SNELL=true`.
 
-    - **Surge (iOS/macOS):** open the config, add the `MoaV-Snell-*` line under `[Proxy]`, then select that proxy.
-    - **Stash / Mihomo / Clash.Meta:** add the YAML block under `proxies:` and select `MoaV-Snell-*`.
+    - **Surge (iOS/macOS):** open the config, add the `MoaV-Snell` line under `[Proxy]`, then select that proxy.
+    - **Clash Mi / Stash / Mihomo / Clash.Meta:** add the YAML block under `proxies:` and select `MoaV-Snell`.
 
 ??? note "WireGuard"
     MoaV provides two WireGuard connection methods:
