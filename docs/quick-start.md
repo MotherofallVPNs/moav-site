@@ -2,7 +2,7 @@
 
 Install MoaV, then hand someone a link that connects them. That's the whole path, and it takes about ten minutes.
 
-MoaV deploys [16+ circumvention transports and fallback paths](protocols.md), plus optional Psiphon, Tor and MahsaNet donation integrations, and turns each user into a share-ready **bundle** — configs, QR codes, and plain-language instructions in English and Farsi. The person receiving it doesn't need to understand any of it. Curious why this exists? Read [the mission](philosophy.md).
+MoaV deploys [18+ circumvention transports and fallback paths](protocols.md), plus optional Psiphon, Tor and MahsaNet donation integrations, and turns each user into a share-ready **bundle** — configs, QR codes, and plain-language instructions in English and Farsi. The person receiving it doesn't need to understand any of it. Curious why this exists? Read [the mission](philosophy.md).
 
 ## What you need
 

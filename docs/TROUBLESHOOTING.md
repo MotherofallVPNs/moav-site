@@ -1038,8 +1038,8 @@ If you don't need your local changes:
 ```bash
 cd /opt/moav
 
-# Discard all local modifications
-git checkout -- .
+# Discard all local modifications, staged and unstaged
+git reset --hard
 
 # Remove untracked files
 git clean -fd
@@ -1047,6 +1047,28 @@ git clean -fd
 # Now update
 moav update
 ```
+
+!!! warning "If the in-tool 'Discard' option still fails on the merge"
+    Choosing **2) Discard changes** at the `moav update` prompt (and a plain
+    `git checkout -- .`) only clears **unstaged** working-tree edits — not
+    **staged** ones. Files git lists as `MM` (staged *and* unstaged) or `A` (a
+    staged addition, e.g. a `docker-compose.yml` you edited or exporter files you
+    added while testing) survive the discard, so the pull still aborts with:
+
+    ```
+    error: Your local changes to the following files would be overwritten by merge:
+        docker-compose.yml
+    Aborting
+    ```
+
+    Reset the index as well, then update:
+
+    ```bash
+    cd /opt/moav
+    git reset --hard        # clears BOTH staged and unstaged changes
+    git clean -fd           # remove any leftover untracked files
+    moav update
+    ```
 
 ### Recovering from failed updates
 
