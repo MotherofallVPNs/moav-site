@@ -26,4 +26,24 @@ A new protocol, a stealthier Hysteria2, a hardened DNS tunnel, and a smoother up
 [Read the post →](posts/2026-09-13-help-us-test-moav-2-3-0.md){ .blog-card__more }
 </div>
 
+<div class="blog-card reveal" markdown="1">
+<span class="blog-card__meta">2026-08-11 · Release · 3 min read</span>
+
+### [MoaV v2 is out](posts/2026-08-11-moav-v2-is-out.md)
+
+Same 16+ protocols, rebuilt underneath. Security hardening, no silent failures, a 9,483-line script split into 15 modules, 24 CI tests, and a docs overhaul.
+
+[Read the post →](posts/2026-08-11-moav-v2-is-out.md){ .blog-card__more }
+</div>
+
+<div class="blog-card reveal" markdown="1">
+<span class="blog-card__meta">2026-03-22 · Essay · 10 min read</span>
+
+### [MoaV: 16+ Protocols, One Server — Why Anti-Censorship Needs Infrastructure, Not Just Tools](posts/2026-03-22-16-protocols-one-server.md)
+
+A censorship-free internet won't come from a better VPN app. It will come from thousands of people each running a server. MoaV makes that possible.
+
+[Read the post →](posts/2026-03-22-16-protocols-one-server.md){ .blog-card__more }
+</div>
+
 </div>
