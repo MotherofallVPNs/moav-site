@@ -56,9 +56,25 @@ moav test alice
 ```
 Report any protocol that shows `fail`. A `warn` or `skip` is usually environmental.
 
-**3. Real clients, real network (the part CI cannot do).** Import a bundle into the apps your community actually uses and connect **from your real network**: which protocols connect, which are blocked or throttled, rough speed on each. If you are behind a national firewall, this is the single most useful thing you can report.
+**3. Real clients, real network (the part CI cannot do).** `moav test` proves the server answers; it does not prove a phone in a censored network can reach it. This step is the most valuable thing you can do.
 
-**4. Exercise whatever the RC post highlights** — a new protocol, a new obfuscation, an upgrade path. The per-release post lists the specifics and any `.env` toggles.
+- **Get the configs.** Create a user and open its bundle: `moav user add alice`, then take the subscription link or the individual configs (QR or copy). Import them into a real client app.
+- **Import into the apps people actually use.** Try more than one, and **especially the newer protocols** the RC highlights:
+    - **iOS:** Streisand, Shadowrocket, Stash, Hiddify, sing-box. For Snell: Surge 5, Stash, Clash Mi, Mihomo.
+    - **Android:** v2rayNG, Hiddify, NekoBox, sing-box. For Snell: Clash Meta for Android (CMFA) or FlClash.
+    - **WireGuard / AmneziaWG:** the WireGuard app, or Amnezia.
+- **Connect from your real network** (home ISP, mobile data, and if you can, from inside a censored network). For each protocol note: does it connect, does it stay up, is it throttled, and roughly how fast.
+- **Actually use it.** Load a few sites that are normally blocked or slow for you, watch a minute of video, try a call. Report which protocols carried real traffic and which connected but stalled.
+
+**4. Measure speed and routing.** With a protocol connected, capture a couple of numbers so "slow" is not a guess:
+
+- **Speed:** [speed.cloudflare.com](https://speed.cloudflare.com), [fast.com](https://fast.com), or the Ookla [Speedtest](https://www.speedtest.net) app. Note down/up and latency.
+- **Routing / exit / leaks:** [browserleaks.com/ip](https://browserleaks.com/ip), [ipleak.net](https://ipleak.net), [dnsleaktest.com](https://dnsleaktest.com) — confirm the exit IP and country are your server's, and that DNS is not leaking to your local ISP.
+- **Censorship reachability (optional, powerful):** run the [OONI Probe](https://ooni.org/install/) app to measure what your network blocks, with and without MoaV.
+
+Compare protocols against each other on the same network; that comparison is exactly what helps us pick defaults.
+
+**5. Exercise whatever the RC post highlights** — a new protocol, a new obfuscation, an upgrade path. The per-release post lists the specifics and any `.env` toggles.
 
 ## How to report back
 
