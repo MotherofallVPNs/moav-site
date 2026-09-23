@@ -14,10 +14,12 @@ hide:
 <p class="blog-lede">Release notes, dispatches from the networks that fight hardest to block us, and guides for running your own censorship-resistant gateway. Free internet is a human right, and this is where we think out loud about defending it.</p>
 </div>
 
+<p class="blog-lede" markdown="1" style="margin-top:-.4rem"><strong><a href="how-to-test.md">New here? How to help test MoaV &rarr;</a></strong></p>
+
 <div class="blog-list" markdown="1">
 
 <div class="blog-card reveal" markdown="1">
-<span class="blog-card__meta">2026-09-13 · Release · 6 min read</span>
+<span class="blog-card__meta">2026-09-13 · Testing · 5 min read</span>
 
 ### [Help us test MoaV 2.3.0](posts/2026-09-13-help-us-test-moav-2-3-0.md)
 
