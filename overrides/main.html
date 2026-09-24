@@ -9,6 +9,33 @@
 #}
 {% block extrahead %}
   {{ super() }}
+
+  {#
+    Social share cards (Open Graph + Twitter). Material emits only
+    <meta name="description"> by default, so a shared docs/blog link renders as a
+    bare, imageless URL. These give every page a title + description + image card.
+    Per-page overrides come from front matter:
+      title:        <share title>      (defaults to the page H1)
+      description:   <share + meta description>
+      image:        <ABSOLUTE url to a 1200x630 card>  (defaults to the brand card)
+    See docs/development.md "Social preview cards" for how to customize a post.
+  #}
+  {% set _pagetitle = page.title if page and page.title else config.site_name %}
+  {% set _desc = (page.meta.description if page and page.meta and page.meta.description else config.site_description) %}
+  {% set _image = (page.meta.image if page and page.meta and page.meta.image else "https://moav.sh/assets/og-image.png") %}
+  <meta property="og:type" content="{{ 'article' if page and page.url and 'blog/' in page.url else 'website' }}">
+  <meta property="og:title" content="{{ _pagetitle }} · MoaV">
+  <meta property="og:site_name" content="MoaV">
+  {% if _desc %}<meta property="og:description" content="{{ _desc }}">{% endif %}
+  <meta property="og:image" content="{{ _image }}">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  {% if page and page.canonical_url %}<meta property="og:url" content="{{ page.canonical_url }}">{% endif %}
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="{{ _pagetitle }} · MoaV">
+  {% if _desc %}<meta name="twitter:description" content="{{ _desc }}">{% endif %}
+  <meta name="twitter:image" content="{{ _image }}">
+
   {% if page and page.url and "blog/" in page.url %}
   <script>document.documentElement.setAttribute("data-moav-section", "blog");</script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
