@@ -47,7 +47,7 @@ hide:
 
 تا جایی که می‌توانید پیش بروید. حتی یکی دو داده از یک شبکهٔ واقعی هم ارزشمند است.
 
-**۱. تمیز بالا می‌آید** — `moav doctor` باید سبز باشد؛ هر موردی را که سبز نیست یادداشت کنید.
+**۱. تمیز بالا می‌آید**: `moav doctor` باید سبز باشد؛ هر موردی را که سبز نیست یادداشت کنید.
 
 **۲. هر پروتکل فعال، ماتریس داخلی را با موفقیت پشت سر می‌گذارد:**
 ```bash
@@ -60,21 +60,21 @@ moav test alice
 
 - **تنظیمات را بگیرید.** یک کاربر بسازید و بسته‌اش را باز کنید: `moav user add alice`، سپس لینک اشتراک یا تنظیمات تک‌تک پروتکل‌ها (QR یا کپی) را بردارید و در یک اپ کلاینت واقعی وارد کنید.
 - **در اپ‌هایی که مردم واقعاً استفاده می‌کنند وارد کنید.** بیش از یکی را امتحان کنید، و **به‌ویژه پروتکل‌های تازه‌ای** که این RC برجسته می‌کند:
-    - **iOS:** Streisand، Shadowrocket، Stash، Hiddify، sing-box. برای Snell: Surge 5، Stash، Clash Mi، Mihomo.
-    - **Android:** v2rayNG، Hiddify، NekoBox، sing-box. برای Snell: Clash Meta for Android (CMFA) یا FlClash.
-    - **WireGuard / AmneziaWG:** اپ WireGuard یا Amnezia.
+    - **iOS:** [Streisand](https://apps.apple.com/us/app/streisand/id6450534064)، [Shadowrocket](https://apps.apple.com/us/app/shadowrocket/id932747118)، [Stash](https://apps.apple.com/us/app/stash-rule-based-proxy/id1596063349)، [Hiddify](https://hiddify.com)، [sing-box](https://sing-box.sagernet.org/). برای Snell: [Surge 5](https://apps.apple.com/us/app/surge-5/id1442620678)، Stash، [Clash Mi](https://apps.apple.com/us/app/clash-mi/id6744321968).
+    - **Android:** [v2rayNG](https://github.com/2dust/v2rayNG)، [Hiddify](https://hiddify.com)، [NekoBox](https://github.com/MatsuriDayo/NekoBoxForAndroid)، [sing-box](https://sing-box.sagernet.org/). برای Snell: [Clash Meta for Android (CMFA)](https://github.com/MetaCubeX/ClashMetaForAndroid) یا [FlClash](https://github.com/chen08209/FlClash).
+    - **WireGuard / AmneziaWG:** اپ [WireGuard](https://www.wireguard.com/install/) یا [Amnezia](https://amnezia.org/).
 - **از شبکهٔ واقعی خود متصل شوید** (اینترنت خانه، دیتای موبایل، و اگر می‌توانید از درون یک شبکهٔ سانسورشده). برای هر پروتکل یادداشت کنید: آیا وصل می‌شود، آیا پایدار می‌ماند، آیا کند شده، و تقریباً چقدر سریع است.
 - **واقعاً از آن استفاده کنید.** چند سایت را که معمولاً برای شما مسدود یا کند هستند باز کنید، یک دقیقه ویدیو ببینید، یک تماس بگیرید. گزارش دهید کدام پروتکل‌ها ترافیک واقعی را عبور دادند و کدام‌ها وصل شدند اما گیر کردند.
 
 **۴. سرعت و مسیریابی را اندازه بگیرید.** با یک پروتکل متصل، چند عدد ثبت کنید تا «کند» یک حدس نباشد:
 
 - **سرعت:** [speed.cloudflare.com](https://speed.cloudflare.com)، [fast.com](https://fast.com)، یا اپ [Speedtest](https://www.speedtest.net) از Ookla. سرعت دانلود/آپلود و تأخیر را یادداشت کنید.
-- **مسیریابی / نقطهٔ خروج / نشتی:** [browserleaks.com/ip](https://browserleaks.com/ip)، [ipleak.net](https://ipleak.net)، [dnsleaktest.com](https://dnsleaktest.com) — تأیید کنید که IP و کشور خروجی همان سرور شماست و DNS به ISP محلی شما نشت نمی‌کند.
+- **مسیریابی / نقطهٔ خروج / نشتی:** [browserleaks.com/ip](https://browserleaks.com/ip)، [ipleak.net](https://ipleak.net)، [dnsleaktest.com](https://dnsleaktest.com): تأیید کنید که IP و کشور خروجی همان سرور شماست و DNS به ISP محلی شما نشت نمی‌کند.
 - **سنجش دسترسی‌پذیری در برابر سانسور (اختیاری، اما قدرتمند):** اپ [OONI Probe](https://ooni.org/install/) را اجرا کنید تا اندازه بگیرید شبکهٔ شما چه چیزی را مسدود می‌کند، با و بدون MoaV.
 
 پروتکل‌ها را روی یک شبکهٔ یکسان با هم مقایسه کنید؛ همین مقایسه دقیقاً به ما کمک می‌کند پیش‌فرض‌ها را انتخاب کنیم.
 
-**۵. هر چیزی را که پست RC برجسته می‌کند بیازمایید** — یک پروتکل تازه، یک مبهم‌سازی تازه، یا یک مسیر ارتقا. پست هر انتشار جزئیات و کلیدهای `.env` مربوط را فهرست می‌کند.
+**۵. هر چیزی را که پست RC برجسته می‌کند بیازمایید**: یک پروتکل تازه، یک مبهم‌سازی تازه، یا یک مسیر ارتقا. پست هر انتشار جزئیات و کلیدهای `.env` مربوط را فهرست می‌کند.
 
 ## چطور بازخورد بدهیم {#how-to-report-back}
 
