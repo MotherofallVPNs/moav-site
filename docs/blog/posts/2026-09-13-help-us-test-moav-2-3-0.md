@@ -1,6 +1,6 @@
 ---
 title: Help us test MoaV 2.3.0
-description: A new protocol, a stealthier Hysteria2, a hardened DNS tunnel, and a smoother upgrade. We built it and tested it in CI. Now we need your real network. The first in our release-candidate test-call series.
+description: A new protocol, a stealthier Hysteria2, a hardened DNS tunnel, and a smoother upgrade. Our automated tests pass; now it needs your real network.
 hide:
   - navigation
 ---
@@ -25,16 +25,16 @@ This is the **first in a series**: from now on, every MoaV release candidate get
 MoaV now ships **18+ circumvention protocols and fallback paths** in one command. Here is what changed this cycle, and what is worth putting under load.
 
 ### Snell, a new protocol (on by default)
-A lightweight TCP proxy from the Surge ecosystem with optional HTTP obfuscation. No TLS and no domain required, so it works in domainless mode; a good "different shape on the wire" when the TLS-based protocols get scrutinized.
+A lightweight TCP proxy from the [Surge ecosystem](https://manual.nssurge.com/policies/snell.html) with optional HTTP obfuscation. No TLS and no domain required, so it works in domainless mode; a good "different shape on the wire" when the TLS-based protocols get scrutinized.
 
 - **Shared-key.** Unlike the other proxies, Snell is not per-user. Everyone connects with one server key, the same model as the DNS tunnels. Revoking a single user does not remove Snell access; you rotate the key and re-issue.
-- **Client support is specific.** Snell v5 works with **Surge 5** or **Stash** (iOS), **Clash Mi** or **Mihomo** (iOS), and **Clash Meta for Android** or **FlClash**. It does **not** work with v2rayNG, Hiddify, NekoBox, or the sing-box apps.
+- **Client support is specific.** Snell v5 works with [**Surge 5**](https://apps.apple.com/us/app/surge-5/id1442620678) or [**Stash**](https://apps.apple.com/us/app/stash-rule-based-proxy/id1596063349) (iOS), [**Clash Mi**](https://apps.apple.com/us/app/clash-mi/id6744321968) or **Mihomo** (iOS), and [**Clash Meta for Android**](https://github.com/MetaCubeX/ClashMetaForAndroid) or [**FlClash**](https://github.com/chen08209/FlClash). It does **not** work with [v2rayNG](https://github.com/2dust/v2rayNG), [Hiddify](https://hiddify.com), [NekoBox](https://github.com/MatsuriDayo/NekoBoxForAndroid), or the [sing-box](https://sing-box.sagernet.org/) apps.
 
 ### Hysteria2 gets a stealthier obfuscation: gecko
-sing-box 1.14 adds a new Hysteria2 obfuscator, **gecko**, which fragments the QUIC handshake into random-sized padded chunks and resists Iran/CN/RU DPI better than the default. It is **opt-in** (`HYSTERIA2_OBFS_TYPE=gecko`), because gecko needs a newer client core (sing-box 1.14+ or Hysteria 2.9.2+).
+[sing-box 1.14](https://github.com/SagerNet/sing-box/releases/tag/v1.14.0) adds a new Hysteria2 obfuscator, **gecko**, which fragments the QUIC handshake into random-sized padded chunks and resists Iran/CN/RU DPI better than the default. It is **opt-in** (`HYSTERIA2_OBFS_TYPE=gecko`), because gecko needs a newer client core (sing-box 1.14+ or [Hysteria](https://v2.hysteria.network/) 2.9.2+).
 
 ### sing-box updated to 1.14
-The engine behind Reality, Trojan, Hysteria2, Shadowsocks, AnyTLS, and Snell. No configuration change is required on your side; we validated the rendered config against the real 1.14 binary in CI.
+The engine behind [Reality](https://github.com/XTLS/REALITY), Trojan, Hysteria2, [Shadowsocks](https://shadowsocks.org/doc/sip022.html), AnyTLS, and Snell. No configuration change is required on your side; we validated the rendered config against the real 1.14 binary in CI.
 
 ### XDNS is now encrypted
 The XDNS DNS tunnel previously carried its inner traffic unencrypted at the VLESS layer. In 2.3.0 it uses proper VLESS Encryption end to end. It is transparent to you, but existing installs need `moav regenerate-users` after upgrading (below) so clients pick up the key.

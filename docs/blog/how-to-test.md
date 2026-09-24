@@ -60,9 +60,9 @@ Report any protocol that shows `fail`. A `warn` or `skip` is usually environment
 
 - **Get the configs.** Create a user and open its bundle: `moav user add alice`, then take the subscription link or the individual configs (QR or copy). Import them into a real client app.
 - **Import into the apps people actually use.** Try more than one, and **especially the newer protocols** the RC highlights:
-    - **iOS:** Streisand, Shadowrocket, Stash, Hiddify, sing-box. For Snell: Surge 5, Stash, Clash Mi, Mihomo.
-    - **Android:** v2rayNG, Hiddify, NekoBox, sing-box. For Snell: Clash Meta for Android (CMFA) or FlClash.
-    - **WireGuard / AmneziaWG:** the WireGuard app, or Amnezia.
+    - **iOS:** [Streisand](https://apps.apple.com/us/app/streisand/id6450534064), [Shadowrocket](https://apps.apple.com/us/app/shadowrocket/id932747118), [Stash](https://apps.apple.com/us/app/stash-rule-based-proxy/id1596063349), [Hiddify](https://hiddify.com), [sing-box](https://sing-box.sagernet.org/). For Snell: [Surge 5](https://apps.apple.com/us/app/surge-5/id1442620678), Stash, [Clash Mi](https://apps.apple.com/us/app/clash-mi/id6744321968), Mihomo.
+    - **Android:** [v2rayNG](https://github.com/2dust/v2rayNG), [Hiddify](https://hiddify.com), [NekoBox](https://github.com/MatsuriDayo/NekoBoxForAndroid), [sing-box](https://sing-box.sagernet.org/). For Snell: [Clash Meta for Android (CMFA)](https://github.com/MetaCubeX/ClashMetaForAndroid) or [FlClash](https://github.com/chen08209/FlClash).
+    - **WireGuard / AmneziaWG:** the [WireGuard app](https://www.wireguard.com/install/), or [Amnezia](https://amnezia.org/).
 - **Connect from your real network** (home ISP, mobile data, and if you can, from inside a censored network). For each protocol note: does it connect, does it stay up, is it throttled, and roughly how fast.
 - **Actually use it.** Load a few sites that are normally blocked or slow for you, watch a minute of video, try a call. Report which protocols carried real traffic and which connected but stalled.
 

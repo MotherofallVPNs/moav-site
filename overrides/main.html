@@ -24,7 +24,9 @@
   {% set _desc = (page.meta.description if page and page.meta and page.meta.description else config.site_description) %}
   {% set _image = (page.meta.image if page and page.meta and page.meta.image else "https://moav.sh/assets/og-image.png") %}
   <meta property="og:type" content="{{ 'article' if page and page.url and 'blog/' in page.url else 'website' }}">
-  <meta property="og:title" content="{{ _pagetitle }} · MoaV">
+  {# No brand suffix on the title: og:site_name already carries "MoaV", and a
+     trailing Latin " · MoaV" after a Persian (RTL) title scrambles the card. #}
+  <meta property="og:title" content="{{ _pagetitle }}">
   <meta property="og:site_name" content="MoaV">
   {% if _desc %}<meta property="og:description" content="{{ _desc }}">{% endif %}
   <meta property="og:image" content="{{ _image }}">
@@ -32,7 +34,7 @@
   <meta property="og:image:height" content="630">
   {% if page and page.canonical_url %}<meta property="og:url" content="{{ page.canonical_url }}">{% endif %}
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="{{ _pagetitle }} · MoaV">
+  <meta name="twitter:title" content="{{ _pagetitle }}">
   {% if _desc %}<meta name="twitter:description" content="{{ _desc }}">{% endif %}
   <meta name="twitter:image" content="{{ _image }}">
 
