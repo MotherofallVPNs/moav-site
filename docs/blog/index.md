@@ -19,13 +19,13 @@ hide:
 <div class="blog-list" markdown="1">
 
 <div class="blog-card reveal" markdown="1">
-<span class="blog-card__meta">2026-09-13 · Testing · 5 min read</span>
+<span class="blog-card__meta">2026-09-24 · Testing · 5 min read</span>
 
-### [Help us test MoaV 2.3.0](posts/2026-09-13-help-us-test-moav-2-3-0.md)
+### [Help us test MoaV 2.3.0](posts/2026-09-24-help-us-test-moav-2-3-0.md)
 
 A new protocol, a stealthier Hysteria2, a hardened DNS tunnel, and a smoother upgrade. We built it and tested it in CI. Now we need your real network.
 
-[Read the post →](posts/2026-09-13-help-us-test-moav-2-3-0.md){ .blog-card__more }
+[Read the post →](posts/2026-09-24-help-us-test-moav-2-3-0.md){ .blog-card__more }
 </div>
 
 <div class="blog-card reveal" markdown="1">
