@@ -128,3 +128,30 @@ Two ways to see a real render:
 - **The PR preview** — every PR touching `docs/` gets a hosted URL posted as a comment (`pr-N.moav-docs-preview.pages.dev`). It's stable for the life of the PR, rebuilds on each push, and is deleted when the PR closes.
 
 `--strict` is the gate: a link to a renamed heading, or one pointing into a tab or collapsible (neither generates an anchor), fails the build rather than shipping dead. If the hosted preview is skipped — missing secrets, Cloudflare down — the strict build still runs, so correctness is never gated on the preview being available.
+
+## Social preview cards (Open Graph)
+
+Every page emits Open Graph + Twitter card tags (title, description, image) so a shared link renders as a proper card instead of a bare URL. This is done in `overrides/main.html`, not a plugin — it is i18n-safe and needs no extra build dependencies.
+
+Defaults, per page:
+
+- **Title** — the page's H1 (or its `title:` front matter), with `· MoaV` appended.
+- **Description** — the page's `description:` front matter, falling back to `site_description` in `mkdocs.yml`.
+- **Image** — the brand card at `https://moav.sh/assets/og-image.png` (1200×630).
+
+To customize a specific page (a blog post, say), set front matter at the top of its `.md`:
+
+```yaml
+---
+title: Help us test MoaV 2.3.0
+description: One sentence that sells the click. Shows in the card and in search results.
+image: https://moav.sh/docs/assets/help-us-test-2.3.0-card.png
+---
+```
+
+Notes:
+
+- **`description` is the one that matters** — write a real, specific sentence (~150–200 chars). It is the card subtitle *and* the meta description search engines use. No `description` means the generic `site_description` for every share, which is what "looks ugly when shared" actually is.
+- **`image` must be an absolute URL** (Open Graph does not resolve relative paths) and should be **1200×630**. Drop a per-post card in `docs/assets/` and reference it as `https://moav.sh/docs/assets/<file>.png`. Omit it to use the brand default.
+- **Verify before sharing** with a card debugger — [opengraph.xyz](https://www.opengraph.xyz/), Telegram's `@WebpageBot`, or X's card validator — against the live URL (scrapers cache, so re-scrape after a change).
+- Want auto-generated per-post cards (title rendered on a branded background) instead of one static image? That is Material's built-in `social` plugin; it needs the `material[imaging]` extras (Pillow + Cairo) in `requirements.txt` and the CI image, so it is a deliberate upgrade, not the default here.
