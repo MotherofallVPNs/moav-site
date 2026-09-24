@@ -5,7 +5,7 @@ hide:
   - navigation
 ---
 
-<p class="post-meta">2026-09-13 · Testing · ۵ دقیقه مطالعه · <a href="../../">وبلاگ MoaV</a></p>
+<p class="post-meta">2026-09-24 · Testing · ۵ دقیقه مطالعه · <a href="../../">وبلاگ MoaV</a></p>
 
 # به ما کمک کنید MoaV 2.3.0 را آزمایش کنیم
 

@@ -5,7 +5,7 @@ hide:
   - navigation
 ---
 
-<p class="post-meta">2026-09-13 · Testing · 5 min read · <a href="../../">The MoaV Blog</a></p>
+<p class="post-meta">2026-09-24 · Testing · 5 min read · <a href="../../">The MoaV Blog</a></p>
 
 # Help us test MoaV 2.3.0
 

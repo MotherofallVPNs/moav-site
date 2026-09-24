@@ -17,13 +17,13 @@ hide:
 <div class="blog-list" markdown="1">
 
 <div class="blog-card reveal" markdown="1">
-<span class="blog-card__meta">2026-09-13 · انتشار · ۶ دقیقه مطالعه</span>
+<span class="blog-card__meta">2026-09-24 · انتشار · ۶ دقیقه مطالعه</span>
 
-### [به ما کمک کنید MoaV 2.3.0 را آزمایش کنیم](posts/2026-09-13-help-us-test-moav-2-3-0.md)
+### [به ما کمک کنید MoaV 2.3.0 را آزمایش کنیم](posts/2026-09-24-help-us-test-moav-2-3-0.md)
 
 یک پروتکل تازه، Hysteria2 مخفی‌کارتر، یک تونل DNS مقاوم‌تر و یک به‌روزرسانی روان‌تر. آن را ساختیم و در CI آزمودیم. حالا به شبکهٔ واقعی شما نیاز داریم.
 
-[خواندن پست ←](posts/2026-09-13-help-us-test-moav-2-3-0.md){ .blog-card__more }
+[خواندن پست ←](posts/2026-09-24-help-us-test-moav-2-3-0.md){ .blog-card__more }
 </div>
 
 </div>
