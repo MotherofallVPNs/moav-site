@@ -17,6 +17,16 @@ hide:
 <div class="blog-list" markdown="1">
 
 <div class="blog-card reveal" markdown="1">
+<span class="blog-card__meta">2026-10-21 · انتشار · ۶ دقیقه مطالعه</span>
+
+### [MoaV 2.3.1: همین حالا به‌روزرسانی کنید](posts/2026-10-21-moav-2-3-1-security-release.md)
+
+یک انتشار امنیتی. Xray و Prometheus روی Go 1.27.3 ساخته شده‌اند که ریشه‌های لورفتهٔ CA هندی eMudhra (emSign) را کنار می‌گذارد، به‌همراه رفع ده CVE در Grafana. همهٔ تغییرات 2.3.0 هم اینجاست، و اپراتورهای XDNS یک نکتهٔ ارتقای دو دستوری می‌گیرند.
+
+[خواندن پست ←](posts/2026-10-21-moav-2-3-1-security-release.md){ .blog-card__more }
+</div>
+
+<div class="blog-card reveal" markdown="1">
 <span class="blog-card__meta">2026-09-24 · انتشار · ۶ دقیقه مطالعه</span>
 
 ### [به ما کمک کنید MoaV 2.3.0 را آزمایش کنیم](posts/2026-09-24-help-us-test-moav-2-3-0.md)

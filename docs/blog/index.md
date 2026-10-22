@@ -19,6 +19,16 @@ hide:
 <div class="blog-list" markdown="1">
 
 <div class="blog-card reveal" markdown="1">
+<span class="blog-card__meta">2026-10-21 · Release · 6 min read</span>
+
+### [MoaV 2.3.1: update now](posts/2026-10-21-moav-2-3-1-security-release.md)
+
+A security release. Xray and Prometheus rebuilt on Go 1.27.3, which drops the compromised eMudhra (emSign) CA roots, plus ten Grafana CVE fixes. Everything from 2.3.0 is in here too, and XDNS operators get a two-command upgrade note.
+
+[Read the post →](posts/2026-10-21-moav-2-3-1-security-release.md){ .blog-card__more }
+</div>
+
+<div class="blog-card reveal" markdown="1">
 <span class="blog-card__meta">2026-09-24 · Testing · 5 min read</span>
 
 ### [Help us test MoaV 2.3.0](posts/2026-09-24-help-us-test-moav-2-3-0.md)
