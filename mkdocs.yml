@@ -93,6 +93,7 @@ nav:
 not_in_nav: |
   blog/posts/*
   blog/how-to-test.md
+  deploy/privacy.md
 
 # Fail loudly on links that point at a heading which no longer exists. The DNS
 # rewrite silently broke 9 inbound anchors (other pages linked to headings that
