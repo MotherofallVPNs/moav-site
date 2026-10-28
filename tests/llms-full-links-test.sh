@@ -38,6 +38,13 @@ t "bare anchor kept"    '[x](#section)'            '[x](#section)'
 t "root-relative kept"  '[x](/assets/a.png)'       '[x](/assets/a.png)'
 t "non-md kept"         '[x](image.png)'           '[x](image.png)'
 t "empty label ok"      '[](CLI.md)'               '[](https://moav.sh/docs/CLI/)'
+# Pages under a subdirectory (LLMS_DIR) resolve links the way MkDocs does.
+rd() { LLMS_BASE="https://moav.sh/docs" LLMS_DIR="deploy" python3 "$rw"; }
+td() { local got; got=$(printf '%s' "$2" | rd); [ "$got" = "$3" ] && ok "$1" || bad "$1: got [$got] expected [$3]"; }
+td "subdir sibling link"  '[P](privacy.md)'         '[P](https://moav.sh/docs/deploy/privacy/)'
+td "subdir parent link"   '[C](../CLIENTS.md)'      '[C](https://moav.sh/docs/CLIENTS/)'
+td "subdir parent anchor" '[D](../DNS.md#records)'  '[D](https://moav.sh/docs/DNS/#records)'
+td "subdir own index"     '[I](index.md)'           '[I](https://moav.sh/docs/deploy/)'
 
 # --- the generator must use it ------------------------------------------------
 if grep -q 'absolutize-links.py' "$ROOT/scripts/build-llms-full.sh"; then
