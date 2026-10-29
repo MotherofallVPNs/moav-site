@@ -21,7 +21,7 @@ hide:
 <div class="blog-card reveal" markdown="1">
 <span class="blog-card__meta">2026-10-29 · Release · 5 min read</span>
 
-### [MoaV Deploy is in public beta](posts/2026-10-29-moav-deploy-app-public-beta.md)
+### [MoaV Deploy mobile app is in public beta](posts/2026-10-29-moav-deploy-app-public-beta.md)
 
 A phone app for Android and iOS that installs and manages your own MoaV server over SSH. One-tap deploy to a fresh VPS, users and bundles as QR codes, live status and health, no accounts and no tracking. Install it, break it, tell us.
 

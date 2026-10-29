@@ -1,5 +1,5 @@
 ---
-title: "MoaV Deploy is in public beta: run your MoaV server from your phone"
+title: "MoaV Deploy mobile app is in public beta"
 description: MoaV Deploy, the Android and iOS app that installs and manages your own MoaV server over SSH, is now in public beta. One-tap deploy to a fresh VPS, users and bundles as QR codes, live status and health, no accounts and no tracking. Install it, break it, tell us.
 hide:
   - navigation
@@ -7,7 +7,7 @@ hide:
 
 <p class="post-meta">2026-10-29 · Release · 5 min read · <a href="../../">The MoaV Blog</a></p>
 
-# MoaV Deploy is in public beta
+# MoaV Deploy mobile app is in public beta
 
 **MoaV Deploy is now in public beta on Android and iOS.** It is a phone app that installs and manages your own MoaV server over SSH. Point it at a fresh VPS, tap deploy, add a user, hand them a QR code. No laptop in the loop.
 
