@@ -321,6 +321,82 @@ body {
     transform: translateY(-2px);
 }
 
+/* MoaV Deploy (phone app) row under the hero CTAs. Same cyan pill language as
+   .ai-hint in Quick Start; the store links are a smaller .btn-secondary. */
+.hero-app {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 8px 14px;
+    max-width: 600px;
+    margin: 32px auto 0;
+    padding: 12px 20px;
+    background: rgba(0, 212, 255, 0.05);
+    border: 1px solid rgba(0, 212, 255, 0.18);
+    border-radius: var(--border-radius);
+    font-size: 13px;
+    color: var(--text-secondary);
+}
+
+.hero-app-lead {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    color: var(--accent-cyan);
+    font-weight: 600;
+    text-decoration: none;
+    transition: var(--transition);
+}
+
+.hero-app-lead:hover { color: #4fe3ff; }
+.hero-app-ico { flex-shrink: 0; }
+
+.hero-app-desc {
+    flex-basis: 100%;
+    line-height: 1.6;
+}
+
+.hero-app-links {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
+}
+
+.hero-app-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 7px 14px;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text-primary);
+    background: rgba(0, 212, 255, 0.08);
+    border: 1px solid rgba(0, 212, 255, 0.3);
+    border-radius: 6px;
+    text-decoration: none;
+    transition: var(--transition);
+}
+
+.hero-app-badge:hover {
+    border-color: var(--accent-cyan);
+    color: var(--accent-cyan);
+    background: rgba(0, 212, 255, 0.15);
+    transform: translateY(-1px);
+}
+
+.hero-app-beta {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--accent-cyan);
+    background: var(--accent-cyan-dim);
+    padding: 2px 6px;
+    border-radius: 4px;
+}
+
 /* =============================================================================
    Sections Common
    ============================================================================= */
