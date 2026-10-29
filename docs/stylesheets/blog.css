@@ -161,6 +161,48 @@
 [data-moav-section="blog"] .post-meta { margin: 0 0 1.4rem; }
 [data-moav-section="blog"] .post-meta a { color: var(--accent-cyan); }
 
+/* ---- Screenshot strip (phone app posts) -----------------------------------
+   A horizontal, snap-scrolling row of phone screenshots, one <figure> each.
+   Fixed phone-ish width so eight shots do not stack into a page-long column;
+   on a phone the row scrolls edge to edge with the thumb. The strip is not a
+   blog-anim.js reveal target, so it is never left hidden. */
+[data-moav-section="blog"] .md-typeset .shot-strip {
+  display: flex;
+  gap: 1rem;
+  margin: 1.6rem 0 2.2rem;
+  padding: .25rem 0 .9rem;
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  -webkit-overflow-scrolling: touch;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(0,212,255,.35) transparent;
+}
+[data-moav-section="blog"] .md-typeset .shot-strip figure {
+  flex: 0 0 auto;
+  width: min(230px, 72vw);
+  margin: 0;
+  scroll-snap-align: start;
+  text-align: left;
+}
+[data-moav-section="blog"] .md-typeset .shot-strip img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border: 1px solid rgba(255,255,255,.08);
+  border-radius: var(--radius);
+  background: var(--bg-card);
+}
+[data-moav-section="blog"] .md-typeset .shot-strip figcaption {
+  font-family: var(--font-mono);
+  font-size: .7rem; text-transform: uppercase; letter-spacing: .07em;
+  font-style: normal;
+  color: var(--text-muted);
+  margin: .55rem 0 0;
+  max-width: none;
+  text-align: left;
+}
+
 /* ---- Scroll reveals (asymmetric) ------------------------------------------
    Base = hidden + offset; blog-anim.js adds .is-visible on scroll-in. Cards
    alternate slide side; article blocks fade up, staggered via --reveal-delay.
