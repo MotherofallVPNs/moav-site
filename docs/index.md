@@ -18,6 +18,7 @@ Read the concise [Mission](mission.md), the project's [Impact](impact.md) model,
 - **[Setup Guide](SETUP.md)**: Complete installation with all options
 - **[DNS Configuration](DNS.md)**: DNS records for your domain and provider
 - **[VPS Deployment](DEPLOY.md)**: One-click deploy on Hetzner, DigitalOcean, Vultr, Linode
+- **[MoaV Deploy](deploy/index.md)**: Install and manage your server from a phone app (Android, iOS)
 - **[Video Tutorials](video-tutorials.md)**: Video Walkthroughs
 
 ## Using MoaV

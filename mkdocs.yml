@@ -69,6 +69,7 @@ nav:
     - Setup Guide: SETUP.md
     - DNS Configuration: DNS.md
     - VPS Deployment: DEPLOY.md
+    - MoaV Deploy (phone app): deploy/index.md
     - Run MoaV with an AI agent: ai-agent.md
   - User Guides:
     - Video Tutorials: video-tutorials.md

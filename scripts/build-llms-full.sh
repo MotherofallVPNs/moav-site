@@ -22,6 +22,7 @@ PAGES=(
   SETUP.md
   DNS.md
   DEPLOY.md
+  deploy/index.md
   ai-agent.md
   video-tutorials.md
   CLIENTS.md
@@ -54,7 +55,8 @@ for page in "${PAGES[@]}"; do
     exit 1
   fi
   slug="${page%.md}"
-  [ "$slug" = "index" ] && url="$BASE/" || url="$BASE/$slug/"
+  slug="${slug%index}"          # index.md -> "", deploy/index.md -> "deploy/"
+  if [ -z "$slug" ]; then url="$BASE/"; else url="$BASE/${slug%/}/"; fi
   {
     echo "---"
     echo
@@ -62,7 +64,7 @@ for page in "${PAGES[@]}"; do
     echo
     # Not a plain cat: mkdocs-relative links have to become absolute, or they
     # resolve against moav.sh/ instead of moav.sh/docs/ and 404. See the script.
-    LLMS_BASE="$BASE" python3 scripts/absolutize-links.py < "docs/$page"
+    LLMS_BASE="$BASE" LLMS_DIR="$(dirname "$page")" python3 scripts/absolutize-links.py < "docs/$page"
     echo
   } >> "$OUT"
 done

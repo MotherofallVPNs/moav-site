@@ -21,6 +21,7 @@
 - [MahsaNG Import](https://moav.sh/docs/mahsanet/): V2Ray subscription import + MahsaNet donation flow
 - [Monitoring](https://moav.sh/docs/MONITORING/): Grafana dashboards, Conduit lifetime bandwidth, GeoIP setup
 - [VPS Deployment](https://moav.sh/docs/DEPLOY/): provider-specific install paths (Hetzner, Linode, Vultr, DigitalOcean)
+- [MoaV Deploy](https://moav.sh/docs/deploy/): the Android/iOS app that installs, manages and monitors a server over SSH (admin tool, not a VPN client)
 - [Troubleshooting](https://moav.sh/docs/TROUBLESHOOTING/): common failure modes with diagnostic recipes
 - [OPSEC Guide](https://moav.sh/docs/OPSEC/): operator-side hardening and threat-model notes
 - [MoaV Client](https://moav.sh/docs/client/): the first-party client app, bundle import, connection behavior
