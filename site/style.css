@@ -1096,6 +1096,35 @@ body.modal-open {
     padding: 6px;
 }
 
+/* "Or do it from your phone": a second pill under the AI hint pointing at the
+   MoaV Deploy app. Shares .ai-hint's look; the store links reuse .hero-app-badge
+   at a smaller size. The negative top margin cancels most of .ai-hint's bottom
+   margin so the two pills sit 12px apart and the steps below do not move. */
+.ai-hint + .phone-hint {
+    max-width: 800px;
+    margin-top: -44px;
+}
+
+.phone-hint-desc a {
+    color: var(--accent-cyan);
+    text-decoration: none;
+    font-weight: 600;
+    transition: var(--transition);
+}
+
+.phone-hint-desc a:hover { color: #4fe3ff; }
+
+.phone-hint-links {
+    display: inline-flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.phone-hint .hero-app-badge {
+    padding: 4px 10px;
+    font-size: 12px;
+}
+
 .steps {
     max-width: 700px;
     margin: 0 auto;
