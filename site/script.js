@@ -516,3 +516,59 @@ function initDemoModal() {
         }
     });
 }
+
+/* Talks & Press strip (#press): gentle auto-scroll + user drag / swipe / trackpad. */
+(function () {
+    var marquee = document.querySelector('.press-marquee');
+    var track = marquee ? marquee.querySelector('.press-track') : null;
+    if (!marquee || !track) return;
+    if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+    track.classList.add('js-scroll');          // hand motion to JS (disables CSS transform)
+    marquee.scrollLeft = 0;
+
+    var paused = false, dragging = false, moved = false, startX = 0, startScroll = 0;
+    var SPEED = 0.4;                            // px/frame (~24px/s)
+
+    function half() { return track.scrollWidth / 2; }
+    function wrap() {
+        var h = half();
+        if (h <= 0) return;
+        if (marquee.scrollLeft >= h) marquee.scrollLeft -= h;
+        else if (marquee.scrollLeft < 0) marquee.scrollLeft += h;
+    }
+    function tick() {
+        if (!paused && !dragging) { marquee.scrollLeft += SPEED; wrap(); }
+        requestAnimationFrame(tick);
+    }
+
+    marquee.addEventListener('pointerenter', function () { paused = true; });
+    marquee.addEventListener('pointerleave', function () { if (!dragging) paused = false; });
+    marquee.addEventListener('focusin', function () { paused = true; });
+    marquee.addEventListener('focusout', function () { if (!dragging) paused = false; });
+
+    marquee.addEventListener('pointerdown', function (e) {
+        dragging = true; paused = true; moved = false;
+        startX = e.clientX; startScroll = marquee.scrollLeft;
+        try { marquee.setPointerCapture(e.pointerId); } catch (x) {}
+    });
+    marquee.addEventListener('pointermove', function (e) {
+        if (!dragging) return;
+        var dx = e.clientX - startX;
+        if (Math.abs(dx) > 4) { moved = true; marquee.classList.add('dragging'); }
+        marquee.scrollLeft = startScroll - dx; wrap();
+    });
+    function endDrag() {
+        if (!dragging) return;
+        dragging = false; paused = false;
+        setTimeout(function () { marquee.classList.remove('dragging'); }, 0);
+    }
+    marquee.addEventListener('pointerup', endDrag);
+    marquee.addEventListener('pointercancel', endDrag);
+    marquee.addEventListener('click', function (e) {
+        if (moved) { e.preventDefault(); e.stopPropagation(); moved = false; }
+    }, true);
+    marquee.addEventListener('scroll', wrap, { passive: true });
+
+    requestAnimationFrame(tick);
+})();
