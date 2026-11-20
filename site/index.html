@@ -270,6 +270,41 @@
         </div>
     </section>
 
+    <!-- Talks & Press marquee -->
+    <!--
+      MoaV talks + media mentions. Each item stacks: logo, name, month-year, city.
+      Auto-scrolls and is also draggable/swipeable by the user (see script.js).
+      Seamless loop = the item set is duplicated (2nd .press-set is aria-hidden);
+      keep both lists identical. Logos in assets/press/ ; data-tile = baked bg.
+    -->
+    <section class="press" id="press" aria-label="MoaV talks and press">
+        <div class="container">
+            <p class="press-eyebrow">Talks &amp; Press</p>
+            <div class="press-marquee">
+                <div class="press-track">
+                    <div class="press-set">
+                        <a class="press-item" href="https://www.youtube.com/watch?v=p1bklAl3-BQ" target="_blank" rel="noopener" aria-label="Devcon — Rage Coding the Mother of All VPNs"><img class="press-logo" src="assets/press/devcon.svg" alt="Devcon" loading="lazy"><span class="press-name">Devcon</span><span class="press-meta">Nov 2026</span><span class="press-meta">Mumbai</span></a>
+                        <a class="press-item" href="https://www.youtube.com/watch?v=uYygWN1MZDE" target="_blank" rel="noopener" aria-label="DappCon — Rage-coding the Mother of All VPNs"><img class="press-logo" data-tile src="assets/press/dappcon.png" alt="DappCon" loading="lazy"><span class="press-name">DappCon</span><span class="press-meta">Jun 2026</span><span class="press-meta">Berlin</span></a>
+                        <a class="press-item" href="https://congress.web3privacy.info/" target="_blank" rel="noopener" aria-label="Web3Privacy Congress — The First 9 Months"><img class="press-logo" data-tile src="assets/press/ecc3.png" alt="Ethereum Cypherpunk Congress" loading="lazy"><span class="press-name">Web3Privacy Congress</span><span class="press-meta">Nov 2026</span><span class="press-meta">Mumbai</span></a>
+                        <a class="press-item" href="https://web3privacy.info/events/s26ber" target="_blank" rel="noopener" aria-label="Neo-Cypherpunk Summit Berlin — MoaV"><img class="press-logo" src="assets/press/neocypherpunk.svg" alt="Neo-Cypherpunk Summit" loading="lazy"><span class="press-name">Neo-Cypherpunk Summit</span><span class="press-meta">Jun 2026</span><span class="press-meta">Berlin</span></a>
+                        <a class="press-item" href="https://wiki.digitalrights.community/index.php?title=2026_Global_Gathering_Programming" target="_blank" rel="noopener" aria-label="Global Gathering 2026 — MoaV"><img class="press-logo" src="assets/press/global-gathering.png" alt="Global Gathering" loading="lazy"><span class="press-name">Global Gathering</span><span class="press-meta">Sep 2026</span><span class="press-meta">Estoril</span></a>
+                        <a class="press-item" data-type="press" href="https://open.spotify.com/episode/2UHieGbyWh91lVYKvmbdlW" target="_blank" rel="noopener" aria-label="CypherTalk by Oak Security — MoaV interview"><img class="press-logo" data-tile src="assets/press/cyphertalk.png" alt="CypherTalk" loading="lazy"><span class="press-name">CypherTalk</span><span class="press-meta">2026</span><span class="press-meta">Podcast</span></a>
+                        <a class="press-item" data-type="press" href="https://hakifedha.org/docs/tools/privacy-security/anti-censorship/moav" target="_blank" rel="noopener" aria-label="HakiFedha — MoaV in the anti-censorship toolkit"><img class="press-logo" src="assets/press/hakifedha.png" alt="HakiFedha" loading="lazy"><span class="press-name">HakiFedha</span><span class="press-meta">2026</span><span class="press-meta">Media</span></a>
+                    </div>
+                    <div class="press-set" aria-hidden="true">
+                        <a class="press-item" href="https://www.youtube.com/watch?v=p1bklAl3-BQ" target="_blank" rel="noopener" tabindex="-1"><img class="press-logo" src="assets/press/devcon.svg" alt="" loading="lazy"><span class="press-name">Devcon</span><span class="press-meta">Nov 2026</span><span class="press-meta">Mumbai</span></a>
+                        <a class="press-item" href="https://www.youtube.com/watch?v=uYygWN1MZDE" target="_blank" rel="noopener" tabindex="-1"><img class="press-logo" data-tile src="assets/press/dappcon.png" alt="" loading="lazy"><span class="press-name">DappCon</span><span class="press-meta">Jun 2026</span><span class="press-meta">Berlin</span></a>
+                        <a class="press-item" href="https://congress.web3privacy.info/" target="_blank" rel="noopener" tabindex="-1"><img class="press-logo" data-tile src="assets/press/ecc3.png" alt="" loading="lazy"><span class="press-name">Web3Privacy Congress</span><span class="press-meta">Nov 2026</span><span class="press-meta">Mumbai</span></a>
+                        <a class="press-item" href="https://web3privacy.info/events/s26ber" target="_blank" rel="noopener" tabindex="-1"><img class="press-logo" src="assets/press/neocypherpunk.svg" alt="" loading="lazy"><span class="press-name">Neo-Cypherpunk Summit</span><span class="press-meta">Jun 2026</span><span class="press-meta">Berlin</span></a>
+                        <a class="press-item" href="https://wiki.digitalrights.community/index.php?title=2026_Global_Gathering_Programming" target="_blank" rel="noopener" tabindex="-1"><img class="press-logo" src="assets/press/global-gathering.png" alt="" loading="lazy"><span class="press-name">Global Gathering</span><span class="press-meta">Sep 2026</span><span class="press-meta">Estoril</span></a>
+                        <a class="press-item" data-type="press" href="https://open.spotify.com/episode/2UHieGbyWh91lVYKvmbdlW" target="_blank" rel="noopener" tabindex="-1"><img class="press-logo" data-tile src="assets/press/cyphertalk.png" alt="" loading="lazy"><span class="press-name">CypherTalk</span><span class="press-meta">2026</span><span class="press-meta">Podcast</span></a>
+                        <a class="press-item" data-type="press" href="https://hakifedha.org/docs/tools/privacy-security/anti-censorship/moav" target="_blank" rel="noopener" tabindex="-1"><img class="press-logo" src="assets/press/hakifedha.png" alt="" loading="lazy"><span class="press-name">HakiFedha</span><span class="press-meta">2026</span><span class="press-meta">Media</span></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
     <!-- Why MoaV Section -->
     <section class="why" id="why">
         <div class="container">
