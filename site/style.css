@@ -1958,3 +1958,96 @@ body.modal-open {
     .support-fab { right: 16px; bottom: 16px; height: 48px; }
     .support-fab img { width: 48px; height: 48px; padding: 10px; }
 }
+
+/* ============================================================
+   Talks & Press marquee  (#press)  — MoaV talks + media mentions
+   Stacked cards: logo, name, month-year, city. Muted at rest,
+   colorizes on hover. Auto-scrolls AND is drag/swipe scrollable
+   (script.js drives it; CSS transform animation is the no-JS
+   fallback). Seamless loop via a duplicated .press-set.
+   ============================================================ */
+.press { padding: 60px 0 10px; border-top: 1px solid rgba(255, 255, 255, 0.05); }
+.press-eyebrow {
+    text-align: center;
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 30px;
+}
+.press-marquee {
+    position: relative;
+    overflow-x: auto;
+    overflow-y: hidden;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior-x: contain;
+    cursor: grab;
+    scrollbar-width: none;             /* Firefox */
+    -ms-overflow-style: none;          /* old Edge */
+    -webkit-mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent);
+    mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent);
+}
+.press-marquee::-webkit-scrollbar { display: none; }   /* WebKit */
+.press-marquee:active { cursor: grabbing; }
+.press-marquee.dragging .press-item { pointer-events: none; }   /* don't fire a link mid-drag */
+.press-track { display: flex; width: max-content; animation: press-scroll 52s linear infinite; }
+.press-track.js-scroll { animation: none; }            /* JS takes over the motion */
+.press-set { display: flex; align-items: flex-start; gap: 60px; padding-left: 60px; }
+.press-marquee:hover .press-track { animation-play-state: paused; }
+
+.press-item {
+    display: inline-flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 9px;
+    text-decoration: none;
+    text-align: center;
+    width: 150px;
+}
+.press-logo {
+    height: 48px;
+    width: auto;
+    max-width: 140px;
+    object-fit: contain;
+    display: block;
+    opacity: 0.5;
+    filter: grayscale(1) brightness(1.6);
+    transition: opacity var(--transition), filter var(--transition);
+    pointer-events: none;   /* let drags land on the <a>, not the image */
+}
+.press-logo[data-tile] { border-radius: 9px; }
+.press-name {
+    font-family: var(--font-sans);
+    font-weight: 600;
+    font-size: 0.95rem;
+    line-height: 1.2;
+    letter-spacing: 0.01em;
+    color: var(--text-secondary);
+    transition: color var(--transition);
+}
+.press-meta {
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    line-height: 1.3;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+}
+.press-item:hover .press-logo,
+.press-item:focus-visible .press-logo { opacity: 1; filter: none; }
+.press-item:hover .press-name,
+.press-item:focus-visible .press-name { color: var(--text-primary); }
+
+@keyframes press-scroll { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+@media (prefers-reduced-motion: reduce) {
+    .press-track { animation: none; width: auto; flex-wrap: wrap; justify-content: center; }
+    .press-marquee { -webkit-mask-image: none; mask-image: none; overflow-x: hidden; cursor: default; }
+    .press-set[aria-hidden="true"] { display: none; }
+    .press-set { padding-left: 0; gap: 36px 40px; flex-wrap: wrap; justify-content: center; }
+}
+@media (max-width: 768px) {
+    .press-item { width: 128px; }
+    .press-logo { height: 40px; }
+    .press-name { font-size: 0.88rem; }
+}
