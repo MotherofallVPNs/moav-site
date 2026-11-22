@@ -2041,10 +2041,10 @@ body.modal-open {
 
 @keyframes press-scroll { from { transform: translateX(0); } to { transform: translateX(-50%); } }
 @media (prefers-reduced-motion: reduce) {
-    .press-track { animation: none; width: auto; flex-wrap: wrap; justify-content: center; }
-    .press-marquee { -webkit-mask-image: none; mask-image: none; overflow-x: hidden; cursor: default; }
+    /* No auto-scroll motion, but keep a clean single-row strip the user can
+       still swipe/drag horizontally (overflow-x stays auto from the base rule). */
+    .press-track { animation: none; }
     .press-set[aria-hidden="true"] { display: none; }
-    .press-set { padding-left: 0; gap: 36px 40px; flex-wrap: wrap; justify-content: center; }
 }
 @media (max-width: 768px) {
     .press-item { width: 128px; }
