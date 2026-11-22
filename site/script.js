@@ -522,7 +522,8 @@ function initDemoModal() {
     var marquee = document.querySelector('.press-marquee');
     var track = marquee ? marquee.querySelector('.press-track') : null;
     if (!marquee || !track) return;
-    if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    // Respect reduced-motion for the AUTO-scroll only; drag/swipe stays available.
+    var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
     track.classList.add('js-scroll');          // hand motion to JS (disables CSS transform)
     marquee.scrollLeft = 0;
@@ -538,7 +539,7 @@ function initDemoModal() {
         else if (marquee.scrollLeft < 0) marquee.scrollLeft += h;
     }
     function tick() {
-        if (!paused && !dragging) { marquee.scrollLeft += SPEED; wrap(); }
+        if (!paused && !dragging && !reduce) { marquee.scrollLeft += SPEED; wrap(); }
         requestAnimationFrame(tick);
     }
 
