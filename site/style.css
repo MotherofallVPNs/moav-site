@@ -1978,17 +1978,12 @@ body.modal-open {
 }
 .press-marquee {
     position: relative;
-    overflow-x: auto;
-    overflow-y: hidden;
-    -webkit-overflow-scrolling: touch;
-    overscroll-behavior-x: contain;
+    overflow: hidden;                  /* JS drives a transform; no native scroll layer (iOS-safe) */
     cursor: grab;
-    scrollbar-width: none;             /* Firefox */
-    -ms-overflow-style: none;          /* old Edge */
+    touch-action: pan-y;               /* horizontal gesture = our drag; vertical = page scroll */
     -webkit-mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent);
     mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent);
 }
-.press-marquee::-webkit-scrollbar { display: none; }   /* WebKit */
 .press-marquee:active { cursor: grabbing; }
 .press-marquee.dragging .press-item { pointer-events: none; }   /* don't fire a link mid-drag */
 .press-track { display: flex; width: max-content; animation: press-scroll 52s linear infinite; }

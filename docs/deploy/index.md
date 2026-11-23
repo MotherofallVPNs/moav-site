@@ -9,7 +9,7 @@
 
 | Platform | Channel |
 |----------|---------|
-| Android | [Google Play (open testing)](https://play.google.com/store/apps/details?id=org.motherofallvpns.moavdeploy) |
+| Android | [Google Play](https://play.google.com/store/apps/details?id=org.motherofallvpns.moavdeploy) |
 | iOS | [TestFlight](https://testflight.apple.com/join/7S972Bwk) |
 | Source and signed APKs | [MotherofallVPNs/moav-deploy-app](https://github.com/MotherofallVPNs/moav-deploy-app) |
 
