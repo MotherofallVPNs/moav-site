@@ -517,51 +517,55 @@ function initDemoModal() {
     });
 }
 
-/* Talks & Press strip (#press): gentle auto-scroll + user drag / swipe / trackpad. */
+/* Talks & Press strip (#press): GPU transform marquee (iOS-safe), time-based
+   speed (consistent across devices) + user drag / swipe / trackpad. */
 (function () {
     var marquee = document.querySelector('.press-marquee');
     var track = marquee ? marquee.querySelector('.press-track') : null;
     if (!marquee || !track) return;
-    // Respect reduced-motion for the AUTO-scroll only; drag/swipe stays available.
+    // Respect reduced-motion for the AUTO-advance only; drag/swipe stays available.
     var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-    track.classList.add('js-scroll');          // hand motion to JS (disables CSS transform)
-    marquee.scrollLeft = 0;
+    track.classList.add('js-scroll');          // JS owns the transform (disables the CSS keyframe)
+    track.style.willChange = 'transform';
 
-    var paused = false, dragging = false, moved = false, startX = 0, startScroll = 0;
-    var SPEED = 0.4;                            // px/frame (~24px/s)
+    var pos = 0;                               // current translateX (<= 0, moving left)
+    var paused = false, dragging = false, moved = false, startX = 0, startPos = 0, last = 0;
+    var SPEED = 0.03;                           // px per millisecond (~30 px/s), frame-rate independent
 
-    function half() { return track.scrollWidth / 2; }
-    function wrap() {
-        var h = half();
-        if (h <= 0) return;
-        if (marquee.scrollLeft >= h) marquee.scrollLeft -= h;
-        else if (marquee.scrollLeft < 0) marquee.scrollLeft += h;
+    function halfWidth() { return track.scrollWidth / 2; }   // width of one (duplicated) set
+    function apply() {
+        var h = halfWidth();
+        if (h > 0) { while (pos <= -h) pos += h; while (pos > 0) pos -= h; }   // seamless wrap
+        track.style.transform = 'translateX(' + pos.toFixed(2) + 'px)';
     }
-    function tick() {
-        if (!paused && !dragging && !reduce) { marquee.scrollLeft += SPEED; wrap(); }
-        requestAnimationFrame(tick);
+    function frame(t) {
+        if (!last) last = t;
+        var dt = Math.min(t - last, 48); last = t;   // clamp long gaps (tab switch)
+        if (!paused && !dragging && !reduce) { pos -= SPEED * dt; apply(); }
+        requestAnimationFrame(frame);
     }
 
-    marquee.addEventListener('pointerenter', function () { paused = true; });
-    marquee.addEventListener('pointerleave', function () { if (!dragging) paused = false; });
+    // Hover pause (mouse only, so touch doesn't get stuck paused).
+    marquee.addEventListener('pointerenter', function (e) { if (e.pointerType === 'mouse') paused = true; });
+    marquee.addEventListener('pointerleave', function (e) { if (e.pointerType === 'mouse' && !dragging) paused = false; });
     marquee.addEventListener('focusin', function () { paused = true; });
     marquee.addEventListener('focusout', function () { if (!dragging) paused = false; });
 
+    // Drag / swipe (pointer events cover mouse + touch on modern iOS/Android Chrome).
     marquee.addEventListener('pointerdown', function (e) {
-        dragging = true; paused = true; moved = false;
-        startX = e.clientX; startScroll = marquee.scrollLeft;
+        dragging = true; moved = false; startX = e.clientX; startPos = pos;
         try { marquee.setPointerCapture(e.pointerId); } catch (x) {}
     });
     marquee.addEventListener('pointermove', function (e) {
         if (!dragging) return;
         var dx = e.clientX - startX;
         if (Math.abs(dx) > 4) { moved = true; marquee.classList.add('dragging'); }
-        marquee.scrollLeft = startScroll - dx; wrap();
+        pos = startPos + dx; apply();
     });
     function endDrag() {
         if (!dragging) return;
-        dragging = false; paused = false;
+        dragging = false;
         setTimeout(function () { marquee.classList.remove('dragging'); }, 0);
     }
     marquee.addEventListener('pointerup', endDrag);
@@ -569,7 +573,11 @@ function initDemoModal() {
     marquee.addEventListener('click', function (e) {
         if (moved) { e.preventDefault(); e.stopPropagation(); moved = false; }
     }, true);
-    marquee.addEventListener('scroll', wrap, { passive: true });
+    // Trackpad / shift-wheel horizontal scrubbing (leave vertical wheel to the page).
+    marquee.addEventListener('wheel', function (e) {
+        if (Math.abs(e.deltaX) > Math.abs(e.deltaY)) { pos -= e.deltaX; apply(); e.preventDefault(); }
+    }, { passive: false });
 
-    requestAnimationFrame(tick);
+    apply();
+    requestAnimationFrame(frame);
 })();
