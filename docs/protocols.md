@@ -20,7 +20,6 @@ MoaV deploys 18+ circumvention transports and fallback paths, plus optional Psip
 | [WireGuard (wstunnel)](#wireguard-wstunnel) | 8080/tcp | High | High | No |
 | [Telegram MTProxy](#telegram-mtproxy) | 993/tcp | High | Medium | No |
 | [dnstt](#dnstt) | 53/udp | Medium | Low | Yes |
-| [Slipstream](#slipstream) | 53/udp | Medium | Low-Medium | Yes |
 | [MasterDNS](#masterdns) | 53/udp | Medium | Medium | Yes |
 | [GooseRelay](#gooserelay) | 8444/tcp | Very High | Low-Medium | No |
 | [Psiphon Conduit](#psiphon-conduit) | dynamic | High | Medium | No |

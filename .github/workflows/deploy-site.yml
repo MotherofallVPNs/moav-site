@@ -35,6 +35,11 @@ jobs:
         with:
           python-version: '3.x'
 
+      - name: Hide removed protocols from the docs tables
+        # Drops rows marked `status: removed` in the latest release's protocols.json.
+        # Best effort: if the roster can't be fetched, the committed tables stand.
+        run: python3 scripts/build-protocol-table.py
+
       - name: Build docs
         # requirements.txt, not an inline install: the PR preview builds from the
         # same file, so a plugin can't be present in one build and missing here.

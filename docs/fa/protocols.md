@@ -12,6 +12,7 @@ MoaV بیش از ۱۸ پروتکل عبور از فیلترینگ و مسیر ج
 | [AnyTLS](#anytls) | 8445/tcp | خیلی بالا | بالا | بله |
 | [Hysteria2](#hysteria2) | 443/udp | بالا | خیلی بالا | بله |
 | [Shadowsocks-2022](#shadowsocks-2022) | 8388/tcp+udp | بالا | خیلی بالا | خیر |
+| [Snell](#snell) | 8389/tcp | بالا | خیلی بالا | خیر |
 | [CDN (VLESS+WS)](#cdn-vlessws) | 443 via CDN | خیلی بالا | متوسط | <span dir="ltr">Cloudflare: بله</span> · <span dir="ltr">CloudFront: خیر</span> |
 | [TrustTunnel](#trusttunnel) | 4443/tcp+udp | خیلی بالا | بالا | بله |
 | [WireGuard](#wireguard) | 51820/udp | متوسط | خیلی بالا | خیر |
@@ -19,7 +20,6 @@ MoaV بیش از ۱۸ پروتکل عبور از فیلترینگ و مسیر ج
 | [WireGuard (wstunnel)](#wireguard-wstunnel) | 8080/tcp | بالا | بالا | خیر |
 | [Telegram MTProxy](#telegram-mtproxy) | 993/tcp | بالا | متوسط | خیر |
 | [dnstt](#dnstt) | 53/udp | متوسط | پایین | بله |
-| [Slipstream](#slipstream) | 53/udp | متوسط | پایین تا متوسط | بله |
 | [MasterDNS](#masterdns) | 53/udp | متوسط | متوسط | بله |
 | [GooseRelay](#gooserelay) | 8444/tcp | خیلی بالا | پایین تا متوسط | خیر |
 | [Psiphon Conduit](#psiphon-conduit) | dynamic | بالا | متوسط | خیر |
@@ -79,6 +79,16 @@ AEAD-2022 Shadowsocks (`2022-blake3-aes-128-gcm`), نسل مدرن Shadowsocks �
 - **کلاینت‌ها:** Outline (iOS/Android/desktop), NekoBox/NekoRay, Hiddify, Streisand, sing-box — با URI استاندارد `ss://`
 - **نکته:** به‌صورت پیش‌فرض فعال است (`ENABLE_SS=true`). اگر پورت 8388 توسط ISP شما از طریق شناسایی الگوی ترافیک (Fingerprinting) شناسایی شود، مقدار `PORT_SS` را در فایل <span dir="ltr">`.env` </span> به پورتی کمتر قابل شناسایی تغییر دهید و سپس دستور `moav restart sing-box` را اجرا کنید.
 
+
+### Snell
+
+پروکسی سبک TCP از اکوسیستم Surge با مبهم‌سازی (Obfuscation) اختیاری HTTP. به TLS یا دامنه نیازی ندارد؛ بنابراین در حالت بدون دامنه هم کار می‌کند. **کلید مشترک:** برخلاف پروکسی‌های دیگر، Snell برای هر کاربر کلید جداگانه *ندارد* و همه کاربران با یک PSK مشترک سرور وصل می‌شوند (مشابه تونل‌های DNS). به‌صورت پیش‌فرض غیرفعال است.
+
+- **پورت:** `8389/tcp`
+- **موتور:** [sing-box](https://github.com/SagerNet/sing-box) (Snell v5)
+- **کلاینت‌ها:** [Surge 5](https://apps.apple.com/us/app/surge-5/id1442620678) یا Stash (iOS)، [Clash Mi](https://apps.apple.com/us/app/clash-mi/id6744321968) یا Mihomo (iOS)، Clash Meta for Android / FlClash. **اپ‌های v2rayNG، Hiddify، NekoBox و sing-box از Snell پشتیبانی نمی‌کنند.**
+- **تنظیمات MoaV:** `ENABLE_SNELL=false` (فعال‌سازی دستی) · `PORT_SNELL=8389` · `SNELL_OBFS=http` (یا `none`). PSK مشترک به‌صورت خودکار ساخته می‌شود.
+- **نکته:** کلید مشترک یعنی **امکان لغو دسترسی برای هر کاربر به‌تنهایی وجود ندارد**؛ لغو یک کاربر دسترسی او به Snell را قطع نمی‌کند. برای لغو کامل باید کلید را عوض کنید (فایل <span dir="ltr">`state/keys/snell-server.psk`</span> را پاک کنید و دوباره bootstrap کنید) و Bundleها را از نو صادر کنید. sing-box فقط Snell v5 را ارائه می‌دهد و حالت چندکاربره آن هیچ کلاینت سازگاری ندارد؛ به همین دلیل MoaV، Snell را به‌صورت تک‌کاربره اجرا می‌کند.
 
 ### CDN (VLESS+WS)
 

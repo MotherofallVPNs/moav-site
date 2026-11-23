@@ -71,6 +71,11 @@ jobs:
         # Best effort: on a fetch failure the committed table stands, as in deploy.
         run: ./scripts/build-funding.sh || true
 
+      - name: Hide removed protocols (same as deploy)
+        run: |
+          bash tests/protocol-table-test.sh
+          python3 scripts/build-protocol-table.py
+
       - name: Build (strict)
         env:
           SITE_URL: https://pr-${{ github.event.pull_request.number }}.moav-docs-preview.pages.dev/
