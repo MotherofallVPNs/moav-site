@@ -603,17 +603,17 @@ curl -s -o /dev/null -w "%{http_code}" https://d1234abcd.cloudfront.net/test
 
 > **Quick check:** Run `moav doctor dns` to verify NS delegation for DNS tunnel subdomains, and `moav doctor ports` to check port 53 conflicts.
 
-**Enabling/disabling individual tunnels:** All four DNS tunnels share port 53 via `dns-router` (queries fanned out by subdomain suffix). Enable or disable each independently in `.env`:
+**Enabling/disabling individual tunnels:** The DNS tunnels share port 53 via `dns-router` (queries fanned out by subdomain suffix). Enable or disable each independently in `.env`:
 ```bash
-# All four DNS tunnels are on by default:
+# dnstt, MasterDNS and XDNS are on by default:
 ENABLE_DNSTT=true
-ENABLE_SLIPSTREAM=true
+ENABLE_SLIPSTREAM=false # deprecated in 2.5.0: no longer routed by dns-router
 ENABLE_MASTERDNS=true
 ENABLE_XDNS=true       # needs FinalMask-aware client; set false to opt out
 PORT_DNS=53            # dns-router public port (owns port 53)
 PORT_XDNS=5356         # xray XDNS secondary host port
 ```
-Or use `moav switch-dns` to manage tunnel daemons: `moav switch-dns dnstt+slipstream+masterdns+xdns` (all four) or `moav switch-dns off`.
+Or use `moav switch-dns` to manage tunnel daemons: `moav switch-dns dnstt+masterdns+xdns` (all three) or `moav switch-dns off`.
 
 **Check logs for domain issues:**
 ```bash
@@ -669,7 +669,7 @@ iptables -A INPUT -p udp --dport 53 -j ACCEPT
 # Replace PUBKEY (from outputs/dnstt/server.pub) and t.yourdomain.com
 docker run --rm --network host \
   -e GOPROXY='https://proxy.golang.org|https://goproxy.cn|direct' -e GOSUMDB=off \
-  golang:1.24-alpine sh -c '
+  golang:1.27-alpine sh -c '
   apk add --no-cache git curl >/dev/null
   git clone https://www.bamsoftware.com/git/dnstt.git /src >/dev/null 2>&1 || git clone https://repo.or.cz/dnstt.git /src >/dev/null 2>&1
   cd /src/dnstt-client && go build -o /usr/local/bin/dnstt-client .
@@ -1371,11 +1371,10 @@ MoaV can build monitoring stack images from source when registries are blocked.
 Set versions in `.env` before building:
 ```bash
 # In .env
-PROMETHEUS_VERSION=3.5.1
-GRAFANA_VERSION=12.3.3
-NODE_EXPORTER_VERSION=1.10.2
-CADVISOR_VERSION=0.56.2
-CLASH_EXPORTER_VERSION=0.0.4
+PROMETHEUS_VERSION=3.16.0
+GRAFANA_VERSION=13.3.1
+NODE_EXPORTER_VERSION=1.13.1
+CADVISOR_VERSION=0.61.1
 ```
 
 **Force rebuild:**

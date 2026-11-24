@@ -27,7 +27,7 @@ Everything below arrives in the bundle you were sent. Opening its **`README.html
 | [AmneziaWG](https://github.com/amnezia-vpn/amneziawg-linux-kernel-module) | 51821/udp | Obfuscated WireGuard, designed to resist common DPI signatures |
 | [WireGuard](https://www.wireguard.com/) + [wstunnel](https://github.com/erebe/wstunnel) | 8080/tcp | VPN wrapped in WebSocket |
 | [DNS Tunnel (dnstt)](https://www.bamsoftware.com/software/dnstt/) | 53/udp | Last resort, slow but hard to block |
-| [Slipstream](https://github.com/Mygod/slipstream-rust) | 53/udp | QUIC-over-DNS, 1.5-5x faster than dnstt |
+| [Slipstream](https://github.com/Mygod/slipstream-rust) *(deprecated)* | 53/udp | Deprecated in MoaV 2.5.0: off by default and no longer routed. Use MasterDNS or dnstt |
 | [Telegram MTProxy](https://github.com/telemt/telemt) | 993/tcp | Fake-TLS V2, direct Telegram access |
 | [XHTTP (VLESS+XHTTP+Reality)](https://github.com/XTLS/Xray-core) | 2096/tcp | XHTTP transport with Reality TLS, experimental |
 | [Psiphon](https://psiphon.ca/) | Various | Standalone app, uses Psiphon network |
@@ -135,7 +135,7 @@ Try these in order. If one doesn't work, try the next:
 7. **WireGuard (wstunnel)** - VPN wrapped in WebSocket, for restrictive networks (port 8080/tcp)
 8. **Tor (Snowflake)** - Uses Tor network (no server needed)
 9. **DNS Tunnel (dnstt)** - Last resort, very slow but hard to block (port 53/udp)
-10. **Slipstream** - QUIC-over-DNS, 1.5-5x faster than dnstt (port 53/udp)
+10. **Slipstream** - Deprecated in MoaV 2.5.0: servers no longer route it, use MasterDNS or dnstt instead (port 53/udp)
 11. **Psiphon** - Standalone app only, uses Psiphon network (not via MoaV client)
 
 **Telegram-specific:** Use the **Telegram MTProxy** link (in `telegram-proxy-link.txt`) directly in the Telegram app. This only works for Telegram traffic — it's not a general proxy.
@@ -564,6 +564,9 @@ Most protocols just work once the subscription is imported. These have quirks wo
     3. Configure apps to use SOCKS5 proxy `127.0.0.1:1080`
 
     ### Slipstream (Faster DNS Tunnel)
+
+    !!! warning "Deprecated in MoaV 2.5.0"
+        Servers on MoaV 2.5.0 or later no longer route Slipstream, so this client only connects to servers that have not updated yet. Ask your operator for a new bundle and use MasterDNS or dnstt instead.
 
     Slipstream is a QUIC-over-DNS tunnel that is 1.5-5x faster than dnstt. See `slipstream-instructions.txt` in your bundle.
 

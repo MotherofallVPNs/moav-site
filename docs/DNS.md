@@ -21,7 +21,7 @@ What DNS records MoaV needs, and how to add them. Most setups need **one to six 
 | **Hysteria2** | — | ✅ |
 | **TrustTunnel** | — | ✅ |
 | **CDN-fronted VLESS** *(via Cloudflare)* | — | ✅ |
-| **dnstt · Slipstream · MasterDNS · XDNS** *(DNS tunnels)* | — | ✅ |
+| **dnstt · MasterDNS · XDNS** *(DNS tunnels)* | — | ✅ |
 
 The domain-only ones need either a Let's Encrypt certificate or an NS delegation, and both require a real domain. Nothing is lost by adding a domain later: set `DOMAIN=` and re-run `moav bootstrap`.
 
@@ -33,7 +33,7 @@ Add only the rows for the features you enable. This table is the whole story —
 |---|---|---|:-:|---|
 | A | `@` | server IP | DNS only | **Always** — Trojan, Hysteria2, Reality, TLS |
 | A | `dns` | server IP | DNS only | Any DNS tunnel (the nameserver for the delegations below) |
-| NS | `t`, `s`, `m`, `x` | `dns.yourdomain.com` | — | One per [DNS tunnel](protocols.md#dns-tunnels) you expose |
+| NS | `t`, `m`, `x` | `dns.yourdomain.com` | — | One per [DNS tunnel](protocols.md#dns-tunnels) you expose |
 | A | `cdn` | server IP | **Proxied** | [CDN mode](#cdn-mode) |
 | A | `www` | server IP | **Proxied** | [CDN mode](#cdn-mode) stealth connect address (`CDN_ADDRESS=www.…`) |
 | A | `grafana` | server IP | **Proxied** | Faster Grafana over the CDN *(optional)* |
@@ -44,12 +44,11 @@ Each `NS` row is a separate delegation handing that subdomain to your own server
 
 ```
 t.yourdomain.com    NS    dns.yourdomain.com      # dnstt
-s.yourdomain.com    NS    dns.yourdomain.com      # Slipstream
 m.yourdomain.com    NS    dns.yourdomain.com      # MasterDNS
 x.yourdomain.com    NS    dns.yourdomain.com      # XDNS
 ```
 
-Add only the tunnels you want — see [DNS Tunnels](protocols.md#dns-tunnels) for what each one is and which to pick. Some registrars require a **trailing dot** on NS values (`dns.yourdomain.com.`); Cloudflare and most modern panels do not.
+Add only the tunnels you want — see [DNS Tunnels](protocols.md#dns-tunnels) for what each one is and which to pick. The old `s` delegation was for [Slipstream](protocols.md#slipstream), which is deprecated since MoaV 2.5.0 and no longer routed, so new installs do not need it. Some registrars require a **trailing dot** on NS values (`dns.yourdomain.com.`); Cloudflare and most modern panels do not.
 
 !!! tip "MoaV writes the zone file for you"
     `moav doctor dns` generates **`outputs/dns-records.txt`** — a BIND-style zone file containing exactly the records your configuration needs, with the enabled/disabled state of each tunnel noted in comments. In Cloudflare you can feed it straight to **DNS → Records → Import and Upload** instead of adding records by hand.
