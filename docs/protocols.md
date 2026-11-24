@@ -313,9 +313,12 @@ The last transports standing. When a network blocks or throttles almost everythi
 
 They are **slow**. Treat them as the fallback that keeps chat and messaging alive, not as an everyday transport.
 
+!!! warning "Slipstream is deprecated (MoaV 2.5.0)"
+    Slipstream is being removed in phases. Since MoaV 2.5.0 it is off by default and `dns-router` no longer routes its subdomain, so Slipstream clients no longer connect. MasterDNS and dnstt cover the same use case. Status and migration steps: [Slipstream](#slipstream).
+
 ### How it works
 
-MoaV runs **four** DNS tunnels **simultaneously** on the same public port 53. A small Go service, `dns-router`, is the only thing bound to that port; it reads each query's subdomain prefix and forwards to the matching tunnel container on an internal port.
+MoaV runs **three** DNS tunnels **simultaneously** on the same public port 53: dnstt, MasterDNS and XDNS. A small Go service, `dns-router`, is the only thing bound to that port; it reads each query's subdomain prefix and forwards to the matching tunnel container on an internal port.
 
 ```
               Public 53/udp
@@ -325,7 +328,6 @@ MoaV runs **four** DNS tunnels **simultaneously** on the same public port 53. A 
             └──────┬──────┘
                    │  routes by subdomain prefix
        t.*  ─────►  dnstt        (KCP + Noise)
-       s.*  ─────►  slipstream   (QUIC-over-DNS)
        m.*  ─────►  masterdns    (ARQ, MahsaNG-native)
        x.*  ─────►  xray         (XDNS via FinalMask)
                    │
@@ -333,7 +335,7 @@ MoaV runs **four** DNS tunnels **simultaneously** on the same public port 53. A 
               sing-box  ──►  internet
 ```
 
-Because they are separated by subdomain rather than by port, there is no "pick one" decision: a user connects with whichever tunnel their client supports, and all four can serve traffic at once.
+Because they are separated by subdomain rather than by port, there is no "pick one" decision: a user connects with whichever tunnel their client supports, and all of them can serve traffic at once.
 
 ### What MoaV sets up for you
 
@@ -342,19 +344,18 @@ Each tunnel needs an **NS delegation** handing its subdomain to your server, plu
 ```
 dns.yourdomain.com  A   YOUR_SERVER_IP     # the nameserver
 t.yourdomain.com    NS  dns.yourdomain.com # dnstt
-s.yourdomain.com    NS  dns.yourdomain.com # Slipstream
 m.yourdomain.com    NS  dns.yourdomain.com # MasterDNS
 x.yourdomain.com    NS  dns.yourdomain.com # XDNS
 ```
 
 `moav doctor dns` writes exactly the records your configuration needs to `outputs/dns-records.txt`, ready to import into Cloudflare. Full walkthrough: [DNS Configuration](DNS.md#with-a-domain-the-records).
 
-All four are on by default. Toggle them individually with `ENABLE_DNSTT` / `ENABLE_SLIPSTREAM` / `ENABLE_MASTERDNS` / `ENABLE_XDNS`, or set the combination in one command:
+All three are on by default. Toggle them individually with `ENABLE_DNSTT` / `ENABLE_MASTERDNS` / `ENABLE_XDNS`, or set the combination in one command:
 
 ```bash
 moav switch-dns                                    # show what is on
-moav switch-dns dnstt+slipstream+masterdns+xdns    # all four
-moav switch-dns dnstt+slipstream                   # the classic pair
+moav switch-dns dnstt+masterdns+xdns               # all three
+moav switch-dns dnstt+masterdns                    # the classic pair
 moav switch-dns off                                # no DNS tunnels
 ```
 
@@ -365,7 +366,7 @@ A disabled tunnel's container stays down and `dns-router` simply has no backend 
 | Tunnel | Subdomain | Speed vs dnstt | Loss resilience | Best for |
 |---|---|---|---|---|
 | **dnstt** | `t` | 1× *(baseline)* | low | **Widest client support** — standalone client on 25+ platforms |
-| **Slipstream** | `s` | 1.5–5× | medium | Faster general use where a Slipstream client exists |
+| **Slipstream** *(deprecated)* | `s` | 1.5–5× | medium | Deprecated in MoaV 2.5.0: off by default and no longer routed. Use MasterDNS or dnstt |
 | **MasterDNS** | `m` | up to 9× | **high** *(ARQ + packet duplication + multi-resolver)* | **Harsh shutdowns**; native in [MahsaNG v16](mahsanet.md) |
 | **XDNS** | `x` | ~1× | low | FinalMask clients (Happ, Xray CLI); per-user auth |
 
@@ -396,11 +397,20 @@ Encodes a TCP stream inside DNS queries using KCP + Noise. Extremely hard to blo
 
 ### Slipstream
 
+!!! warning "Deprecated: phase 1 of removal (MoaV 2.5.0)"
+    Upstream [slipstream-rust](https://github.com/Mygod/slipstream-rust) is archived, and MasterDNS and dnstt cover the same DNS-tunnel use case. Since MoaV 2.5.0:
+
+    - `ENABLE_SLIPSTREAM` defaults to `false`.
+    - `dns-router` no longer routes the `s.` subdomain, so **existing Slipstream clients stop connecting**. The router ignores a leftover `ENABLE_SLIPSTREAM=true` with a warning.
+    - The service, image and code are removed in a later release.
+
+    **Migrate:** keep `ENABLE_MASTERDNS=true` and/or `ENABLE_DNSTT=true` with their NS records in place (`moav doctor dns`), run `moav switch-dns dnstt+masterdns+xdns`, then `moav regenerate-users` and hand out the new bundles.
+
 The same idea over **QUIC**, which buys real throughput — typically 1.5–5× dnstt.
 
 - **Port:** 53/udp *(subdomain `s`)* · **Engine:** [slipstream-rust](https://github.com/Mygod/slipstream-rust) · [pre-built binaries](https://github.com/net2share/slipstream-rust-build/releases)
 - **Requires:** domain + NS delegation
-- **MoaV settings:** `ENABLE_SLIPSTREAM=true` · `SLIPSTREAM_SUBDOMAIN=s`.
+- **MoaV settings:** `ENABLE_SLIPSTREAM=false` *(default since 2.5.0; `dns-router` ignores `true` with a warning)* · `SLIPSTREAM_SUBDOMAIN=s`.
 
 ### MasterDNS
 

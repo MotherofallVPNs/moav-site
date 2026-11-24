@@ -1,35 +1,74 @@
 # MoaV
 
-> Multi-protocol Internet censorship circumvention stack optimized for hostile network environments. Bundles 16+ transports — Reality (VLESS), Trojan, AnyTLS (defeats TLS-in-TLS fingerprinting), Hysteria2, XHTTP, Shadowsocks-2022, CDN VLESS+WS, WireGuard (direct + over wss:// WebSocket via wstunnel), AmneziaWG, TrustTunnel (HTTP/2+QUIC), Telegram MTProxy, plus four DNS tunnels (dnstt, Slipstream, MasterDNS, XDNS) sharing port 53 through a subdomain-routing daemon. Optional bandwidth donation paths via Psiphon Conduit, Tor Snowflake, and GooseRelay. Single-host Docker Compose deployment with per-user bundle generation (configs, QR codes, V2Ray subscription), automatic Let's Encrypt certificate renewal, and an optional Prometheus + Grafana monitoring stack.
+> Multi-protocol Internet censorship circumvention stack for hostile network environments. Bundles 18+ transports and fallback paths — Reality (VLESS), Trojan, AnyTLS (resists TLS-in-TLS fingerprinting), Hysteria2, XHTTP, Shadowsocks-2022, Snell (shared-key, Surge/Clash.Meta clients), CDN VLESS+WS, WireGuard (direct + over wss:// WebSocket via wstunnel), AmneziaWG, TrustTunnel (HTTP/2+QUIC), Telegram MTProxy, plus DNS tunnels (dnstt, MasterDNS, XDNS) sharing port 53 through a subdomain-routing daemon (Slipstream is deprecated and no longer routed). Optional bandwidth-donation integrations via Psiphon Conduit, Tor Snowflake and GooseRelay, which relay for other networks rather than serving your own users. Single-host Docker Compose deployment with per-user bundle generation (configs, QR codes, V2Ray subscription), automatic Let's Encrypt certificate renewal, and an optional Prometheus + Grafana monitoring stack.
+
+This is the **source repository**. `moav.sh` is a bash dispatcher over `lib/*.sh` modules; protocol servers run as containers.
+
+## Operating a server: the essentials
+
+Enough to deploy and find your way around. Everything else is linked below.
+
+- **Install** (installs Docker, clones to `/opt/moav`, prompts for domain, ACME email and admin password):
+  ```bash
+  curl -fsSL moav.sh/install.sh | bash
+  ```
+- **Configuration** lives in one file: `/opt/moav/.env` (root-owned, mode 0600). `.env.example` is the annotated reference; commonly-changed variables are above the "ADVANCED" separator. A domain is optional — leaving `DOMAIN=` empty starts only the transports that need no certificate.
+- **Admin dashboard**: `https://<server>:9443` — log in with **any username** and your `ADMIN_PASSWORD`; only the password is checked. Uses the Let's Encrypt certificate when `DOMAIN` is set, a self-signed one in domainless mode.
+- **Grafana**: `https://<server>:9444` — username `admin`, same password. Needs the `monitoring` profile and roughly 2 GB RAM.
+- **Discover every command**: `moav help`, or run `moav` with no arguments for an interactive menu.
+- **First moves after install**: `moav status` (what is running), `moav doctor` (diagnose DNS, ports, certificates, resources), `moav user add NAME --package` (create a user and build their bundle .zip), `moav test NAME` (prove that user's configs actually pass traffic).
+- **Automation**: `moav status --json`, `moav doctor --json`, `moav user list --json`, `moav user add|remove NAME --json` and `moav test NAME --json` print one JSON document on stdout (logs go to stderr) and never include secrets — no keys, passwords, share-links or server IPs. Unattended install: `MOAV_NONINTERACTIVE=1` with `MOAV_DOMAIN` / `MOAV_EMAIL` / `MOAV_ADMIN_PASSWORD` / `ENABLE_*` in the environment, or `install.sh --answers FILE` (mode 0600); the password is never taken from argv and a missing answer fails the install. Unattended upgrade: `moav update --yes` (or `MOAV_NONINTERACTIVE=1`) never prompts — local changes are stashed, `.env` pins and new variables applied, services not restarted.
+- **Applying config changes**: edit `.env`, then `moav restart <service-or-profile>`. A plain `docker compose restart` does **not** re-read `.env`. Structural changes need `moav bootstrap`, and existing users are preserved.
+
+## For agents working in this repo
+
+- [AGENTS.md](https://raw.githubusercontent.com/MotherofallVPNs/MoaV/main/AGENTS.md): the deep guide — repo layout, build/run, testing, the conventions that bite (strict mode, get_env_val, bash 3.2, host-vs-container paths, uid 2000, secrets in state)
+- [CONTRIBUTING.md](https://raw.githubusercontent.com/MotherofallVPNs/MoaV/main/CONTRIBUTING.md): contributor workflow
+- [CHANGELOG.md](https://raw.githubusercontent.com/MotherofallVPNs/MoaV/main/CHANGELOG.md): behavior changes per version
+- [docs/devdocs/E2E-TESTING.md](https://raw.githubusercontent.com/MotherofallVPNs/MoaV/main/docs/devdocs/E2E-TESTING.md): the end-to-end harness and what a passing run must prove
+- [docs/devdocs/PROTOCOL-INTEGRATION-CHECKLIST.md](https://raw.githubusercontent.com/MotherofallVPNs/MoaV/main/docs/devdocs/PROTOCOL-INTEGRATION-CHECKLIST.md): adding a new protocol
+- [docs/devdocs/VERSION-BUMP-CHECKLIST.md](https://raw.githubusercontent.com/MotherofallVPNs/MoaV/main/docs/devdocs/VERSION-BUMP-CHECKLIST.md): bumping a component version
 
 ## Why MoaV exists
 
-- [Mission](https://moav.sh/docs/mission/): concise project description, who MoaV is for, what it does and does not try to be, how it is governed and funded
-- [Impact](https://moav.sh/docs/impact/): theory of change, who benefits, what success looks like, outcomes the project tracks
-- [Threat Model](https://moav.sh/docs/threat-model/): adversaries assumed, what MoaV protects, what it explicitly does not protect, operator and user safety assumptions
-- [Mission & Philosophy](https://moav.sh/docs/philosophy/): the longer manifesto, the multi-protocol thesis, shutdown history, why being infrastructure matters
+- [Mission](https://moav.sh/docs/mission/): what MoaV is for, who it serves, what it deliberately is not
+- [Threat Model](https://moav.sh/docs/threat-model/): adversaries assumed, what is and is not protected, operator and user safety
+- [Impact](https://moav.sh/docs/impact/): theory of change and the outcomes tracked
+- [Philosophy](https://moav.sh/docs/philosophy/): the multi-protocol thesis and why no single transport is enough
 
-## Docs
+## Deploying and configuring
 
-- [Quick Start](https://moav.sh/docs/quick-start/): one-command install and minimal first run
-- [Setup Guide](https://moav.sh/docs/SETUP/): full deployment walkthrough — domain, DNS, certbot, ports, firewall, bootstrap
-- [DNS Configuration](https://moav.sh/docs/DNS/): NS delegations for the four DNS tunnels, dns-router fan-out, resolver-mode vs direct-mode XDNS, port 53 freeing
-- [Supported Protocols](https://moav.sh/docs/protocols/): per-protocol cipher, port, transport, client compatibility, and recommended use case
+- [Quick Start](https://moav.sh/docs/quick-start/): one-command install through to a first user, about ten minutes
+- [Setup Guide](https://moav.sh/docs/SETUP/): every option — domain, DNS, certbot, ports, firewall, bootstrap, domainless and CDN modes
+- [VPS Deployment](https://moav.sh/docs/DEPLOY/): provider-by-provider server setup
+- [DNS Configuration](https://moav.sh/docs/DNS/): which protocols need a domain, NS delegations for the DNS tunnels, dns-router fan-out, freeing port 53
 - [CLI Reference](https://moav.sh/docs/CLI/): every `moav` command, profile filtering, environment variables
-- [Architecture](https://moav.sh/docs/architecture/): container topology, dns-router fan-out, bundle generation flow, monitoring stack
-- [Client Apps](https://moav.sh/docs/CLIENTS/): per-platform setup (MahsaNG, v2rayNG, Hiddify, Streisand, Happ, WireGuard apps)
-- [MahsaNG Import](https://moav.sh/docs/mahsanet/): V2Ray subscription import + MahsaNet donation flow
+- [Architecture](https://moav.sh/docs/architecture/): container topology, bundle generation flow, monitoring stack
+- [MoaV Deploy app](https://moav.sh/docs/deploy/): install and manage a server from an Android or iOS phone, no command line
+
+## Protocols and clients
+
+- [Supported Protocols](https://moav.sh/docs/protocols/): per-protocol cipher, port, transport, stealth and client compatibility
+- [Client Apps](https://moav.sh/docs/CLIENTS/): per-platform setup for the apps users actually install
+- [MahsaNG Import](https://moav.sh/docs/mahsanet/): V2Ray subscription import and the MahsaNet config-donation flow
+- [MoaV Client](https://moav.sh/docs/client/): the optional companion client for testing bundles
+
+## Running it well
+
 - [Monitoring](https://moav.sh/docs/MONITORING/): Grafana dashboards, Conduit lifetime bandwidth, GeoIP setup
-- [VPS Deployment](https://moav.sh/docs/DEPLOY/): provider-specific install paths (Hetzner, Linode, Vultr, DigitalOcean)
-- [MoaV Deploy](https://moav.sh/docs/deploy/): the Android/iOS app that installs, manages and monitors a server over SSH (admin tool, not a VPN client)
-- [Troubleshooting](https://moav.sh/docs/TROUBLESHOOTING/): common failure modes with diagnostic recipes
-- [OPSEC Guide](https://moav.sh/docs/OPSEC/): operator-side hardening and threat-model notes
-- [MoaV Client](https://moav.sh/docs/client/): the first-party client app, bundle import, connection behavior
-- [Development & Testing](https://moav.sh/docs/development/): local development setup, test suite, contributor workflow
+- [Troubleshooting](https://moav.sh/docs/TROUBLESHOOTING/): symptom-first failure modes with diagnostic recipes
+- [OPSEC Guide](https://moav.sh/docs/OPSEC/): operator-side hardening, safe bundle distribution, domain and payment considerations
 
-## Optional
+## Contributing
 
-- [Full documentation in one file](https://moav.sh/llms-full.txt): every docs page concatenated, for agents that want the whole corpus in one fetch
-- [GitHub repository](https://github.com/MotherofallVPNs/moav): source, issues, releases
-- [Changelog](https://github.com/MotherofallVPNs/moav/blob/main/CHANGELOG.md): release notes, behavior changes per version
-- [Protocol Integration Checklist](https://moav.sh/docs/devdocs/PROTOCOL-INTEGRATION-CHECKLIST/): contributor guide for adding a new protocol
+- [Development & Testing](https://moav.sh/docs/development/): running from source, how CI and the end-to-end suite work, the rule that every fix ships a regression test
+- [Translating the Docs](https://moav.sh/docs/TRANSLATING/): Farsi and Russian are scaffolded; one page is a complete contribution
+- [Support MoaV](https://moav.sh/docs/support/): run a server, contribute code, translate, or donate
+
+## Elsewhere
+
+- [Full documentation in one file](https://moav.sh/llms-full.txt): every docs page concatenated, for agents that can take the whole corpus
+- [Website / project home](https://moav.sh): landing page and hosted docs
+- [Source and issues](https://github.com/MotherofallVPNs/MoaV): bug reports and pull requests
+- [Telegram](https://t.me/motherofallvpns): community and support
+- [X / Twitter](https://x.com/motherofallvpns): release announcements

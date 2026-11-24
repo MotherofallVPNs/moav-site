@@ -603,7 +603,7 @@ moav admin password          # Prompts for new password (or generates random)
 #### `moav donate`
 Donate VPN configs and bandwidth to help people bypass censorship. Supports three donation services:
 
-- **MahsaNet** — Donate VPN config links to Mahsa VPN (2M+ users in Iran)
+- **MahsaNet** — Donate VPN config links to Mahsa VPN (12M+ users in Iran)
 - **Psiphon Conduit** — Donate bandwidth to Psiphon's relay network (millions of users worldwide)
 - **Tor Snowflake** — Donate bandwidth as a Tor Snowflake proxy
 
@@ -787,7 +787,7 @@ Profiles group related services. Each maps to one or more `ENABLE_*` flags in `.
 | `xhttp` | xray | `ENABLE_XHTTP` |
 | `wireguard` | wireguard, wstunnel, decoy, certbot | `ENABLE_WIREGUARD` |
 | `amneziawg` | amneziawg | `ENABLE_AMNEZIAWG` |
-| `dnstunnel` | dns-router, dnstt, slipstream, masterdns, xray (XDNS) | `ENABLE_DNSTT` / `ENABLE_SLIPSTREAM` / `ENABLE_MASTERDNS` / `ENABLE_XDNS` (any) |
+| `dnstunnel` | dns-router, dnstt, masterdns, xray (XDNS). slipstream is deprecated since 2.5.0 and only starts with `ENABLE_SLIPSTREAM=true` | `ENABLE_DNSTT` / `ENABLE_MASTERDNS` / `ENABLE_XDNS` (any) |
 | `trusttunnel` | trusttunnel | `ENABLE_TRUSTTUNNEL` |
 | `telegram` | telemt | `ENABLE_TELEMT` |
 | `admin` | admin, docker-proxy | `ENABLE_ADMIN_UI` |

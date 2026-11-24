@@ -254,7 +254,7 @@ moav conduit status    # وضعیت اجرا + کلاینت‌های متصل / 
 
 ### MahsaNet
 
-اهدای کانفیگ به [MahsaServer.com](https://www.mahsaserver.com/), پلتفرمی غیرمتمرکز برای اشتراک‌گذاری کانفیگ‌های VPN جهت استفاده در اپلیکیشن [Mahsa VPN](https://www.mahsaserver.com/). با بیش از ۲ میلیون کاربر در ایران، Mahsa VPN به کانفیگ‌های اهدایی از سرورهای سراسر جهان متصل می‌شود. برخلاف Conduit و Snowflake که پهنای باند را اهدا می‌کنند، MahsaNet لینک‌های کانفیگ VPN سرور شما را اهدا می‌کند تا کاربران Mahsa VPN مستقیماً به سرور شما متصل شوند.
+اهدای کانفیگ به [MahsaServer.com](https://www.mahsaserver.com/), پلتفرمی غیرمتمرکز برای اشتراک‌گذاری کانفیگ‌های VPN جهت استفاده در اپلیکیشن [Mahsa VPN](https://www.mahsaserver.com/). با بیش از ۱۲ میلیون کاربر در ایران، Mahsa VPN به کانفیگ‌های اهدایی از سرورهای سراسر جهان متصل می‌شود. برخلاف Conduit و Snowflake که پهنای باند را اهدا می‌کنند، MahsaNet لینک‌های کانفیگ VPN سرور شما را اهدا می‌کند تا کاربران Mahsa VPN مستقیماً به سرور شما متصل شوند.
 
 - **پروتکل‌های پشتیبانی‌شده:** Reality (VLESS)، Hysteria2، Trojan، CDN (VLESS+WS)
 - **کلاینت‌ها:** اپلیکیشن [Mahsa VPN](https://www.mahsaserver.com/) برای Android و iOS
@@ -267,9 +267,12 @@ moav conduit status    # وضعیت اجرا + کلاینت‌های متصل / 
 
 این روش **بسیار کند** است. آن را صرفاً به‌عنوان یک گزینه اضطراری برای زنده نگه‌داشتن ابزارهای پیام‌رسان و Chat در نظر بگیرید، نه یک پروتکل ارتباطی برای استفاده روزمره.
 
+!!! warning "Slipstream منسوخ شده است (MoaV 2.5.0)"
+    Slipstream مرحله‌به‌مرحله حذف می‌شود. از MoaV 2.5.0 به‌طور پیش‌فرض خاموش است و `dns-router` دیگر زیردامنهٔ آن را مسیریابی نمی‌کند؛ پس کلاینت‌های Slipstream دیگر وصل نمی‌شوند. MasterDNS و dnstt همین کاربرد را پوشش می‌دهند. وضعیت و مراحل مهاجرت: [Slipstream](#slipstream).
+
 ### نحوه کار
 
-MoaV چهار تونل DNS را **به‌صورت هم‌زمان** روی همان پورت عمومی ۵۳ اجرا می‌کند. یک سرویس سبک به زبان Go با نام `dns-router` تنها سرویسی است که روی این پورت Bind می‌شود؛ این سرویس پیشوند (Prefix) مربوط به زیردامنه (Subdomain) هر Query را بررسی کرده و آن را به کانتینر تونل مربوطه روی یک پورت داخلی ارسال (Forward) می‌کند.
+MoaV سه تونل DNS (dnstt، MasterDNS و XDNS) را **به‌صورت هم‌زمان** روی همان پورت عمومی ۵۳ اجرا می‌کند. یک سرویس سبک به زبان Go با نام `dns-router` تنها سرویسی است که روی این پورت Bind می‌شود؛ این سرویس پیشوند (Prefix) مربوط به زیردامنه (Subdomain) هر Query را بررسی کرده و آن را به کانتینر تونل مربوطه روی یک پورت داخلی ارسال (Forward) می‌کند.
 
 ```text
               Public 53/udp
@@ -279,7 +282,6 @@ MoaV چهار تونل DNS را **به‌صورت هم‌زمان** روی هم�
             └──────┬──────┘
                    │   (Subdomain Prefix)مسیریابی بر اساس پیشوند زیردامنه
        t.*  ─────►  dnstt        (KCP + Noise)
-       s.*  ─────►  slipstream   (QUIC-over-DNS)
        m.*  ─────►  masterdns    (ARQ, MahsaNG-native)
        x.*  ─────►  xray         (XDNS via FinalMask)
                    │
@@ -287,7 +289,7 @@ MoaV چهار تونل DNS را **به‌صورت هم‌زمان** روی هم�
               sing-box  ──►  internet
 ```
 
-از آنجا که این تونل‌ها به‌جای پورت بر اساس زیردامنه (Subdomain) از یکدیگر تفکیک می‌شوند، نیازی به انتخاب یکی از آن‌ها نیست. کاربر می‌تواند با هر تونلی که کلاینتش پشتیبانی می‌کند متصل شود و هر چهار تونل قادرند به‌صورت هم‌زمان ترافیک را سرویس ‌دهی کنند.
+از آنجا که این تونل‌ها به‌جای پورت بر اساس زیردامنه (Subdomain) از یکدیگر تفکیک می‌شوند، نیازی به انتخاب یکی از آن‌ها نیست. کاربر می‌تواند با هر تونلی که کلاینتش پشتیبانی می‌کند متصل شود و همهٔ آن‌ها قادرند به‌صورت هم‌زمان ترافیک را سرویس ‌دهی کنند.
 
 ### چیزی که MoaV برای شما تنظیم می‌کند
 
@@ -296,19 +298,18 @@ MoaV چهار تونل DNS را **به‌صورت هم‌زمان** روی هم�
 ```
 dns.yourdomain.com  A   YOUR_SERVER_IP     # Nameserver
 t.yourdomain.com    NS  dns.yourdomain.com # dnstt
-s.yourdomain.com    NS  dns.yourdomain.com # Slipstream
 m.yourdomain.com    NS  dns.yourdomain.com # MasterDNS
 x.yourdomain.com    NS  dns.yourdomain.com # XDNS
 ```
 
 دستور `moav doctor dns` رکورد‌های موردنیاز پیکربندی (Configuration) شما را دقیقاً در فایل `outputs/dns-records.txt` می‌نویسد تا برای  وارد کردن (Import) به Cloudflare آماده باشند. راهنمای کامل: [DNS Configuration](https://www.google.com/search?q=DNS.md%23with-a-domain-the-records).
 
-هر چهار تونل به‌صورت پیش‌فرض فعال هستند. می‌توانید آن‌ها را به‌صورت جداگانه با `ENABLE_DNSTT` / `ENABLE_SLIPSTREAM` / `ENABLE_MASTERDNS` / `ENABLE_XDNS` فعال یا غیرفعال کنید، یا ترکیب موردنظر را با یک دستور تنظیم کنید:
+هر سه تونل به‌صورت پیش‌فرض فعال هستند. می‌توانید آن‌ها را به‌صورت جداگانه با `ENABLE_DNSTT` / `ENABLE_MASTERDNS` / `ENABLE_XDNS` فعال یا غیرفعال کنید، یا ترکیب موردنظر را با یک دستور تنظیم کنید:
 
 ```bash
 moav switch-dns                                    # نمایش وضعیت فعلی
-moav switch-dns dnstt+slipstream+masterdns+xdns    # هر چهار مورد
-moav switch-dns dnstt+slipstream                   # جفت کلاسیک
+moav switch-dns dnstt+masterdns+xdns               # هر سه مورد
+moav switch-dns dnstt+masterdns                    # جفت کلاسیک
 moav switch-dns off                                # بدون تونل DNS
 ```
 
@@ -319,7 +320,7 @@ moav switch-dns off                                # بدون تونل DNS
 | تونل           | Subdomain | سرعت نسبت به dnstt  | مقاومت در برابر افت بسته                     | بهترین کاربرد                                                         |
 | -------------- | --------- | ------------------- | -------------------------------------------- | --------------------------------------------------------------------- |
 | **dnstt**      | `t`       | 1× *(مبنای مقایسه)* | کم                                           | **بیشترین سازگاری با کلاینت‌ها**-- امکان استفاده از کلاینت های مستقل روی بیش از 25 پلتفرم   |
-| **Slipstream** | `s`       | 1.5–5×              | متوسط                                        | **استفاده عمومی سریع‌تر**-- در شبکه‌هایی که کلاینت Slipstream در دسترس است |
+| **Slipstream** *(منسوخ)* | `s` | 1.5–5× | متوسط | **منسوخ از MoaV 2.5.0**: به‌طور پیش‌فرض خاموش است و دیگر مسیریابی نمی‌شود؛ از MasterDNS یا dnstt استفاده کنید |
 | **MasterDNS**  | `m`       | تا 9×               | **بالا** *(ARQ + تکرار بسته + چند Resolver)* | **خاموشی‌های شدید**-- به‌صورت بومی در [MahsaNG v16](mahsanet.md)     |
 | **XDNS**        | `x`       | ~1×                 | کم                                           | مناسب برای کلاینت‌های FinalMask (Happ, Xray CLI) ؛احراز هویت برای جلوگیری از استفاده غیرمجاز |
 
@@ -350,6 +351,15 @@ TCP Stream را با استفاده از KCP + Noise درون Queryهای DNS ک
 - **نیازمندی:** داشتن دامنه + واگذاری دامنه (NS Delegation)
 
 ### Slipstream
+
+!!! warning "منسوخ: مرحلهٔ اول حذف (MoaV 2.5.0)"
+    پروژهٔ اصلی آن، [slipstream-rust](https://github.com/Mygod/slipstream-rust)، بایگانی شده و MasterDNS و dnstt همین کاربرد تونل DNS را پوشش می‌دهند. از MoaV 2.5.0:
+
+    - مقدار پیش‌فرض `ENABLE_SLIPSTREAM` برابر `false` است.
+    - `dns-router` دیگر زیردامنهٔ `s.` را مسیریابی نمی‌کند؛ پس **کلاینت‌های فعلی Slipstream دیگر وصل نمی‌شوند**. اگر در `.env` مقدار `ENABLE_SLIPSTREAM=true` مانده باشد، `dns-router` آن را با یک هشدار نادیده می‌گیرد.
+    - سرویس، ایمیج و کد آن در نسخه‌ای بعدی حذف می‌شود.
+
+    **مهاجرت:** `ENABLE_MASTERDNS=true` و/یا `ENABLE_DNSTT=true` را با رکوردهای NS آن‌ها نگه دارید (`moav doctor dns`)، دستور `moav switch-dns dnstt+masterdns+xdns` را اجرا کنید، سپس `moav regenerate-users` را بزنید و بستهٔ جدید را برای کاربران بفرستید.
 
 همین ایده را از طریق پروتکل **QUIC** پیاده‌سازی می‌کند که بازدهی واقعی  بیشتری فراهم می‌سازد؛ معمولاً ۱.۵ تا ۵ برابر سریع‌تر از dnstt.
 

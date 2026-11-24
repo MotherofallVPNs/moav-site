@@ -1,7 +1,7 @@
 # Importing MoaV configs into MahsaNG
 
 [MahsaNG](https://github.com/GFW-knocker/MahsaNG) is a hardened V2RayNG fork
-built for Iran (2M+ users). It speaks standard V2Ray protocols (VLESS, Trojan,
+built for Iran (12M+ users). It speaks standard V2Ray protocols (VLESS, Trojan,
 Shadowsocks, Hysteria2) plus extra anti-censorship transports, and adds
 client-side circumvention (Fragment, fake-SNI, rotating configs). MoaV already
 generates everything MahsaNG needs — this guide shows the fastest way to get a

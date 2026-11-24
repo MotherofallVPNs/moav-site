@@ -94,7 +94,7 @@ Point your domain to your server **before** running setup.
 |------|------|-------|-------|
 | A | dns | YOUR_SERVER_IP | For DNS tunnel NS delegation |
 | NS | t | dns.yourdomain.com | dnstt tunnel subdomain |
-| NS | s | dns.yourdomain.com | Slipstream tunnel subdomain |
+| NS | s | dns.yourdomain.com | Slipstream tunnel subdomain. **Deprecated in 2.5.0** and no longer routed: skip it on new installs |
 | NS | m | dns.yourdomain.com | MasterDNS tunnel subdomain |
 | NS | x | dns.yourdomain.com | XDNS tunnel subdomain |
 | A | cdn | YOUR_SERVER_IP | CDN mode (Cloudflare: **Proxied** orange cloud) |
@@ -197,7 +197,7 @@ ENABLE_WIREGUARD=true
 ENABLE_AMNEZIAWG=true
 ENABLE_TELEMT=true
 ENABLE_DNSTT=true
-ENABLE_SLIPSTREAM=true
+ENABLE_SLIPSTREAM=false        # deprecated in 2.5.0: no longer routed, use MasterDNS or dnstt
 ENABLE_MASTERDNS=true
 ENABLE_XDNS=true
 ENABLE_TRUSTTUNNEL=true
@@ -626,7 +626,7 @@ Changes via `moav donate setup` are written to `.env` and the service is restart
 
 > Donating configs is a way to support the network rather than a setup step; this will move to a dedicated Support page. It stays here for now because that page does not exist yet.
 
-Donate your server's VPN configs to [MahsaServer.com](https://www.mahsaserver.com/), a decentralized config sharing platform for the Mahsa VPN app (2M+ users in Iran). Mahsa VPN users connect directly to your donated configs.
+Donate your server's VPN configs to [MahsaServer.com](https://www.mahsaserver.com/), a decentralized config sharing platform for the Mahsa VPN app (12M+ users in Iran). Mahsa VPN users connect directly to your donated configs.
 
 ### Prerequisites
 
