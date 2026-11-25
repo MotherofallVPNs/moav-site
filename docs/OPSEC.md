@@ -68,7 +68,7 @@ ufw enable
 | 8080/tcp | wstunnel | Required if enabled |
 | 993/tcp | Telegram MTProxy | Required if enabled |
 | 2096/tcp | XHTTP | Required if enabled |
-| 53/udp | DNS tunnels — dnstt, Slipstream, MasterDNS, XDNS (all 4 via dns-router) | Required if DNS tunnels enabled |
+| 53/udp | DNS tunnels — dnstt, MasterDNS, XDNS (all via dns-router) | Required if DNS tunnels enabled |
 | 8444/tcp | GooseRelay (SOCKS5-over-Google-Apps-Script exit) | Only if `ENABLE_GOOSERELAY=true` |
 | 80/tcp | Let's Encrypt | Required during cert renewal |
 | 9443/tcp | Admin dashboard | See access control below |
@@ -331,7 +331,7 @@ moav doctor net   # sysctl + packet drops + PMTU + CGNAT + per-interface MTU
 
 1. **Try different protocols first** — switch from Reality to Hysteria2, XHTTP, or CDN mode
 2. **CDN mode** — routes through Cloudflare/CloudFront, works when server IP is blocked
-3. **DNS tunnels** — XDNS/dnstt/Slipstream work when most traffic is blocked
+3. **DNS tunnels** — XDNS/dnstt/MasterDNS work when most traffic is blocked
 4. **If IP is burned:**
    ```bash
    # On old server: export

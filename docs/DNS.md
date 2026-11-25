@@ -165,7 +165,7 @@ Only needed if the server sits behind a router (home, office, NAT).
 | `443/udp` | Hysteria2 | **domain only** |
 | `8443/tcp` | Trojan | **domain only** |
 | `4443/tcp` + `4443/udp` | TrustTunnel (HTTP/2 + QUIC) | **domain only** |
-| `53/udp` | [DNS tunnels](protocols.md#dns-tunnels) *(all four via `dns-router`)* | **domain only** |
+| `53/udp` | [DNS tunnels](protocols.md#dns-tunnels) *(all via `dns-router`)* | **domain only** |
 | `2082/tcp` | CDN origin | only if the CDN reaches your origin directly |
 
 ### Home server / Raspberry Pi

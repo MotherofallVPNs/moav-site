@@ -573,7 +573,7 @@ Most protocols just work once the subscription is imported. These have quirks wo
     **Summary:**
     1. Download slipstream-client from https://github.com/net2share/slipstream-rust-build/releases
     2. Copy the certificate file `slipstream-cert.pem` from your bundle
-    3. Run: `slipstream-client --domain s.yourdomain.com --cert slipstream-cert.pem --dns-server 1.1.1.1:53 --socks-listen 127.0.0.1:1080`
+    3. Run: `slipstream-client --domain s.yourdomain.com --cert slipstream-cert.pem --resolver 1.1.1.1:53 --tcp-listen-host 127.0.0.1 --tcp-listen-port 1080`
     4. Configure apps to use SOCKS5 proxy `127.0.0.1:1080`
 
     **Modes:**
@@ -597,7 +597,7 @@ Most protocols just work once the subscription is imported. These have quirks wo
     - Best for **Telegram only** — too slow for web browsing
     - MTU 35 (default) is safest. Try 67 or 130 for faster speeds if your network allows
     - MTU must match on both server and client
-    - All four DNS tunnels (dnstt, Slipstream, MasterDNS, XDNS) run simultaneously on port 53 — `dns-router` fans queries out by subdomain, so no conflict
+    - The DNS tunnels (dnstt, MasterDNS, XDNS) run simultaneously on port 53 — `dns-router` fans queries out by subdomain, so no conflict
     - **Resolver choice matters.** The default `xdns-config.json` round-robins across multiple public DNS resolvers (set by `XDNS_RESOLVERS` in the server's `.env`); if it keeps dropping, swap in resolvers that actually answer from your network. See [protocols.md → Reachable DNS resolvers](protocols.md#reachable-dns-resolvers) for scanner tools ([findns](https://github.com/SamNet-dev/findns), [dns-mns](https://gitlab.com/E-Gurl/dns-mns)).
 
     ---

@@ -19,7 +19,7 @@ Keys, users and certificates are untouched, but some operators have to act. If y
 ## What we found
 
 - **Tunneled traffic could reach private and infrastructure ranges.** A MoaV exit forwarded whatever destination a client asked for, so any user could reach other containers (the sing-box Clash API, Prometheus, Grafana), the host and its LAN, and the cloud metadata endpoint.
-- **A remote-root path through MPTCP.** [CVE-2026-98432](https://nvd.nist.gov/vuln/detail/CVE-2026-98432) is a Linux kernel bug (CVSS 9.8), and the public exploit needs an MPTCP listener. Go has opened MPTCP listeners by default since 1.24 ([golang/go#82717](https://github.com/golang/go/issues/82717) proposes turning that off), so Xray's XHTTP inbound and Grafana were MPTCP listeners.
+- **A remote-root path through MPTCP.** [CVE-2026-98432](https://nvd.nist.gov/vuln/detail/CVE-2026-98432) is a use-after-free in the Linux kernel's IPv4 TCP code (CVSS 9.8), and the public exploit needs an MPTCP listener. Go has opened MPTCP listeners by default since 1.24, so Xray's XHTTP inbound and Grafana were MPTCP listeners. See the [Go security announcement](https://groups.google.com/g/golang-announce/c/PCoQcdxoScw/m/aD-MgXEvAAAJ); [golang/go#82717](https://github.com/golang/go/issues/82717) proposes changing that default.
 - **AmneziaWG key rotation and crash-loops.** `moav regenerate-users` silently rotated the AmneziaWG server key, cutting off existing clients. WireGuard and AmneziaWG restart-looped on dual-stack servers, and a recreated `awg0` came back with no key and no peers.
 - **TrustTunnel was tested without the client in the loop.** `moav test` passed even when the client had been refused, and one run only proved whichever of HTTP/2 or HTTP/3 came up first.
 - **First-run races.** On an existing install, `moav bootstrap` could report success while generating no configs. `moav start` launched disabled DNS-tunnel containers, which restart-looped. The client's TrustTunnel sidecar idled forever if it started before its config existed.
@@ -27,7 +27,7 @@ Keys, users and certificates are untouched, but some operators have to act. If y
 ## What we fixed and shipped
 
 - **Egress isolation, on by default.** RFC1918, CGNAT, link-local, loopback, IPv6 ULA and DappNode ranges are blocked in sing-box, Xray, WireGuard/AmneziaWG and TrustTunnel. WireGuard peers can no longer reach each other through the tunnel. A trusted LAN relay can set `EGRESS_ISOLATION=off`.
-- **MPTCP off.** Every Go service runs with [`GODEBUG=multipathtcp=0`](https://go.dev/doc/godebug#go-124), and Xray carries upstream's own listener fix. This closes the known exploit path; the real fix is a patched host kernel.
+- **MPTCP off.** Every Go service runs with [`GODEBUG=multipathtcp=0`](https://go.dev/doc/godebug#go-124), and Xray carries upstream's own listener fix. The kernel bug is not specific to MPTCP, so this only closes the known exploit path. The real fix is a patched host kernel.
 - **TrustTunnel endpoint 1.3.1 and client 1.3.0.** `moav test` now runs the real client over HTTP/2 and HTTP/3 separately, and moav-client pins the client download by SHA256.
 - **Slipstream deprecation, phase 1.** Upstream is archived. Slipstream is off by default and no longer routed; MasterDNS and dnstt cover the DNS-tunnel case.
 - **Digest pinning and Renovate.** Every default runtime image is pinned by tag and digest, and [Renovate](https://docs.renovatebot.com/) opens grouped update PRs in both repos.
@@ -52,11 +52,12 @@ Component versions, with upstream notes:
 
 - **Slipstream clients stop connecting after this update.** Keep `ENABLE_MASTERDNS=true` and/or `ENABLE_DNSTT=true` with their NS records (`moav doctor dns`), run `moav switch-dns dnstt+masterdns+xdns`, then `moav regenerate-users` and hand out the new bundles.
 - **TrustTunnel: rebuild its image.** Its egress filter needs `iptables`, which only the new image has; with isolation on, the container refuses to start without it. The filter also blocks DappNode's `172.33.0.0/16`, which is public address space elsewhere and is now unreachable through TrustTunnel on every server.
+- **Egress isolation is on by default.** Clients can no longer reach private ranges through the server, and WireGuard/AmneziaWG peers can no longer reach each other. If you run a trusted LAN relay that depends on either, set `EGRESS_ISOLATION=off` in `.env` and run `moav restart`.
 - **cAdvisor moved registries.** The default image is now `ghcr.io/google/cadvisor`. If `.env` sets `IMAGE_CADVISOR` to the old `gcr.io` path, update or remove it, and allow `ghcr.io` in any registry allowlist.
 
 **Client installs (moav-client 1.5.0)**
 
-- **Add the `.ir` to direct rule by hand.** An update never rewrites your `config.yaml`. Without the rule, an `.ir` name whose local DNS lookup fails goes through the proxy, and your exit server connects to it from its own IP. Add it under `routing_rules`:
+- **Add the `.ir` direct rule by hand.** An update never rewrites your `config.yaml`. Without the rule, an `.ir` name whose local DNS lookup fails goes through the proxy, and your exit server connects to it from its own IP. Add it under `routing_rules`:
 
     ```yaml
     - match: {type: domain_suffix, value: ir}
@@ -75,4 +76,4 @@ No re-bootstrap is needed. Do not skip the build: the MPTCP and egress changes o
 
 On the client, run `moav-client update` twice: the first run is still executed by the old wrapper and does not move the component versions.
 
-Found a vulnerability? Report it privately, see [SECURITY.md](https://github.com/MotherofallVPNs/MoaV/blob/main/SECURITY.md). For everything else, open an [issue](https://github.com/MotherofallVPNs/MoaV/issues).
+Found a vulnerability? Report it privately: see [SECURITY.md](https://github.com/MotherofallVPNs/MoaV/blob/main/SECURITY.md). For everything else, open an [issue](https://github.com/MotherofallVPNs/MoaV/issues).

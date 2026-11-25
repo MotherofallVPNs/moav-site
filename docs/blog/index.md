@@ -19,6 +19,16 @@ hide:
 <div class="blog-list" markdown="1">
 
 <div class="blog-card reveal" markdown="1">
+<span class="blog-card__meta">2026-11-24 · Release · 5 min read</span>
+
+### [MoaV 2.5.0 and moav-client 1.5.0](posts/2026-11-24-moav-2-5-0-security-release.md)
+
+A paired security and stability release. Tunneled traffic can no longer reach private networks, Go listeners drop MPTCP (CVE-2026-98432), TrustTunnel moves to 1.3.1, and Slipstream starts its removal. Some operators have to act.
+
+[Read the post →](posts/2026-11-24-moav-2-5-0-security-release.md){ .blog-card__more }
+</div>
+
+<div class="blog-card reveal" markdown="1">
 <span class="blog-card__meta">2026-10-29 · Release · 5 min read</span>
 
 ### [MoaV Deploy mobile app is in public beta](posts/2026-10-29-moav-deploy-app-public-beta.md)
