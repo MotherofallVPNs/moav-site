@@ -14,7 +14,7 @@ Complete guide to deploy MoaV on a VPS or home server.
 
 **Domain (Optional but Recommended):**
 
-- Required for: Trojan, AnyTLS, Hysteria2, TrustTunnel, CDN mode, DNS tunnels (dnstt, Slipstream, MasterDNS, XDNS)
+- Required for: Trojan, AnyTLS, Hysteria2, TrustTunnel, CDN mode, DNS tunnels (dnstt, MasterDNS, XDNS)
 - Not required for: Reality, XHTTP, Shadowsocks-2022, Snell, WireGuard, AmneziaWG, Telegram MTProxy, Admin dashboard, Conduit, Snowflake
 - Per-protocol checklist: [Do I need a domain?](DNS.md#do-i-need-a-domain)
 - See [Domainless Mode](#domainless-mode) if you don't have a domain
@@ -38,7 +38,7 @@ Complete guide to deploy MoaV on a VPS or home server.
 | 9444/tcp | TCP | Grafana (monitoring) | No |
 | 993/tcp | TCP | Telegram MTProxy (telemt) | No |
 | 2096/tcp | TCP | XHTTP (VLESS+XHTTP+Reality) | No |
-| 53/udp | UDP | DNS tunnels — dnstt, Slipstream, MasterDNS, XDNS (all 4 share port 53 via dns-router) | Yes |
+| 53/udp | UDP | DNS tunnels — dnstt, MasterDNS, XDNS (all share port 53 via dns-router) | Yes |
 | 8444/tcp | TCP | GooseRelay (when `ENABLE_GOOSERELAY=true`) | No |
 | 80/tcp | TCP | Let's Encrypt | Yes (during setup) |
 

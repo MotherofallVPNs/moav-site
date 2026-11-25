@@ -53,7 +53,7 @@ Every protocol is one or more containers grouped into a docker-compose **profile
 | `xhttp` | `xray` | VLESS + XHTTP + Reality |
 | `wireguard` | `wireguard`, `wstunnel` | WireGuard direct UDP, plus a `wss://` WebSocket fallback for UDP-blocked networks |
 | `amneziawg` | `amneziawg` | AmneziaWG (obfuscated WireGuard) |
-| `dnstunnel` | `dns-router`, `dnstt`, `slipstream`, `masterdns`, `xray` | All four [DNS tunnels](protocols.md#dns-tunnels), sharing port 53 |
+| `dnstunnel` | `dns-router`, `dnstt`, `masterdns`, `xray` | The [DNS tunnels](protocols.md#dns-tunnels), sharing port 53. `slipstream` is deprecated since 2.5.0 and only starts with `ENABLE_SLIPSTREAM=true` |
 | `trusttunnel` | `trusttunnel` | TrustTunnel (HTTP/2 + QUIC over TLS) |
 | `telegram` | `telemt` | Telegram MTProxy (fake-TLS) |
 | `admin` | `admin`, `docker-proxy` | The dashboard on `:9443` |
@@ -66,7 +66,7 @@ AnyTLS is opt-in because it resists TLS-in-TLS fingerprinting but has narrower c
 
 ## DNS-router fan-out
 
-All four DNS tunnels share **port 53** through a small Go service called `dns-router`, which inspects each query's subdomain prefix and forwards to the matching backend. Each tunnel container listens on its own internal port; only `dns-router` binds the public port.
+The DNS tunnels share **port 53** through a small Go service called `dns-router`, which inspects each query's subdomain prefix and forwards to the matching backend. Each tunnel container listens on its own internal port; only `dns-router` binds the public port.
 
 ```
               Public 53/udp
@@ -77,12 +77,11 @@ All four DNS tunnels share **port 53** through a small Go service called `dns-ro
                    │
    subdomain routing:
        t.*  ─────►  dnstt
-       s.*  ─────►  slipstream
        m.*  ─────►  masterdns
        x.*  ─────►  xray   (XDNS via FinalMask)
 ```
 
-Delegating a tunnel only requires adding its NS record (`t.` / `s.` / `m.` / `x.`); see [DNS → NS Delegations](DNS.md#with-a-domain-the-records). Disabling a tunnel via `ENABLE_*=false` removes its container; `dns-router` simply has no backend to forward to.
+Delegating a tunnel only requires adding its NS record (`t.` / `m.` / `x.`); see [DNS → NS Delegations](DNS.md#with-a-domain-the-records). Disabling a tunnel via `ENABLE_*=false` removes its container; `dns-router` simply has no backend to forward to.
 
 ## Bundle generation flow
 
@@ -111,7 +110,7 @@ Bundles split into three groups:
 
 - **V2Ray-compatible** (Reality, Trojan, AnyTLS, Hysteria2, SS-2022, CDN, XHTTP) — share-link `.txt`s, QR `.png`s, a single base64 `subscription.txt` importable by MahsaNG / v2rayNG / Hiddify / Streisand.
 - **L3 VPNs** (WireGuard, AmneziaWG, TrustTunnel) — `.conf` / `.toml` configs + QR.
-- **DNS tunnels** (dnstt, Slipstream, MasterDNS, XDNS) and **donations** (GooseRelay) — text instruction files + protocol-specific config blobs (`xdns-config.json`, `gooserelay-AppsScript.gs` + `gooserelay-client_config.json`, etc.).
+- **DNS tunnels** (dnstt, MasterDNS, XDNS) and **donations** (GooseRelay) — text instruction files + protocol-specific config blobs (`xdns-config.json`, `gooserelay-AppsScript.gs` + `gooserelay-client_config.json`, etc.).
 
 `README.html` is a bilingual (EN/FA) collapsible bundle viewer with embedded QR images and one-click subscription import.
 
