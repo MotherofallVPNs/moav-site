@@ -19,9 +19,20 @@ The one-liner on `moav.sh` always installs the **latest stable release**. To run
 === "Already installed"
     ```bash
     moav update -b dev     # or a tag
-    moav build             # images must be rebuilt when the code moves
-    moav start
+    moav apply             # build, refresh bundles, recreate containers
     ```
+
+    `moav apply` is **available from 2.5.1**; `dev` is past that.
+
+    !!! warning "Legacy (pre-2.5.1): will be removed in a future release"
+        A tag older than 2.5.1 has no `moav apply`. There, run the steps by hand:
+
+        ```bash
+        moav build             # images must be rebuilt when the code moves
+        moav start
+        ```
+
+<!-- LEGACY-PRE-2.5.1: remove together with the other legacy update guidance (MoaV CHANGELOG 2.5.1, Deprecated) -->
 
 !!! warning "`dev` is where work in progress lands"
     It gets the fixes first and the regressions first. Run it on a test server, not on the one people depend on.

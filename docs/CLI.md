@@ -34,6 +34,8 @@ moav stop                 # Stop all services
 moav status               # Show service status
 moav logs                 # View logs (follow mode)
 moav doctor               # Run diagnostics
+moav update               # Pull the latest release (nothing restarts yet)
+moav apply                # Make the update live (2.5.1+)
 moav user add NAME        # Add new user
 moav user add --batch 5   # Batch create 5 users
 moav user revoke NAME     # Revoke user
@@ -151,6 +153,8 @@ moav doctor logs         # Container log file sizes (offers to truncate oversize
 moav doctor dns          # DNS records
 moav doctor services     # Enabled vs running services
 moav doctor config       # Config files and keys
+moav doctor perms        # Checkout and image permissions (2.5.1+)
+moav doctor perms --fix  # ...and repair the checkout (2.5.1+)
 moav doctor ports        # Port availability
 moav doctor conflicts    # DNS-tunnel health (all share port 53 via dns-router)
 moav doctor env          # Compare .env with .env.example
@@ -166,6 +170,7 @@ moav doctor updates      # Check for MoaV updates
 - `dns` — Verify DNS records for enabled protocols (A records, NS delegation, CDN)
 - `services` — Compare enabled services in `.env` with running containers; flag crash-looping services
 - `config` — Check bootstrap has been run and config files exist for enabled protocols
+- `perms` — **Available from 2.5.1.** Fails when files in the checkout are not readable by the containers that mount them, or when a locally built image has an entrypoint its own non-root user cannot read or run. This is what makes admin, Prometheus or dns-router restart in a loop with "Permission denied" after an update run under a restrictive umask. `moav doctor perms --fix` repairs the checkout; follow it with `moav apply` to rebuild and recreate the containers. See [Troubleshooting](TROUBLESHOOTING.md#containers-restart-in-a-loop-with-permission-denied-after-an-update)
 - `ports` — Verify required ports are listening; detect systemd-resolved on port 53
 - `conflicts` — Check DNS-tunnel health. The tunnels (dnstt, MasterDNS, XDNS) share port 53 via `dns-router`, fanned out by subdomain (`t.`/`m.`/`x.`), so they coexist — this verifies enabled-vs-running state and that `dns-router` isn't crash-looping. Toggle individual tunnels with `ENABLE_*` or `moav switch-dns`
 - `env` — Compare `.env` with `.env.example` for missing variables; flag critical missing vars
@@ -218,16 +223,100 @@ Saves selection to `DEFAULT_PROFILES` in `.env`.
 Update MoaV from git repository.
 
 ```bash
-moav update              # Update from current branch
+moav update              # Update from current branch, then run: moav apply
+moav update --apply      # Update and apply in one go (2.5.1+)
 moav update -b dev       # Switch to dev branch and update
 moav update -b main      # Switch back to main branch
+moav update --yes        # Unattended (cron, SSH without a TTY)
+moav update --yes --apply  # Unattended, and end on the new images (2.5.1+)
 ```
 
 **Options:**
 
-- `-b BRANCH` - Switch to specified branch before updating
+- `-b BRANCH` - Switch to specified branch (or tag) before updating
+- `-y`, `--yes` - Never prompt (same as `MOAV_NONINTERACTIVE=1`). Local changes are stashed, `.env` version pins and new variables are applied
+- `--apply` - **Available from 2.5.1.** Run [`moav apply`](#moav-apply) afterwards if the update left anything to apply. Exits with its code
 
 If local changes are detected, you'll be prompted to stash or discard them.
+
+**An update only pulls the code.** Nothing is rebuilt or restarted until you run [`moav apply`](#moav-apply) (or pass `--apply`). `moav update` ends by pointing at it, and a later `moav update` that finds nothing new reminds you when an earlier update is still unapplied.
+
+!!! note "Available from 2.5.1"
+    `moav apply` and `moav update --apply` arrive with MoaV 2.5.1. A server on 2.5.0 or older does not know `--apply` yet: run `moav update` first, then `moav apply`.
+
+??? warning "Legacy (pre-2.5.1): the manual update steps. Will be removed in a future release."
+    Only for a checkout that stays on 2.5.0 or older (for example pinned to an older tag), which has no `moav apply`. After `moav update`, run the steps it prints, in order:
+
+    ```bash
+    moav build                    # build the new images (changes nothing that is running)
+    moav bootstrap                # only if the update says config templates changed
+    moav regenerate-users         # only if the update says to refresh the user bundles
+    moav start                    # recreate containers on the new images
+    ```
+
+    From 2.5.1 on, `moav apply` runs all of this in one command. The commands themselves are not going away.
+
+<!-- LEGACY-PRE-2.5.1: remove together with the other legacy update guidance (MoaV CHANGELOG 2.5.1, Deprecated) -->
+
+#### `moav apply`
+Make the current checkout live in one unattended command. **Available from 2.5.1.**
+
+```bash
+moav apply                    # Build, refresh bundles, recreate containers
+moav apply xray               # Apply only one service or profile
+moav apply --no-cache         # Build without the Docker layer cache
+moav apply --status           # State of the current or last apply
+moav apply --status --json    # The same as one JSON document
+```
+
+This is the one command to run after `moav update`, or after editing `.env`. It replaces running `moav build`, `moav bootstrap`, `moav regenerate-users` and `moav start` by hand. It never prompts and is safe to re-run: an unchanged image is a cache hit, and a container whose image and config did not change keeps running.
+
+**Steps**, each announced as `[moav-apply] step N/6: NAME`:
+
+1. `preflight`: `.env`, Docker, bootstrap done, what to apply. Also re-opens checkout files an earlier update left owner-only
+2. `build`: the saved default profiles, or the named services
+3. `bootstrap`: only when the last update changed config templates (keeps keys and users)
+4. `regenerate-users`: refresh the user bundles (keys stay the same)
+5. `start`: recreate containers on the new images
+6. `cleanup`: remove dangling images (tagged and in-use ones stay)
+
+**Arguments:**
+
+- `SERVICE|PROFILE` - Apply only these (the same names `moav build` takes). Skips bootstrap, and `regenerate-users` unless `--regenerate` is given
+
+**Options:**
+
+- `--no-cache` - Build without the Docker layer cache
+- `--regenerate` - Run `regenerate-users` (the default for a full apply)
+- `--no-regenerate` - Skip `regenerate-users`
+- `--no-bootstrap` - Never re-bootstrap, even if config templates changed
+- `--status` - Print the state of the current or last apply and exit 0
+- `--json` - With `--status`: one JSON document
+
+**Exit codes:**
+
+| Code | Meaning |
+|---|---|
+| `0` | Applied |
+| `1` | Usage error |
+| `2` | Preflight failed, nothing was changed |
+| `3` | Another apply is running, nothing was changed |
+| `10` | Build failed, nothing was restarted |
+| `11` | Bootstrap failed, nothing was restarted |
+| `12` | `regenerate-users` failed; services were still started on the new images |
+| `13` | Start failed |
+| `130` / `143` | Interrupted (SIGINT / SIGTERM) |
+
+If preflight stops with exit 2, it says what is missing. Usually that is the saved service selection: run `moav profiles` once, then re-run `moav apply`.
+
+**Detached** (survives the SSH session):
+
+```bash
+nohup moav apply > apply.log 2>&1 < /dev/null &
+moav apply --status --json      # state: running|ok|failed|interrupted|idle
+```
+
+The last line of the output is always `[moav-apply] exit=CODE result=...`.
 
 #### `moav setup-dns`
 Free port 53 for dnstt by disabling systemd-resolved.
@@ -752,6 +841,8 @@ Use this after:
 - Adding CDN_DOMAIN
 - Changing any configuration that affects client configs
 
+[`moav apply`](#moav-apply) (2.5.1+) already runs it as part of a full apply, so after an update you only need the command on its own if you applied the update with the legacy manual steps.
+
 ---
 
 ## Command Aliases
@@ -890,8 +981,9 @@ moav user add --batch 10 --prefix team --package
 # Test user connectivity
 moav test alice
 
-# Update MoaV
+# Update MoaV (2.5.1+; or both in one go: moav update --apply)
 moav update
+moav apply
 ```
 
 ### Server Migration
@@ -916,12 +1008,18 @@ moav start
 # Switch to dev branch
 moav update -b dev
 
-# Test changes
-moav restart
+# Make it live: build, refresh bundles, recreate containers
+moav apply
 
 # Return to stable
 moav update -b main
+moav apply
 ```
+
+!!! warning "Legacy (pre-2.5.1): will be removed in a future release"
+    On a checkout that stays on 2.5.0 or older there is no `moav apply`. Use `moav build`, then `moav start` in its place. The full manual sequence is under [`moav update`](#moav-update).
+
+<!-- LEGACY-PRE-2.5.1: remove together with the other legacy update guidance (MoaV CHANGELOG 2.5.1, Deprecated) -->
 
 ### Bandwidth & Config Donation
 
