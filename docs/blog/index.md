@@ -23,7 +23,7 @@ hide:
 
 ### [MoaV 2.5.0 and moav-client 1.5.0](posts/2026-11-24-moav-2-5-0-security-release.md)
 
-A paired security and stability release. Tunneled traffic can no longer reach private networks, Go listeners drop MPTCP (CVE-2026-98432), TrustTunnel moves to 1.3.1, and Slipstream starts its removal. Some operators have to act.
+A paired security and stability release. Tunneled traffic can no longer reach private networks, Go listeners drop MPTCP (CVE-2026-98432), TrustTunnel moves to 1.3.1, and Slipstream starts its removal. Some operators have to act. Updated for the 2.5.1 patch: Grafana security fixes, a umask crash-loop fix and `moav apply`.
 
 [Read the post →](posts/2026-11-24-moav-2-5-0-security-release.md){ .blog-card__more }
 </div>

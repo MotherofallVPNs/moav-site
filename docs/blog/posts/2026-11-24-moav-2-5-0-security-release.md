@@ -15,6 +15,7 @@ Keys, users and certificates are untouched, but some operators have to act. If y
 
 - **Server:** [MoaV v2.5.0](https://github.com/MotherofallVPNs/MoaV/releases/tag/v2.5.0)
 - **Client:** [moav-client v1.5.0](https://github.com/MotherofallVPNs/moav-client/releases/tag/v1.5.0)
+- **Patch:** [MoaV v2.5.1](https://github.com/MotherofallVPNs/MoaV/releases/tag/v2.5.1) is the current server release. See [Update: MoaV 2.5.1](#update-2-5-1).
 
 ## What we found
 
@@ -80,5 +81,16 @@ No re-bootstrap is needed. Do not skip the build: the MPTCP and egress changes o
 <!-- LEGACY-PRE-2.5.1: remove together with the other legacy update guidance (MoaV CHANGELOG 2.5.1, Deprecated) -->
 
 On the client, run `moav-client update` twice: the first run is still executed by the old wrapper and does not move the component versions.
+
+## Update: MoaV 2.5.1 {#update-2-5-1}
+
+[MoaV v2.5.1](https://github.com/MotherofallVPNs/MoaV/releases/tag/v2.5.1) is a patch on top of 2.5.0. It has no breaking changes and needs no re-bootstrap.
+
+- **Grafana 13.3.2 (security).** An upstream [security release](https://github.com/grafana/grafana/releases/tag/v13.3.2) that fixes CVE-2026-107561 and CVE-2026-88960. It replaces the 13.3.1 in the table above. Only the monitoring profile runs Grafana.
+- **Umask crash-loop fixed.** `moav update` run under a restrictive umask (`umask 077`, which the MoaV Deploy app's SSH session uses) left the checkout owner-only, so the containers that do not run as root restarted in a loop. `moav` now sets the umask itself. Already affected? Update, then run `moav apply`, or check and repair by hand with `moav doctor perms` and `moav doctor perms --fix`. More in [Troubleshooting](../../TROUBLESHOOTING.md#containers-restart-in-a-loop-with-permission-denied-after-an-update).
+- **`moav apply`.** One unattended command that makes an update live: build, refresh bundles, recreate the containers. `moav update --apply` does both in one go. See the [CLI reference](../../CLI.md#moav-apply).
+- **`moav build` knows every compose profile.** `moav build xhttp` and `moav build setup` no longer fail with "no such service".
+
+To get it: `moav update`, then `moav apply`.
 
 Found a vulnerability? Report it privately: see [SECURITY.md](https://github.com/MotherofallVPNs/MoaV/blob/main/SECURITY.md). For everything else, open an [issue](https://github.com/MotherofallVPNs/MoaV/issues).
