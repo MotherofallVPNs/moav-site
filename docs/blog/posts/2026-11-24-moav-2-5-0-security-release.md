@@ -74,6 +74,11 @@ moav update && moav build && moav start
 
 No re-bootstrap is needed. Do not skip the build: the MPTCP and egress changes only take effect once the containers are rebuilt and recreated. Then patch the host kernel.
 
+!!! note "From MoaV 2.5.1: `moav update`, then `moav apply`"
+    The sequence above is the manual path for 2.5.0. It is **legacy (pre-2.5.1) and will be removed from the docs in a future release**. From 2.5.1 on, `moav apply` builds, refreshes bundles and recreates the containers in one command, and `moav update --apply` does both in one go. See [Updating MoaV](../../SETUP.md#updating-moav).
+
+<!-- LEGACY-PRE-2.5.1: remove together with the other legacy update guidance (MoaV CHANGELOG 2.5.1, Deprecated) -->
+
 On the client, run `moav-client update` twice: the first run is still executed by the old wrapper and does not move the component versions.
 
 Found a vulnerability? Report it privately: see [SECURITY.md](https://github.com/MotherofallVPNs/MoaV/blob/main/SECURITY.md). For everything else, open an [issue](https://github.com/MotherofallVPNs/MoaV/issues).

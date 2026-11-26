@@ -19,6 +19,7 @@ This runs all checks automatically and tells you exactly what's wrong:
 - **dns** — DNS records for your domain and enabled protocols
 - **services** — Running containers vs enabled config, crash-looping detection
 - **config** — Bootstrap status, config files exist for enabled protocols
+- **perms** — Checkout and locally built images readable by the non-root containers (2.5.1+; `moav doctor perms --fix` repairs the checkout)
 - **ports** — Required ports listening, systemd-resolved conflicts
 - **conflicts** — DNS-tunnel port-group collisions on port 53
 - **env** — Missing `.env` variables compared to `.env.example`
@@ -172,11 +173,21 @@ ufw allow 51820/udp
 
 Older versions had missing iptables rules for return traffic. Update and rebuild:
 ```bash
-cd /opt/moav
 moav update
-docker compose --profile wireguard build --no-cache wireguard
-moav restart wireguard
+moav apply wireguard --no-cache
 ```
+
+!!! warning "Legacy (pre-2.5.1): will be removed in a future release"
+    `moav apply` is available from 2.5.1. On a checkout that stays on 2.5.0 or older, rebuild and restart by hand instead:
+
+    ```bash
+    cd /opt/moav
+    moav update
+    docker compose --profile wireguard build --no-cache wireguard
+    moav restart wireguard
+    ```
+
+<!-- LEGACY-PRE-2.5.1: remove together with the other legacy update guidance (MoaV CHANGELOG 2.5.1, Deprecated) -->
 
 ### AmneziaWG connects but no traffic
 
@@ -728,6 +739,8 @@ that form pays the full reload/restart cost for every user.
 
 > **Quick check:** Run `moav doctor services` to see which services are enabled vs running.
 
+**Did it start right after an update?** If admin, Prometheus or dns-router restart in a loop and their logs say "Permission denied", go straight to [Containers restart in a loop with "Permission denied" after an update](#containers-restart-in-a-loop-with-permission-denied-after-an-update).
+
 **Check logs:**
 ```bash
 docker compose logs sing-box
@@ -983,6 +996,63 @@ Authentication: `Authorization: Token <your-api-key>` header on all requests.
 
 Getting MoaV on the box, and moving between versions.
 
+### Update finished, but the server still runs the old version
+
+`moav update` only pulls the code. Nothing is rebuilt or restarted until the update is applied, so the containers keep running on the old images.
+
+**Fix:** apply it with one command.
+
+```bash
+moav apply                    # build, refresh bundles, recreate containers
+```
+
+Next time, do both in one go:
+
+```bash
+moav update --apply
+```
+
+`moav apply` and `moav update --apply` are **available from 2.5.1**. `moav apply` never prompts and is safe to re-run. A server on 2.5.0 or older does not know `--apply` yet: run `moav update` first, then `moav apply`. If it stops in its preflight (exit 2, nothing changed), it says what is missing, usually the saved service selection: run `moav profiles`, then re-run. Every flag and exit code: [CLI Reference](CLI.md#moav-apply).
+
+??? warning "Legacy (pre-2.5.1): the manual update steps. Will be removed in a future release."
+    Only for a checkout that stays on 2.5.0 or older (for example pinned to an older tag), which has no `moav apply`. After `moav update`, run the steps it prints, in order:
+
+    ```bash
+    moav build                    # build the new images (changes nothing that is running)
+    moav bootstrap                # only if the update says config templates changed
+    moav regenerate-users         # only if the update says to refresh the user bundles
+    moav start                    # recreate containers on the new images
+    ```
+
+    From 2.5.1 on, `moav apply` runs all of this in one command.
+
+<!-- LEGACY-PRE-2.5.1: remove together with the other legacy update guidance (MoaV CHANGELOG 2.5.1, Deprecated) -->
+
+### Containers restart in a loop with "Permission denied" after an update
+
+**Symptom:** after an update, the containers that do not run as root restart forever, and `moav status` or `docker ps` shows them as `Restarting`. Their logs (`moav logs admin`, `moav logs prometheus`, `moav logs dns-router`) end in "Permission denied":
+
+- **admin** cannot read `/project/VERSION`
+- **Prometheus** cannot read `prometheus.yml`
+- **dns-router** cannot run `/app/entrypoint.sh`
+
+It typically shows up after updating through the [MoaV Deploy app](deploy/index.md). The same update from a normal login shell is fine.
+
+**Cause:** the update ran in a session with a restrictive umask (`umask 077`, which the app's SSH session uses). git then wrote the checkout owner-only, and `docker build` copied those modes into the images, so every non-root container fails on the first file it opens. Fixed in MoaV 2.5.1: `moav update`, `moav build` and `moav apply` now set the umask themselves and re-open files an earlier run left owner-only.
+
+**Fix (2.5.1 or newer):**
+
+```bash
+moav doctor perms             # report what the containers cannot read
+moav doctor perms --fix       # repair the checkout
+moav apply                    # rebuild the images and recreate the containers
+```
+
+`moav doctor perms` prints the fix for everything it finds. If it still reports an image afterwards, run the `moav apply <service> --no-cache` line it prints for that image. Keys, users and certificates are not touched, and there is no need to `chmod` files by hand or to re-clone.
+
+!!! note "Still on 2.5.0 or older?"
+    `moav doctor perms` and `moav apply` are **available from 2.5.1**, and the fix for this bug ships in the same release. Run `moav update` first to pull it, then `moav apply`.
+
 ### Update fails with "local changes would be overwritten"
 
 When running `moav update` or the installer, you may see:
@@ -1086,8 +1156,9 @@ git merge --abort
 # Reset to last known good state
 git reset --hard HEAD
 
-# Try updating again
+# Try updating again, then make it live
 moav update
+moav apply        # 2.5.1+; older: the legacy manual steps above
 ```
 
 **If you need to completely reset:**
@@ -1112,6 +1183,8 @@ Some updates include breaking changes (marked in [CHANGELOG](https://github.com/
 - Clients can't connect after update
 - Services crash on startup
 - Protocol-specific errors (e.g., "invalid obfuscation password")
+
+First rule out the two cheaper causes: an update that was pulled but [never applied](#update-finished-but-the-server-still-runs-the-old-version) (`moav apply`), and containers looping on ["Permission denied"](#containers-restart-in-a-loop-with-permission-denied-after-an-update) (`moav doctor perms --fix`, then `moav apply`). Neither needs a config rebuild.
 
 **Option 1: Rebuild configs (keeps users)**
 
@@ -1166,22 +1239,45 @@ There is a second, unrelated cause with the same symptom: sing-box runs from a c
 
 ### Switching branches
 
-**Switch to a feature/test branch:**
+**Switch to a feature/test branch (or a tag):**
 ```bash
-cd /opt/moav
-git fetch origin
-git checkout feature-branch-name
-git pull
-moav build  # Rebuild containers if needed
+moav update -b feature-branch-name
+moav apply                    # build, refresh bundles, recreate containers
 ```
 
 **Switch back to stable (main):**
 ```bash
-cd /opt/moav
-git checkout main
-git pull
-moav build
+moav update -b main
+moav apply
 ```
+
+`moav apply` is **available from 2.5.1**.
+
+??? warning "Legacy (pre-2.5.1): switching with git by hand. Will be removed in a future release."
+    Only for a checkout that stays on 2.5.0 or older, which has no `moav apply`.
+
+    Switch to a feature/test branch:
+
+    ```bash
+    cd /opt/moav
+    git fetch origin
+    git checkout feature-branch-name
+    git pull
+    moav build  # Rebuild containers if needed
+    ```
+
+    Switch back to stable (main):
+
+    ```bash
+    cd /opt/moav
+    git checkout main
+    git pull
+    moav build
+    ```
+
+    `moav build` alone changes nothing that is running: follow it with `moav start` to recreate the containers on the new images.
+
+<!-- LEGACY-PRE-2.5.1: remove together with the other legacy update guidance (MoaV CHANGELOG 2.5.1, Deprecated) -->
 
 **If switching fails due to local changes:**
 ```bash
@@ -1205,13 +1301,14 @@ git stash
 # Get the fix
 git fetch origin
 git checkout fix-branch-name
-moav build
-moav restart
+moav apply        # 2.5.1+. Legacy (pre-2.5.1): moav build, then moav restart
 
 # After testing, return to main
 git checkout main
 git stash pop  # Restore your changes if needed
 ```
+
+<!-- LEGACY-PRE-2.5.1: remove together with the other legacy update guidance (MoaV CHANGELOG 2.5.1, Deprecated) -->
 
 **Accidentally edited files:**
 ```bash

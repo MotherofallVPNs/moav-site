@@ -729,16 +729,37 @@ Dashboards, the exporters, reaching Grafana, and the CDN-accelerated option are 
 ## Updating MoaV
 
 ```bash
-moav update
+moav update                   # pull the new release; nothing is rebuilt or restarted yet
+moav apply                    # make it live: build, refresh bundles, recreate containers
+moav update --apply           # or both in one go
 ```
 
-Or manually:
-```bash
-cd /opt/moav
-git pull
-docker compose --profile all build
-moav restart
-```
+`moav apply` and `moav update --apply` are **available from 2.5.1**. `moav apply` never prompts and is safe to re-run, and `moav update` ends by pointing at it. A server on 2.5.0 or older does not know `--apply` yet: run `moav update` first, then `moav apply`. Every flag and exit code: [CLI Reference](CLI.md#moav-apply).
+
+**Containers restarting in a loop after an update** (admin, Prometheus or dns-router with "Permission denied")? Check with `moav doctor perms`, repair the checkout with `moav doctor perms --fix`, then run `moav apply`. Details: [Troubleshooting](TROUBLESHOOTING.md#containers-restart-in-a-loop-with-permission-denied-after-an-update).
+
+??? warning "Legacy (pre-2.5.1): the manual update steps. Will be removed in a future release."
+    Only for a checkout that stays on 2.5.0 or older (for example pinned to an older tag), which has no `moav apply`. After `moav update`, run the steps it prints, in order:
+
+    ```bash
+    moav build                    # build the new images (changes nothing that is running)
+    moav bootstrap                # only if the update says config templates changed
+    moav regenerate-users         # only if the update says to refresh the user bundles
+    moav start                    # recreate containers on the new images
+    ```
+
+    Or without the `moav` wrapper at all:
+
+    ```bash
+    cd /opt/moav
+    git pull
+    docker compose --profile all build
+    moav restart
+    ```
+
+    From 2.5.1 on, `moav apply` runs all of this in one command.
+
+<!-- LEGACY-PRE-2.5.1: remove together with the other legacy update guidance (MoaV CHANGELOG 2.5.1, Deprecated) -->
 
 ### Breaking Changes
 
@@ -763,9 +784,11 @@ After breaking changes, you must redistribute new config bundles to all users.
 
 ```bash
 moav update -b dev      # Switch to dev branch
+moav apply              # Make it live (2.5.1+)
 
 # Return to stable:
 moav update -b main
+moav apply
 ```
 
 ---

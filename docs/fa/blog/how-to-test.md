@@ -38,10 +38,21 @@ hide:
 
     ```bash
     moav update -b <RC_TAG>
-    moav build
-    moav start
-    moav regenerate-users   # بسته‌ها را دوباره صادر می‌کند؛ بعضی RCها به آن نیاز دارند و پست می‌گوید
+    moav apply              # ایمیج‌ها را می‌سازد، بسته‌ها را دوباره صادر می‌کند و کانتینرها را از نو بالا می‌آورد
     ```
+
+    دستور `moav apply` از نسخهٔ 2.5.1 در دسترس است.
+
+    !!! warning "قدیمی (پیش از 2.5.1): در یکی از نسخه‌های بعدی حذف می‌شود"
+        RCهای قدیمی‌تر از 2.5.1 دستور `moav apply` را ندارند. در آن‌ها همین مراحل را دستی اجرا کنید:
+
+        ```bash
+        moav build
+        moav start
+        moav regenerate-users   # بسته‌ها را دوباره صادر می‌کند؛ بعضی RCها به آن نیاز دارند و پست می‌گوید
+        ```
+
+<!-- LEGACY-PRE-2.5.1: remove together with the other legacy update guidance (MoaV CHANGELOG 2.5.1, Deprecated) -->
 
 ## برنامهٔ آزمایش {#the-test-plan}
 

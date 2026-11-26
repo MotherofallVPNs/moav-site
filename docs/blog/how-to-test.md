@@ -38,10 +38,21 @@ Throughout this guide, `<RC_TAG>` means that tag, for example `v2.3.0-rc.5`.
 
     ```bash
     moav update -b <RC_TAG>
-    moav build
-    moav start
-    moav regenerate-users   # re-issues bundles; some RCs require it, the post will say
+    moav apply              # builds, re-issues bundles, recreates containers
     ```
+
+    `moav apply` is **available from 2.5.1**.
+
+    !!! warning "Legacy (pre-2.5.1): will be removed in a future release"
+        An RC older than 2.5.1 has no `moav apply`. There, run the steps by hand:
+
+        ```bash
+        moav build
+        moav start
+        moav regenerate-users   # re-issues bundles; some RCs require it, the post will say
+        ```
+
+<!-- LEGACY-PRE-2.5.1: remove together with the other legacy update guidance (MoaV CHANGELOG 2.5.1, Deprecated) -->
 
 ## The test plan
 
